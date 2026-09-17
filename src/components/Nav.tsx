@@ -13,7 +13,6 @@ const LINKS = [
   { to: '/#gifting', label: 'Gifting' },
   { to: '/#flavour-works', label: 'Flavour Works' },
   { to: '/crunchy-makhana', label: 'Crunchy Makhana' },
-  { to: '/#reviews', label: 'Reviews' },
   { to: '/#contact', label: 'Contact' },
 ]
 
@@ -38,10 +37,10 @@ export function Nav() {
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link to="/" aria-label="Sassmi — home" className="flex items-center gap-3">
             <Wordmark className="h-7 w-auto" />
-            <span className="hidden text-[10px] font-medium uppercase tracking-[.3em] text-gold sm:block">Premium Makhana</span>
+            <span className="hidden whitespace-nowrap text-[10px] font-medium uppercase tracking-[.3em] text-gold xl:block">Premium Makhana</span>
           </Link>
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
-            {LINKS.map((l) => <Link key={l.to} to={l.to} className="nav-link text-ivory/85 hover:text-ivory">{l.label}</Link>)}
+          <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Primary">
+            {LINKS.map((l) => <Link key={l.to} to={l.to} className="nav-link whitespace-nowrap text-ivory/85 hover:text-ivory">{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2 sm:gap-3">
             <a href={whatsappLink('Hi Sassmi! I have a question about your makhana.')} target="_blank" rel="noreferrer" className="hidden h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold sm:flex" aria-label={`WhatsApp ${business.contact.phoneDisplay}`}>

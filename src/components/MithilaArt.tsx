@@ -5,33 +5,43 @@
  */
 type P = { className?: string; style?: React.CSSProperties }
 
+const MIRROR = 'scale(-1 1) translate(-200 0)'
+
 export function Lotus({ className = '', style }: P) {
+  const half = (
+    <>
+      <path d="M100 148 C 118 130, 138 100, 138 58 C 116 72, 104 108, 100 148 Z" />
+      <path d="M100 148 C 128 140, 154 118, 162 84 C 134 86, 110 112, 100 148 Z" strokeOpacity=".8" />
+      <path d="M100 150 C 130 150, 158 132, 170 104 C 140 100, 116 116, 100 150 Z" strokeOpacity=".6" />
+    </>
+  )
   return (
-    <svg viewBox="0 0 200 160" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={className} style={style} aria-hidden>
-      <path d="M100 150 C 70 150, 40 130, 30 100 C 60 96, 85 110, 100 150 Z" />
-      <path d="M100 150 C 130 150, 160 130, 170 100 C 140 96, 115 110, 100 150 Z" />
-      <path d="M100 148 C 84 120, 82 80, 100 44 C 118 80, 116 120, 100 148 Z" />
-      <path d="M100 148 C 78 130, 60 100, 58 58 C 84 70, 98 105, 100 148 Z" />
-      <path d="M100 148 C 122 130, 140 100, 142 58 C 116 70, 102 105, 100 148 Z" />
-      <path d="M100 148 C 68 140, 44 118, 36 84 C 66 84, 92 112, 100 148 Z" strokeOpacity=".7" />
-      <path d="M100 148 C 132 140, 156 118, 164 84 C 134 84, 108 112, 100 148 Z" strokeOpacity=".7" />
-      <path d="M100 150 L 100 160" />
-      <circle cx="100" cy="128" r="2" fill="currentColor" stroke="none" />
-      <circle cx="93" cy="132" r="1.3" fill="currentColor" stroke="none" />
-      <circle cx="107" cy="132" r="1.3" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 200 170" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={className} style={{ ...style, overflow: 'visible' }} aria-hidden>
+      <path d="M100 148 C 86 118, 86 78, 100 40 C 114 78, 114 118, 100 148 Z" />
+      <g>{half}</g>
+      <g transform={MIRROR}>{half}</g>
+      <circle cx="100" cy="126" r="2.2" fill="currentColor" stroke="none" />
+      <circle cx="92" cy="131" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="108" cy="131" r="1.4" fill="currentColor" stroke="none" />
+      <path d="M100 150 L100 170" />
     </svg>
   )
 }
 
-export function LotusLeaf({ className = '', style }: P) {
+/** A round lotus leaf with a notch and evenly spaced veins; `spin` turns it slowly (seconds per turn). */
+export function LotusLeaf({ className = '', style, spin = 70, reverse = false }: P & { spin?: number; reverse?: boolean }) {
+  const cx = 100, cy = 104, R = 82
+  const pt = (deg: number, r = R) => [cx + Math.cos((deg * Math.PI) / 180) * r, cy + Math.sin((deg * Math.PI) / 180) * r] as const
+  const [ax, ay] = pt(-112), [bx, by] = pt(-68)
+  const veins = [-30, 0, 30, 60, 90, 120, 150, 180, 210] // mirror-symmetric about the downward axis
   return (
-    <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" className={className} style={style} aria-hidden>
-      <path d="M100 20 C 150 20, 186 56, 186 100 C 186 146, 148 182, 100 182 C 52 182, 14 146, 14 100 C 14 60, 44 24, 86 20 L 100 100 Z" />
-      {Array.from({ length: 11 }).map((_, i) => {
-        const a = (-70 + i * 26) * (Math.PI / 180) + Math.PI / 2
-        return <line key={i} x1="100" y1="100" x2={100 + Math.cos(a) * 80} y2={100 + Math.sin(a) * 80} strokeOpacity=".55" />
-      })}
-      <path d="M100 100 C 104 130, 104 160, 108 196" strokeOpacity=".8" />
+    <svg viewBox="0 0 200 210" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" className={`leaf ${className}`} style={{ ...style, overflow: 'visible', ['--spin' as string]: `${spin}s`, ['--spin-dir' as string]: reverse ? 'reverse' : 'normal' }} aria-hidden>
+      <g className="leaf-spin">
+        <path d={`M${cx} ${cy} L ${ax.toFixed(1)} ${ay.toFixed(1)} A ${R} ${R} 0 1 0 ${bx.toFixed(1)} ${by.toFixed(1)} Z`} />
+        {veins.map((d) => { const [x, y] = pt(d, R - 4); return <line key={d} x1={cx} y1={cy} x2={x.toFixed(1)} y2={y.toFixed(1)} strokeOpacity=".5" /> })}
+        <circle cx={cx} cy={cy} r="3" strokeOpacity=".8" />
+      </g>
+      <path d={`M${cx} ${cy + R} C ${cx + 2} ${cy + R + 12}, ${cx - 2} ${cy + R + 20}, ${cx} ${cy + R + 24}`} strokeOpacity=".7" />
     </svg>
   )
 }
@@ -79,11 +89,12 @@ export function Ripples({ className = '', style, rows = 4, speed = 1 }: P & { ro
 export function PondScene({ className = '', opacity = 0.55 }: { className?: string; opacity?: number }) {
   return (
     <div className={`pointer-events-none absolute inset-0 text-gold ${className}`} style={{ opacity }} aria-hidden>
-      <LotusLeaf className="absolute -left-10 bottom-10 w-52 opacity-80 md:w-72" />
-      <Lotus className="absolute bottom-24 left-24 w-40 md:w-56" />
-      <LotusLeaf className="absolute bottom-6 right-[6%] w-36 opacity-70 md:w-52" style={{ transform: 'rotate(18deg)' }} />
-      <Fish className="absolute bottom-[30%] right-[18%] w-36 opacity-80 md:w-52" dur={16} />
-      <Fish className="absolute bottom-[16%] left-[38%] w-28 opacity-60 md:w-40" flip dur={21} />
+      <LotusLeaf className="absolute -left-8 bottom-6 w-48 opacity-80 md:w-64" spin={80} />
+      <Lotus className="absolute bottom-24 left-[9%] w-36 md:w-48" />
+      <LotusLeaf className="absolute -right-8 bottom-6 w-48 opacity-80 md:w-64" spin={95} reverse />
+      <Lotus className="absolute bottom-24 right-[9%] w-36 opacity-80 md:w-48" />
+      <Fish className="absolute bottom-[34%] left-[22%] w-32 opacity-75 md:w-44" flip dur={19} />
+      <Fish className="absolute bottom-[26%] right-[22%] w-32 opacity-75 md:w-44" dur={16} />
       <Ripples className="absolute inset-x-0 bottom-0 h-28 w-full opacity-70" rows={5} />
       <Ripples className="absolute inset-x-0 bottom-[22%] h-16 w-full opacity-30" rows={2} speed={0.7} />
     </div>

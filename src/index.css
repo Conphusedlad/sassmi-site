@@ -146,6 +146,8 @@
 .ripples { animation: bob 6s ease-in-out infinite; }
 .fish .fish-body { animation: swim var(--swim, 14s) ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .fish .fish-tail { animation: wag 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 50%; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.leaf .leaf-spin { animation: spin var(--spin, 70s) linear infinite; animation-direction: var(--spin-dir, normal); transform-box: fill-box; transform-origin: center; }
 /* 3-D tilt for product cards */
 .tilt { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s; will-change: transform; }
 /* hero lantern (pointer devices only) */
@@ -156,6 +158,6 @@
   .lantern.on { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ripple-row, .wave-row, .ripples, .fish .fish-body, .fish .fish-tail { animation: none; }
+  .ripple-row, .wave-row, .ripples, .fish .fish-body, .fish .fish-tail, .leaf .leaf-spin { animation: none; }
   .tilt { transform: none; }
 }
