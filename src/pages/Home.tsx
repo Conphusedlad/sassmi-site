@@ -1,0 +1,31 @@
+import { Hero } from '../sections/Hero'
+import { Collection } from '../sections/Collection'
+import { Manifesto } from '../sections/Manifesto'
+import { Story } from '../sections/Story'
+import { Process } from '../sections/Process'
+import { Gifting } from '../sections/Gifting'
+import { Crunchy } from '../sections/Crunchy'
+import { WhereToBuy } from '../sections/WhereToBuy'
+import { Reviews } from '../sections/Reviews'
+import { FAQ } from '../sections/FAQ'
+import { Contact } from '../sections/Contact'
+import { Newsletter } from '../sections/Newsletter'
+
+export function Home() {
+  return (
+    <>
+      <Hero />
+      <Collection />
+      <Manifesto />
+      <Story />
+      <Process />
+      <Gifting />
+      <Crunchy />
+      <WhereToBuy />
+      <Reviews />
+      <FAQ />
+      <Contact />
+      <Newsletter />
+    </>
+  )
+}
