@@ -28,18 +28,43 @@ export function Lotus({ className = '', style }: P) {
   )
 }
 
-/** A round lotus leaf with a notch and evenly spaced veins; `spin` turns it slowly (seconds per turn). */
+/**
+ * A lotus pad: near-round with a gently undulating rim, a narrow slit to the centre, and radiating veins
+ * whose spacing varies but stays mirror-symmetric, forking near the edge. `spin` = seconds per turn.
+ */
 export function LotusLeaf({ className = '', style, spin = 70, reverse = false }: P & { spin?: number; reverse?: boolean }) {
   const cx = 100, cy = 104, R = 82
-  const pt = (deg: number, r = R) => [cx + Math.cos((deg * Math.PI) / 180) * r, cy + Math.sin((deg * Math.PI) / 180) * r] as const
-  const [ax, ay] = pt(-112), [bx, by] = pt(-68)
-  const veins = [-30, 0, 30, 60, 90, 120, 150, 180, 210] // mirror-symmetric about the downward axis
+  const rad = (deg: number) => (deg * Math.PI) / 180
+  // angle φ measured from the downward axis; even cosine terms keep the rim symmetric
+  const rim = (phi: number) => R * (1 + 0.014 * Math.cos(rad(6 * phi)) + 0.008 * Math.cos(rad(10 * phi) + 0.6) + 0.005 * Math.cos(rad(14 * phi)))
+  const pt = (phi: number, r: number) => [cx + Math.sin(rad(phi)) * r, cy + Math.cos(rad(phi)) * r] as const
+  const SLIT = 7 // half-width of the slit at the top, in degrees
+  let d = ''
+  for (let phi = -180 + SLIT; phi <= 180 - SLIT; phi += 3) {
+    const [x, y] = pt(phi, rim(phi))
+    d += (d ? ' L ' : 'M ') + x.toFixed(1) + ' ' + y.toFixed(1)
+  }
+  d += ` L ${cx} ${cy + 6} Z`
+  const veins = [0, 21, 40, 62, 86, 110, 133, 154]
+  const veinEls: React.ReactNode[] = []
+  veins.forEach((v, i) => {
+    for (const sgn of v === 0 ? [1] : [1, -1]) {
+      const phi = sgn * v, len = rim(phi) * (0.9 + (i % 3) * 0.025)
+      const [x, y] = pt(phi, len)
+      veinEls.push(<line key={`v${phi}`} x1={cx} y1={cy} x2={x.toFixed(1)} y2={y.toFixed(1)} strokeOpacity=".5" />)
+      if (i % 2 === 1) {
+        const [fx, fy] = pt(phi, len * 0.62)
+        for (const off of [5, -5]) { const [ex, ey] = pt(phi + off, len * 0.97); veinEls.push(<line key={`f${phi}${off}`} x1={fx.toFixed(1)} y1={fy.toFixed(1)} x2={ex.toFixed(1)} y2={ey.toFixed(1)} strokeOpacity=".32" />) }
+      }
+    }
+  })
   return (
-    <svg viewBox="0 0 200 210" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" className={`leaf ${className}`} style={{ ...style, overflow: 'visible', ['--spin' as string]: `${spin}s`, ['--spin-dir' as string]: reverse ? 'reverse' : 'normal' }} aria-hidden>
+    <svg viewBox="0 0 200 210" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`leaf ${className}`} style={{ ...style, overflow: 'visible', ['--spin' as string]: `${spin}s`, ['--spin-dir' as string]: reverse ? 'reverse' : 'normal' }} aria-hidden>
       <g className="leaf-spin">
-        <path d={`M${cx} ${cy} L ${ax.toFixed(1)} ${ay.toFixed(1)} A ${R} ${R} 0 1 0 ${bx.toFixed(1)} ${by.toFixed(1)} Z`} />
-        {veins.map((d) => { const [x, y] = pt(d, R - 4); return <line key={d} x1={cx} y1={cy} x2={x.toFixed(1)} y2={y.toFixed(1)} strokeOpacity=".5" /> })}
-        <circle cx={cx} cy={cy} r="3" strokeOpacity=".8" />
+        <path d={d} />
+        {veinEls}
+        <circle cx={cx} cy={cy} r="3.2" strokeOpacity=".85" />
+        <circle cx={cx} cy={cy} r="1" fill="currentColor" stroke="none" />
       </g>
       <path d={`M${cx} ${cy + R} C ${cx + 2} ${cy + R + 12}, ${cx - 2} ${cy + R + 20}, ${cx} ${cy + R + 24}`} strokeOpacity=".7" />
     </svg>
