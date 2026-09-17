@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Dk72oS4N.js";import{a as t,t as n}from"./index-BOuB30GS.js";var r=e();function i(){return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(t,{standalone:!0}),(0,r.jsx)(n,{})]})}export{i as default};
