@@ -22,7 +22,7 @@ export function Collection() {
             <button key={x.key} onClick={() => setF(x.key)} className={`rounded-full border px-5 py-2 text-[11px] font-medium uppercase tracking-[.2em] transition ${f === x.key ? 'border-night bg-night text-ivory' : 'border-ink/15 text-ink-soft hover:border-gold hover:text-gold-deep'}`}>{x.label}</button>
           ))}
         </div>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {list.map((p, i) => <ProductCard key={p.slug} p={p} index={i} />)}
         </div>
         <p className="mt-10 text-center text-xs text-muted">Prices inclusive of all taxes · Free shipping on orders above ₹499 · Ships across India</p>

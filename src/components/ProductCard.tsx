@@ -28,7 +28,7 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
   const onLeave = () => { const el = ref.current; if (!el) return; el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg') }
 
   return (
-    <motion.article {...fadeUp((index % 3) * 0.08)} className="group">
+    <motion.article {...fadeUp((index % 3) * 0.08)} className="group min-w-0">
     <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} className="tilt relative flex h-full flex-col overflow-hidden rounded-2xl border border-ivory-2 bg-cream shadow-card transition-shadow duration-500 hover:shadow-tin">
       <button onClick={() => uiStore.quickView(p.slug)} className="relative block aspect-[4/5] w-full overflow-hidden" aria-label={`Quick view ${p.name}`}
         style={{ background: `radial-gradient(90% 70% at 50% 100%, ${p.hex}26 0%, transparent 65%), linear-gradient(180deg, #FAF6EE 0%, #F1EADB 100%)` }}>

@@ -95,7 +95,7 @@ export default function ProductPage() {
         <Container>
           <p className="kicker text-center">Keep exploring</p>
           <h2 className="mt-3 text-center text-4xl">You may also like</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{others.map((o, i) => <ProductCard key={o.slug} p={o} index={i} />)}</div>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">{others.map((o, i) => <ProductCard key={o.slug} p={o} index={i} />)}</div>
         </Container>
       </section>
     </>
