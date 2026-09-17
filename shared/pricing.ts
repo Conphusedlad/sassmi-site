@@ -8,7 +8,7 @@ export function priceItems(items: { slug: string; qty: number }[]) {
   const lines: PricedLine[] = []
   for (const it of items) {
     const p = bySlug(it.slug)
-    if (!p) throw new Error(`Unknown product: ${it.slug}`)
+    if (!p) continue // stale slugs (e.g. a cart saved before the catalogue changed) are ignored
     lines.push({ slug: p.slug, name: p.kind === 'tin' ? `${p.name} (${p.netWeight})` : p.name, qty: it.qty, unitPrice: p.price })
   }
   const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.qty, 0)

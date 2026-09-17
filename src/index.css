@@ -136,3 +136,26 @@
 .policy table { width: 100%; border-collapse: collapse; margin: 1em 0 1.5em; font-size: 14px; }
 .policy th, .policy td { border: 1px solid var(--color-ivory-2); padding: 8px 10px; text-align: left; vertical-align: top; }
 .policy th { background: var(--color-cream); color: var(--color-ink); font-weight: 500; }
+
+/* ── living water ── */
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(calc(var(--dir, 1) * var(--period, 120px))); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+@keyframes swim { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(18px, -4px) rotate(-1.5deg); } 50% { transform: translate(36px, 0) rotate(0deg); } 75% { transform: translate(18px, 4px) rotate(1.5deg); } }
+@keyframes wag { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+.ripple-row, .wave-row { animation: drift var(--dur, 12s) linear infinite; will-change: transform; }
+.ripples { animation: bob 6s ease-in-out infinite; }
+.fish .fish-body { animation: swim var(--swim, 14s) ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.fish .fish-tail { animation: wag 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 50%; }
+/* 3-D tilt for product cards */
+.tilt { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s; will-change: transform; }
+/* hero lantern (pointer devices only) */
+.lantern { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .lantern { display: block; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0; transition: opacity .6s;
+    background: radial-gradient(420px circle at var(--lx, 50%) var(--ly, 50%), rgba(230,207,149,.22), rgba(201,168,103,.08) 35%, transparent 70%); }
+  .lantern.on { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ripple-row, .wave-row, .ripples, .fish .fish-body, .fish .fish-tail { animation: none; }
+  .tilt { transform: none; }
+}

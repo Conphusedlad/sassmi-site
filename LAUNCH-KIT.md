@@ -6,6 +6,8 @@
 
 **Status 17 Sep 2026:** code is on GitHub at https://github.com/Conphusedlad/sassmi-site (public repo, account Conphusedlad, logged in via `gh`). Public preview (simulated checkout) is live on GitHub Pages: **https://conphusedlad.github.io/sassmi-site/** — rebuild with `bun run build:pages`, then `git add -A && git commit -m "update" && git push`. The claude.ai artifact preview is https://claude.ai/code/artifact/e266efa1-7fbf-48c4-9ffe-027be421f510.
 
+**v2 — 17 Sep 2026 (evening):** catalogue switched to the 13 flavours on the 17-Sep render (Mint Royale, Garlic Fire, Jalapeno Zing, Cream Onion Bliss, Peri Peri Blaze, Divine Salt & Pepper, Thai Sweet Chilly, Hot Schezwan, Honey Cheese Bliss, Caramel Crunch, Choco Indulgence, Jaggery Heritage, Royal Makhana Kheer ready-to-serve). WhatsApp/phone now Dad's +91 98731 07076 (Crunchy helpline stays +91 99031 95739). Wordmark is vector SVG traced from the label PDF; intro makhana is painted on canvas (sharp at any size); tins re-cut with a clean matte; every "Add" is an inline − qty + stepper (cart never auto-opens); new Flavour Works B2B section; pond lines and fish animate; wave dividers between sections; card tilt and hero lantern on desktop. `?noanim=1` on any URL renders the page without entrance animations (QA aid).
+
 **Local preview (no accounts needed):**
 ```bash
 ~/.bun/bin/bun run dev

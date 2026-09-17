@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Lotus, LotusLeaf } from '../components/MithilaArt'
+import { LotusLeaf, PondScene } from '../components/MithilaArt'
 import { Container } from '../components/ui/Section'
 import { asset } from '../lib/env'
 import { fadeUp } from '../lib/motion'
@@ -10,16 +10,16 @@ export function Story() {
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-12">
           <motion.div {...fadeUp()} className="relative lg:col-span-6">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-night shadow-tin">
-              <img src={asset('/img/art/nocturne-board.webp')} alt="The Mithila Nocturne design — indigo tin with gold lotus and fish line art" className="absolute inset-0 h-full w-full object-cover opacity-90" loading="lazy" />
-              <div className="absolute inset-0 bg-gradient-to-t from-night via-night/20 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-8 text-ivory">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-night shadow-tin grain">
+              <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_60%_30%,rgba(201,168,103,.18),transparent_70%)]" />
+              <PondScene opacity={0.45} />
+              <img src={asset('/img/art/lotus.webp')} alt="" className="absolute right-[6%] top-[6%] w-[46%] drop-shadow-[0_30px_40px_rgba(0,0,0,.5)]" loading="lazy" aria-hidden />
+              <img src={asset('/img/art/makhana-bowl.webp')} alt="A bowl of roasted makhana" className="absolute bottom-[22%] left-[4%] w-[62%] drop-shadow-[0_30px_40px_rgba(0,0,0,.55)]" loading="lazy" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-night via-night/80 to-transparent px-8 pb-8 pt-16 text-ivory">
                 <p className="kicker">The Mithila Nocturne</p>
                 <p className="mt-2 font-display text-2xl italic text-ivory/90">Midnight indigo, champagne gold, and the pond at night.</p>
               </div>
             </div>
-            <img src={asset('/img/art/lotus.webp')} alt="" className="absolute -bottom-10 -left-8 w-44 opacity-90 drop-shadow-xl sm:w-56" loading="lazy" aria-hidden />
-            <Lotus className="absolute -right-6 -top-6 w-28 text-gold opacity-70" />
           </motion.div>
 
           <div className="lg:col-span-6">

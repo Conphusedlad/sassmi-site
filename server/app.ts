@@ -124,8 +124,10 @@ app.post('/checkout/order', async (c) => {
   const parsed = OrderIn.safeParse(await c.req.json().catch(() => null))
   if (!parsed.success) return c.json({ error: 'Please check your details.', issues: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) }, 400)
   const { items, customer } = parsed.data
-  let priced
-  try { priced = priceItems(items) } catch (e) { return c.json({ error: (e as Error).message }, 400) }
+  const unknown = items.filter((i) => !bySlug(i.slug)).map((i) => i.slug)
+  if (unknown.length) return c.json({ error: `Unknown product(s): ${unknown.join(', ')}. Please refresh the page and try again.` }, 400)
+  const priced = priceItems(items)
+  if (priced.lines.length === 0) return c.json({ error: 'Your cart is empty.' }, 400)
   const id = rid('SM')
   const rzp = await createRazorpayOrder({
     amountPaise: priced.total * 100,

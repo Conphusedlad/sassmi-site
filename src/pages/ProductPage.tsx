@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ChevronRight, Minus, Plus } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { bySlug, tins } from '../../shared/products'
 import { business, formatINR } from '../../shared/config'
-import { cart, uiStore } from '../lib/cart'
-import { toast } from '../lib/toast'
-import { tinCut, ProductCard } from '../components/ProductCard'
+import { AddControl } from '../components/AddControl'
+import { tinCut, ProductCard, HeatDots } from '../components/ProductCard'
 import { PondScene } from '../components/MithilaArt'
 import { Container } from '../components/ui/Section'
 import { Reviews } from '../sections/Reviews'
@@ -16,7 +15,6 @@ import NotFound from './NotFound'
 export default function ProductPage() {
   const { slug = '' } = useParams()
   const p = bySlug(slug)
-  const [qty, setQty] = useState(1)
   useEffect(() => { if (p) document.title = `${p.name} — Sassmi Premium Makhana`; return () => { document.title = 'Sassmi — Premium Makhana, Rooted in Mithila' } }, [p])
   if (!p) return <NotFound />
   const others = tins.filter((t) => t.slug !== p.slug).slice(0, 4)
@@ -35,7 +33,7 @@ export default function ProductPage() {
             <img src={tinCut(p)} alt={`${p.name} — Sassmi premium makhana tin`} className="animate-float relative h-[420px] w-auto drop-shadow-[0_60px_60px_rgba(0,0,0,.6)] sm:h-[540px]" style={{ animationDuration: '9s' }} />
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.1 }} className="lg:col-span-6">
-            <p className="kicker">{p.kind === 'bundle' ? 'Gift box' : `${p.profile} · ${spice}`}</p>
+            <p className="kicker flex items-center gap-3">{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve · dessert' : `${p.profile} · ${spice}`} <HeatDots n={p.spice} /></p>
             <h1 className="mt-4 text-[clamp(44px,6vw,80px)] leading-[0.98]">{p.name}</h1>
             <p className="mt-3 font-display text-2xl italic text-ivory/80">{p.tagline}</p>
             <p className="mt-6 max-w-lg text-[16.5px] leading-relaxed text-ivory/75">{p.description}</p>
@@ -43,12 +41,7 @@ export default function ProductPage() {
             <ul className="mt-6 flex flex-wrap gap-2">{p.badges.map((b) => <li key={b} className="rounded-full border border-gold/50 px-3 py-1 text-[11px] uppercase tracking-[.15em] text-gold">{b}</li>)}</ul>
             <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-ivory/10 pt-8">
               <div><p className="font-display text-4xl">{formatINR(p.price)}</p><p className="text-[11px] uppercase tracking-[.15em] text-ivory/50">{p.netWeight} · incl. of all taxes</p></div>
-              <div className="flex items-center rounded-full border border-ivory/20">
-                <button className="flex h-11 w-11 items-center justify-center" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease"><Minus size={14} /></button>
-                <span className="w-8 text-center">{qty}</span>
-                <button className="flex h-11 w-11 items-center justify-center" onClick={() => setQty((q) => Math.min(12, q + 1))} aria-label="Increase"><Plus size={14} /></button>
-              </div>
-              <button className="btn btn-gold" onClick={() => { cart.add(p.slug, qty); toast(`${p.name} × ${qty} added`); uiStore.openCart() }}>Add to cart</button>
+              <AddControl slug={p.slug} size="lg" tone="gold" label="Add to cart" />
             </div>
             <p className="mt-4 text-xs text-ivory/50">Dispatch in 1–2 working days · Free shipping above {formatINR(business.shipping.freeAbove)}</p>
           </motion.div>
@@ -62,7 +55,7 @@ export default function ProductPage() {
             <h2 className="mt-3 text-4xl">Ingredients & declarations</h2>
             <dl className="mt-8 grid gap-x-8 gap-y-5 text-[15px] sm:grid-cols-2">
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Ingredients</dt><dd className="mt-1 text-ink-soft">Makhana (fox nut), olive oil, {p.ingredientHint.replace(/^With /i, '').toLowerCase()}. <span className="text-muted">Full list on pack.</span></dd></div>
-              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Allergen advice</dt><dd className="mt-1 text-ink-soft">Processed in a facility that also handles tree nuts and milk. {['cream-onion', 'honey-cheese', 'dry-fruits-kheer'].includes(p.slug) ? 'Contains milk solids. ' : ''}{p.slug === 'dry-fruits-kheer' ? 'Contains tree nuts (almond, pistachio). ' : ''}</dd></div>
+              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Allergen advice</dt><dd className="mt-1 text-ink-soft">Processed in a facility that also handles tree nuts and milk. {p.allergens ? `${p.allergens}. ` : ''}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Net quantity</dt><dd className="mt-1 text-ink-soft">{p.netWeight}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">MRP</dt><dd className="mt-1 text-ink-soft">{formatINR(p.price)} (inclusive of all taxes)</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Best before</dt><dd className="mt-1 text-ink-soft">Printed on the base of each tin. Store cool, dry and away from sunlight; keep lid tightly closed.</dd></div>

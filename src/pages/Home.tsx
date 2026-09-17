@@ -5,6 +5,7 @@ import { Story } from '../sections/Story'
 import { Process } from '../sections/Process'
 import { Gifting } from '../sections/Gifting'
 import { Crunchy } from '../sections/Crunchy'
+import { FlavourWorks } from '../sections/FlavourWorks'
 import { WhereToBuy } from '../sections/WhereToBuy'
 import { Reviews } from '../sections/Reviews'
 import { FAQ } from '../sections/FAQ'
@@ -21,6 +22,7 @@ export function Home() {
       <Process />
       <Gifting />
       <Crunchy />
+      <FlavourWorks />
       <WhereToBuy />
       <Reviews />
       <FAQ />

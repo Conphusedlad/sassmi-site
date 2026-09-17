@@ -6,6 +6,8 @@ export const business = {
   brand: 'Sassmi',
   brandLegal: 'Sassmi™',
   tagline: 'Rooted in Mithila. Crafted for today.',
+  motto: 'Snack Mindfully. Live Better.',
+  promise: 'A taste of a calmer tomorrow.',
   domain: 'sassmiglobal.com',
   siteUrl: 'https://sassmiglobal.com',
 
@@ -27,9 +29,9 @@ export const business = {
   },
 
   contact: {
-    phoneDisplay: '+91 99031 95739',
-    phoneE164: '+919903195739',
-    whatsapp: '919903195739',
+    phoneDisplay: '+91 98731 07076', // Dad's number — family decision 17 Sep 2026
+    phoneE164: '+919873107076',
+    whatsapp: '919873107076',
     email: 'crunchymakhanaa@gmail.com', // TODO: switch to hello@sassmiglobal.com once the mailbox exists
     hours: 'Mon–Sat, 10 am – 6 pm IST',
   },
@@ -66,6 +68,8 @@ export const business = {
     name: 'Crunchy Makhana',
     tagline: 'Snack Smart, Live Better!',
     website: 'https://crunchymakhana.in',
+    phoneDisplay: '+91 99031 95739', // printed on Crunchy packs
+    phoneE164: '+919903195739',
     instagram: 'https://www.instagram.com/crunchy_makhana',
     flavours: [
       { name: 'Chilli & Garlic', hex: '#D9642A' },
@@ -90,5 +94,5 @@ export const whatsappLink = (text: string) =>
 export const formatINR = (rupees: number) =>
   '₹' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(rupees)
 
-export const queryTopics = ['Order help', 'Bulk & corporate gifting', 'Distributor enquiry', 'Crunchy Makhana', 'Press & collaborations', 'Something else'] as const
+export const queryTopics = ['Order help', 'Bulk & corporate gifting', 'Flavour Works — B2B seasonings', 'Distributor enquiry', 'Crunchy Makhana', 'Press & collaborations', 'Something else'] as const
 export type QueryTopic = (typeof queryTopics)[number]

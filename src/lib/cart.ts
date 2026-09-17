@@ -1,11 +1,16 @@
 import { useSyncExternalStore } from 'react'
 import { priceItems } from '../../shared/pricing'
+import { bySlug } from '../../shared/products'
 
 export type CartItem = { slug: string; qty: number }
 const KEY = 'sassmi.cart.v1'
 
 const load = (): CartItem[] => {
-  try { const raw = localStorage.getItem(KEY); return raw ? (JSON.parse(raw) as CartItem[]) : [] } catch { return [] }
+  try {
+    const raw = localStorage.getItem(KEY)
+    const list = raw ? (JSON.parse(raw) as CartItem[]) : []
+    return list.filter((i) => bySlug(i.slug) && i.qty > 0) // drop items from an older catalogue
+  } catch { return [] }
 }
 let items: CartItem[] = load()
 const listeners = new Set<() => void>()

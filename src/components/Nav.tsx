@@ -11,6 +11,7 @@ const LINKS = [
   { to: '/#collection', label: 'Collection' },
   { to: '/#story', label: 'Story' },
   { to: '/#gifting', label: 'Gifting' },
+  { to: '/#flavour-works', label: 'Flavour Works' },
   { to: '/crunchy-makhana', label: 'Crunchy Makhana' },
   { to: '/#reviews', label: 'Reviews' },
   { to: '/#contact', label: 'Contact' },
@@ -49,7 +50,12 @@ export function Nav() {
             <button onClick={uiStore.openCart} className="relative flex h-10 items-center gap-2 rounded-full border border-ivory/15 px-3 text-ivory/90 transition hover:border-gold hover:text-gold sm:px-4" aria-label={`Open cart, ${count} items`}>
               <ShoppingBag size={18} strokeWidth={1.6} />
               <span className="hidden text-[11px] font-medium uppercase tracking-[.2em] sm:inline">Cart</span>
-              {count > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-semibold text-night">{count}</span>}
+              <AnimatePresence>
+                {count > 0 && (
+                  <motion.span key={count} initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={{ type: 'spring', stiffness: 520, damping: 18 }}
+                    className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-semibold text-night tabular-nums">{count}</motion.span>
+                )}
+              </AnimatePresence>
             </button>
             <button onClick={() => setOpen((v) => !v)} className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
               {open ? <X size={18} /> : <Menu size={18} />}

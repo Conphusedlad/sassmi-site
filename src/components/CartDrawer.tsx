@@ -48,8 +48,8 @@ export function CartDrawer() {
                     const p = bySlug(it.slug)!
                     return (
                       <li key={it.slug} className="flex gap-4">
-                        <div className="tin-frame flex h-24 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-ivory-2">
-                          <img src={tinCut(p)} alt="" className="h-[88%] w-auto" style={{ mixBlendMode: 'normal' }} />
+                        <div className="flex h-24 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-ivory-2 bg-cream">
+                          <img src={tinCut(p)} alt="" className="h-[88%] w-auto" />
                         </div>
                         <div className="flex flex-1 flex-col">
                           <div className="flex justify-between gap-3">

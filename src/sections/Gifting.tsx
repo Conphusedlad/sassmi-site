@@ -6,8 +6,7 @@ import { Container } from '../components/ui/Section'
 import { asset } from '../lib/env'
 import { contactStore } from '../lib/contact'
 import { fadeUp } from '../lib/motion'
-import { cart, uiStore } from '../lib/cart'
-import { toast } from '../lib/toast'
+import { AddControl } from '../components/AddControl'
 
 export function Gifting() {
   return (
@@ -21,7 +20,7 @@ export function Gifting() {
             The Nocturne Trio: any three flavours in an indigo box with a gold ribbon and a hand-written card. For teams, clients and the relatives who already have enough dry fruit — we also build custom boxes from twenty pieces upward, with your logo on the card.
           </motion.p>
           <motion.div {...fadeUp(0.15)} className="mt-9 flex flex-wrap gap-3">
-            <button className="btn btn-gold" onClick={() => { cart.add('nocturne-trio'); toast('The Nocturne Trio added to your cart'); uiStore.openCart() }}><Gift size={15} /> Add the Trio · ₹699</button>
+            <span className="inline-flex items-center gap-3 rounded-full border border-gold/40 py-1 pl-4 pr-1 text-[12px] uppercase tracking-[.2em] text-gold"><Gift size={15} /> The Trio · ₹699 <AddControl slug="nocturne-trio" tone="gold" label="Add to cart" /></span>
             <Link to="/#contact" onClick={() => contactStore.prefill('Bulk & corporate gifting')} className="btn btn-outline-gold"><Building2 size={15} /> Corporate enquiry</Link>
           </motion.div>
           <motion.ul {...fadeUp(0.2)} className="mt-10 grid gap-3 text-sm text-ivory/70 sm:grid-cols-3">
@@ -33,7 +32,7 @@ export function Gifting() {
         </div>
         <motion.div {...fadeUp(0.1)} className="relative lg:col-span-6">
           <div className="overflow-hidden rounded-3xl border border-gold/20 shadow-tin">
-            <img src={asset('/img/art/lineup.webp')} alt="The nine Sassmi tins" className="h-full w-full object-cover" loading="lazy" />
+            <img src={asset('/img/art/lineup-v2.webp')} alt="The thirteen Sassmi tins" className="h-full w-full object-cover" loading="lazy" />
           </div>
           <div className="absolute -bottom-6 left-6 rounded-2xl bg-ivory px-6 py-4 text-ink shadow-card">
             <p className="kicker !text-gold-deep">The Nocturne Trio</p>

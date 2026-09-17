@@ -49,7 +49,7 @@ export function Crunchy({ standalone = false }: { standalone?: boolean }) {
               <Link to="/#contact" onClick={() => contactStore.prefill('Distributor enquiry')} className="btn border-white/40 text-ivory hover:bg-white/10"><Store size={15} /> Become a distributor</Link>
               <a href={whatsappLink('Hi! I run a store in Delhi NCR and would like to stock Crunchy Makhana.')} target="_blank" rel="noreferrer" className="btn border-white/40 text-ivory hover:bg-white/10">Stock it in your store</a>
             </motion.div>
-            <p className="mt-6 text-xs text-ivory/60">Instagram <a className="underline underline-offset-4 hover:text-crunchy-gold" href={c.instagram} target="_blank" rel="noreferrer">@crunchy_makhana</a> · Distributor orders via WhatsApp {business.contact.phoneDisplay}</p>
+            <p className="mt-6 text-xs text-ivory/60">Instagram <a className="underline underline-offset-4 hover:text-crunchy-gold" href={c.instagram} target="_blank" rel="noreferrer">@crunchy_makhana</a> · Distributor orders via WhatsApp {business.contact.phoneDisplay} · Crunchy helpline {c.phoneDisplay}</p>
           </div>
         </div>
         <motion.div {...fadeUp(0.2)} className="mt-14 overflow-hidden rounded-3xl ring-1 ring-white/20">
