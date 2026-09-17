@@ -22,6 +22,8 @@ export type Product = {
   profile: 'savoury' | 'sweet' | 'spicy'
   badges: string[]
   featured?: boolean
+  /** Extra photographs for the product page gallery (≥ 2000 px on the long side for zoom). */
+  images?: string[]
 }
 
 export const PACK_SIZE = '100 g' // TODO confirm — earlier render said 65 g, 12-Sep label draft said 100 g (4 × 25 g)

@@ -71,18 +71,26 @@ export function LotusLeaf({ className = '', style, spin = 70, reverse = false }:
   )
 }
 
-/** A fish that glides and wags its tail. `flip` makes it face the other way. */
-export function Fish({ className = '', style, flip = false, dur = 14 }: P & { flip?: boolean; dur?: number }) {
+type FishVariant = 'rohu' | 'slender' | 'fry'
+const FISH_BODY: Record<FishVariant, { body: string; top: string; bottom: string; tail: string; scales: number[]; eye: [number, number] }> = {
+  rohu:    { body: 'M20 50 C 60 12, 130 12, 170 50 C 130 88, 60 88, 20 50 Z', top: 'M92 22 C 104 6, 120 6, 132 22', bottom: 'M92 78 C 104 94, 120 94, 132 78', tail: 'M170 50 L 208 22 C 200 42, 200 58, 208 78 Z', scales: [82, 102, 122, 142], eye: [46, 46] },
+  slender: { body: 'M16 50 C 60 24, 140 24, 184 50 C 140 76, 60 76, 16 50 Z', top: 'M100 30 C 112 18, 128 18, 140 30', bottom: 'M104 70 C 114 80, 128 80, 138 70', tail: 'M184 50 L 214 30 C 208 44, 208 56, 214 70 Z', scales: [88, 110, 132, 154], eye: [42, 48] },
+  fry:     { body: 'M30 50 C 60 20, 120 20, 150 50 C 120 80, 60 80, 30 50 Z', top: 'M84 26 C 94 14, 108 14, 118 26', bottom: 'M86 74 C 96 86, 108 86, 118 74', tail: 'M150 50 L 196 20 C 184 42, 184 58, 196 80 Z', scales: [78, 100, 122], eye: [54, 46] },
+}
+
+/** A fish that glides and wags its tail. `variant` changes the body; `flip` faces it the other way; `dx` is the glide distance. */
+export function Fish({ className = '', style, flip = false, dur = 14, variant = 'rohu', dx = 36 }: P & { flip?: boolean; dur?: number; variant?: FishVariant; dx?: number }) {
+  const f = FISH_BODY[variant]
   return (
-    <svg viewBox="0 0 220 100" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`fish ${className}`} style={{ ...style, overflow: 'visible', transform: flip ? 'scaleX(-1)' : undefined, ['--swim' as string]: `${dur}s` }} aria-hidden>
+    <svg viewBox="0 0 220 100" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`fish ${className}`} style={{ ...style, overflow: 'visible', transform: flip ? 'scaleX(-1)' : undefined, ['--swim' as string]: `${dur}s`, ['--dx' as string]: `${dx}px` }} aria-hidden>
       <g className="fish-body">
-        <path d="M20 50 C 60 10, 130 10, 170 50 C 130 90, 60 90, 20 50 Z" />
-        <path d="M90 22 C 100 8, 116 8, 128 20" />
-        <path d="M96 78 C 106 90, 120 90, 130 78" />
-        <circle cx="46" cy="46" r="3" fill="currentColor" stroke="none" />
-        <path d="M62 34 C 66 44, 66 56, 62 66" strokeOpacity=".7" />
-        {[80, 100, 120, 140].map((x, i) => <path key={i} d={`M${x} 30 C ${x + 6} 42, ${x + 6} 58, ${x} 70`} strokeOpacity=".5" />)}
-        <path className="fish-tail" d="M170 50 L 208 22 C 200 42, 200 58, 208 78 Z" />
+        <path d={f.body} />
+        <path d={f.top} />
+        <path d={f.bottom} />
+        <circle cx={f.eye[0]} cy={f.eye[1]} r="3" fill="currentColor" stroke="none" />
+        <path d={`M${f.eye[0] + 16} 34 C ${f.eye[0] + 20} 44, ${f.eye[0] + 20} 56, ${f.eye[0] + 16} 66`} strokeOpacity=".7" />
+        {f.scales.map((x, i) => <path key={i} d={`M${x} 30 C ${x + 6} 42, ${x + 6} 58, ${x} 70`} strokeOpacity=".5" />)}
+        <path className="fish-tail" d={f.tail} />
       </g>
     </svg>
   )
@@ -118,8 +126,13 @@ export function PondScene({ className = '', opacity = 0.55 }: { className?: stri
       <Lotus className="absolute bottom-24 left-[9%] w-36 md:w-48" />
       <LotusLeaf className="absolute -right-8 bottom-6 w-48 opacity-80 md:w-64" spin={95} reverse />
       <Lotus className="absolute bottom-24 right-[9%] w-36 opacity-80 md:w-48" />
-      <Fish className="absolute bottom-[34%] left-[22%] w-32 opacity-75 md:w-44" flip dur={19} />
-      <Fish className="absolute bottom-[26%] right-[22%] w-32 opacity-75 md:w-44" dur={16} />
+      {/* a small school: sizes, bodies, directions and speeds all differ */}
+      <Fish className="absolute bottom-[36%] left-[20%] w-32 opacity-75 md:w-44" flip dur={19} variant="rohu" dx={40} />
+      <Fish className="absolute bottom-[27%] right-[21%] w-32 opacity-75 md:w-44" dur={16} variant="slender" dx={48} />
+      <Fish className="absolute bottom-[44%] left-[38%] w-16 opacity-45 md:w-24" dur={11} variant="fry" dx={60} />
+      <Fish className="absolute bottom-[19%] left-[9%] w-20 opacity-50 md:w-28" flip dur={23} variant="slender" dx={30} />
+      <Fish className="absolute bottom-[46%] right-[34%] w-14 opacity-40 md:w-20" flip dur={13} variant="fry" dx={54} />
+      <Fish className="absolute bottom-[14%] right-[8%] w-20 opacity-50 md:w-28" dur={26} variant="rohu" dx={28} />
       <Ripples className="absolute inset-x-0 bottom-0 h-28 w-full opacity-70" rows={5} />
       <Ripples className="absolute inset-x-0 bottom-[22%] h-16 w-full opacity-30" rows={2} speed={0.7} />
     </div>

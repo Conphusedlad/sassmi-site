@@ -140,7 +140,7 @@
 /* ── living water ── */
 @keyframes drift { from { transform: translateX(0); } to { transform: translateX(calc(var(--dir, 1) * var(--period, 120px))); } }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
-@keyframes swim { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(18px, -4px) rotate(-1.5deg); } 50% { transform: translate(36px, 0) rotate(0deg); } 75% { transform: translate(18px, 4px) rotate(1.5deg); } }
+@keyframes swim { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(calc(var(--dx, 36px) * .5), -4px) rotate(-1.5deg); } 50% { transform: translate(var(--dx, 36px), 0) rotate(0deg); } 75% { transform: translate(calc(var(--dx, 36px) * .5), 4px) rotate(1.5deg); } }
 @keyframes wag { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 .ripple-row, .wave-row { animation: drift var(--dur, 12s) linear infinite; will-change: transform; }
 .ripples { animation: bob 6s ease-in-out infinite; }

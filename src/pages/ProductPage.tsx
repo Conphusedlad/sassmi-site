@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -11,11 +11,16 @@ import { Container } from '../components/ui/Section'
 import { Reviews } from '../sections/Reviews'
 import { EASE } from '../lib/motion'
 import NotFound from './NotFound'
+import { ZoomImage } from '../components/ZoomImage'
+import { asset } from '../lib/env'
 
 export default function ProductPage() {
   const { slug = '' } = useParams()
   const p = bySlug(slug)
   useEffect(() => { if (p) document.title = `${p.name} — Sassmi Premium Makhana`; return () => { document.title = 'Sassmi — Premium Makhana, Rooted in Mithila' } }, [p])
+  const gallery = p ? [tinCut(p), ...(p.images ?? []).map((i) => asset(i))] : []
+  const [shot, setShot] = useState(0)
+  useEffect(() => { setShot(0) }, [slug])
   if (!p) return <NotFound />
   const others = tins.filter((t) => t.slug !== p.slug).slice(0, 4)
   const spice = ['No heat', 'Mild', 'Medium', 'Hot'][p.spice]
@@ -28,9 +33,16 @@ export default function ProductPage() {
           <nav className="flex items-center gap-2 text-[11px] uppercase tracking-[.2em] text-ivory/50 lg:col-span-12" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-gold">Home</Link><ChevronRight size={12} /><Link to="/#collection" className="hover:text-gold">Collection</Link><ChevronRight size={12} /><span className="text-ivory/80">{p.name}</span>
           </nav>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE }} className="relative flex items-center justify-center lg:col-span-6">
-            <div className="absolute h-64 w-[70%] rounded-[100%] blur-3xl" style={{ background: `${p.hex}AA` }} />
-            <img src={tinCut(p)} alt={`${p.name} — Sassmi premium makhana tin`} className="animate-float relative h-[420px] w-auto drop-shadow-[0_60px_60px_rgba(0,0,0,.6)] sm:h-[540px]" style={{ animationDuration: '9s' }} />
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE }} className="relative flex flex-col items-center justify-center gap-4 lg:col-span-6">
+            <div className="absolute top-1/2 h-64 w-[70%] -translate-y-1/2 rounded-[100%] blur-3xl" style={{ background: `${p.hex}AA` }} />
+            <ZoomImage key={gallery[shot]} src={gallery[shot]} alt={`${p.name} — Sassmi premium makhana tin`} frameClassName="relative flex h-[420px] w-full items-center justify-center overflow-hidden rounded-3xl sm:h-[540px]"
+              className={`h-full w-auto drop-shadow-[0_60px_60px_rgba(0,0,0,.6)] ${shot === 0 ? 'animate-float' : ''}`} />
+            {gallery.length > 1 && (
+              <div className="relative flex gap-2">
+                {gallery.map((g, i) => <button key={g} onClick={() => setShot(i)} className={`h-16 w-14 overflow-hidden rounded-lg border ${i === shot ? 'border-gold' : 'border-ivory/15 opacity-70 hover:opacity-100'}`} aria-label={`Photo ${i + 1}`}><img src={g} alt="" className="h-full w-full object-contain p-1" /></button>)}
+              </div>
+            )}
+            <p className="relative text-[11px] uppercase tracking-[.22em] text-ivory/45">Hover to magnify · click for full zoom</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.1 }} className="lg:col-span-6">
             <p className="kicker flex items-center gap-3">{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve · dessert' : `${p.profile} · ${spice}`} <HeatDots n={p.spice} /></p>
