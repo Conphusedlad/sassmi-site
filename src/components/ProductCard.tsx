@@ -35,7 +35,7 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
         style={{ background: `radial-gradient(90% 70% at 50% 100%, ${p.hex}26 0%, transparent 65%), linear-gradient(180deg, #FAF6EE 0%, #F1EADB 100%)` }}>
         <span className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(240px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.55), transparent 60%)' }} aria-hidden />
         <img src={tinCut(p)} alt={`${p.name} tin`} loading="lazy" width={220} height={376}
-          className="absolute left-1/2 top-[7%] h-[86%] w-auto -translate-x-1/2 drop-shadow-[0_28px_30px_rgba(15,26,48,.28)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2 group-hover:scale-[1.04]" style={{ transform: 'translateX(-50%) translateZ(30px)' }} />
+          className="absolute left-1/2 top-[7%] h-[86%] w-auto -translate-x-1/2 drop-shadow-[0_28px_30px_rgba(15,26,48,.28)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2 group-hover:scale-[1.04]" />
         <span className="absolute left-4 top-4 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[.2em] text-ivory" style={{ background: p.hex }}>{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve' : p.profile}</span>
         <span className="absolute inset-x-0 bottom-0 translate-y-full bg-night/85 py-2.5 text-center text-[11px] uppercase tracking-[.22em] text-ivory backdrop-blur transition-transform duration-500 group-hover:translate-y-0">Quick view</span>
       </button>

@@ -1,4 +1,4 @@
-import{i as e,n as t,t as n}from"./jsx-runtime-Dk72oS4N.js";import{n as r,o as i,t as a}from"./defineProperty-BkpA_aSc.js";import{C as o,x as s}from"./index-BpNO2VUR.js";import c from"./NotFound-E3CNq8iZ.js";var l=`Under the Consumer Protection (E-Commerce) Rules, 2020 and the Information Technology Rules, 2021, we have appointed a Grievance Officer to address your complaints about products bought on {{DOMAIN}}.
+import{i as e,n as t,t as n}from"./jsx-runtime-Dk72oS4N.js";import{n as r,o as i,t as a}from"./defineProperty-BkpA_aSc.js";import{C as o,x as s}from"./index-BEQFnplh.js";import c from"./NotFound-C4fzECxv.js";var l=`Under the Consumer Protection (E-Commerce) Rules, 2020 and the Information Technology Rules, 2021, we have appointed a Grievance Officer to address your complaints about products bought on {{DOMAIN}}.
 
 ## Grievance Officer
 
