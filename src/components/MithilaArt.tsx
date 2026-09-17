@@ -126,13 +126,13 @@ export function PondScene({ className = '', opacity = 0.55 }: { className?: stri
       <Lotus className="absolute bottom-24 left-[9%] w-36 md:w-48" />
       <LotusLeaf className="absolute -right-8 bottom-6 w-48 opacity-80 md:w-64" spin={95} reverse />
       <Lotus className="absolute bottom-24 right-[9%] w-36 opacity-80 md:w-48" />
-      {/* a small school: sizes, bodies, directions and speeds all differ */}
-      <Fish className="absolute bottom-[36%] left-[20%] w-32 opacity-75 md:w-44" flip dur={19} variant="rohu" dx={40} />
-      <Fish className="absolute bottom-[27%] right-[21%] w-32 opacity-75 md:w-44" dur={16} variant="slender" dx={48} />
-      <Fish className="absolute bottom-[44%] left-[38%] w-16 opacity-45 md:w-24" dur={11} variant="fry" dx={60} />
-      <Fish className="absolute bottom-[19%] left-[9%] w-20 opacity-50 md:w-28" flip dur={23} variant="slender" dx={30} />
-      <Fish className="absolute bottom-[46%] right-[34%] w-14 opacity-40 md:w-20" flip dur={13} variant="fry" dx={54} />
-      <Fish className="absolute bottom-[14%] right-[8%] w-20 opacity-50 md:w-28" dur={26} variant="rohu" dx={28} />
+      {/* a small school, kept low on the water so it never crowds the copy above */}
+      <Fish className="absolute bottom-[24%] left-[6%] w-32 opacity-70 md:w-44" flip dur={19} variant="rohu" dx={40} />
+      <Fish className="absolute bottom-[21%] right-[7%] w-32 opacity-70 md:w-44" dur={16} variant="slender" dx={48} />
+      <Fish className="absolute bottom-[13%] left-[31%] w-16 opacity-45 md:w-24" dur={11} variant="fry" dx={60} />
+      <Fish className="absolute bottom-[8%] left-[16%] w-20 opacity-50 md:w-28" flip dur={23} variant="slender" dx={30} />
+      <Fish className="absolute bottom-[11%] right-[29%] w-14 opacity-40 md:w-20" flip dur={13} variant="fry" dx={54} />
+      <Fish className="absolute bottom-[7%] right-[14%] w-20 opacity-50 md:w-28" dur={26} variant="rohu" dx={28} />
       <Ripples className="absolute inset-x-0 bottom-0 h-28 w-full opacity-70" rows={5} />
       <Ripples className="absolute inset-x-0 bottom-[22%] h-16 w-full opacity-30" rows={2} speed={0.7} />
     </div>
