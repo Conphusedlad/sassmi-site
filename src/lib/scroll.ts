@@ -9,10 +9,12 @@ export function useScrollManager() {
     // any overlay (cart drawer, quick view) closes when the route changes
     uiStore.closeCart(); uiStore.quickView(null)
     if (hash) {
+      // the target section may still be mounting on a cold load: retry a few times before giving up
       const id = hash.slice(1)
-      const go = () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      const t = setTimeout(go, 60)
-      return () => clearTimeout(t)
+      const timers: number[] = []
+      const go = () => { const el = document.getElementById(id); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); timers.forEach(clearTimeout) } }
+      for (const ms of [60, 250, 600, 1200]) timers.push(window.setTimeout(go, ms))
+      return () => timers.forEach(clearTimeout)
     }
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [pathname, hash, key])
