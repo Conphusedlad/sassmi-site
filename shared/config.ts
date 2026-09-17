@@ -29,9 +29,9 @@ export const business = {
   },
 
   contact: {
-    phoneDisplay: '+91 98731 07076', // Dad's number — family decision 17 Sep 2026
-    phoneE164: '+919873107076',
-    whatsapp: '919873107076',
+    phoneDisplay: '+91 98688 15333', // Dad's number (corrected 17 Sep 2026 — 98731 07076 is Shivansh's own)
+    phoneE164: '+919868815333',
+    whatsapp: '919868815333',
     email: 'crunchymakhanaa@gmail.com', // TODO: switch to hello@sassmiglobal.com once the mailbox exists
     hours: 'Mon–Sat, 10 am – 6 pm IST',
   },
@@ -41,7 +41,7 @@ export const business = {
     name: 'Sanjay Kumar Jha', // TODO: confirm who is named
     designation: 'Proprietor & Grievance Officer',
     email: 'crunchymakhanaa@gmail.com',
-    phone: '+91 98731 07076',
+    phone: '+91 98688 15333',
   },
 
   social: {
