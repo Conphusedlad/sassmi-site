@@ -34,13 +34,13 @@ export function Hero() {
   return (
     <section id="top" ref={sec} onMouseMove={onMove} onMouseLeave={() => lantern.current?.classList.remove('on')} className="relative overflow-hidden bg-night text-ivory grain">
       <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_70%_40%,rgba(201,168,103,.14),transparent_70%)]" />
-      <PondScene opacity={0.5} leaves lotus="none" fish="school" />
+      <PondScene opacity={0.5} leaves lotus="none" fish="school" lift="7%" />
       <div ref={lantern} className="lantern" aria-hidden />
       <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center gap-10 px-5 pb-24 pt-28 sm:px-8 lg:grid-cols-12 lg:pt-24">
         <div className="relative z-10 lg:col-span-6">
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE, delay: 0.1 }} className="kicker">{business.promise}</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease: EASE, delay: 0.2 }} className="mt-6 text-balance text-[clamp(46px,7.2vw,96px)] leading-[0.98]">
-            Rooted in Mithila.<br /><em className="gold-text font-normal italic">Crafted for today.</em>
+          <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease: EASE, delay: 0.2 }} className="mt-6 text-balance text-[clamp(40px,11.2vw,46px)] leading-[0.98] sm:text-[clamp(46px,7.2vw,96px)]">
+            Rooted in tradition.<br /><em className="gold-text font-normal italic">Crafted for today.</em>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.38 }} className="mt-7 max-w-lg text-[17px] leading-relaxed text-ivory/72 sm:text-lg">
             A timeless superfood from the ponds of Mithila. Twelve tins slow-roasted in olive oil and seasoned with honest ingredients, and one ready-to-serve kheer — all in midnight blue.

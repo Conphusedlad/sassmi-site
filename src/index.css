@@ -83,6 +83,9 @@
   background: rgba(255,255,255,.04); border-color: var(--color-night-line); color: var(--color-ivory);
   &::placeholder { color: rgba(244,238,225,.4); }
   &:focus { background: rgba(255,255,255,.07); }
+  /* native <select> popups take the control's colour scheme; keep the list night-on-ivory, never ivory-on-white */
+  color-scheme: dark;
+  & option { background: var(--color-night); color: var(--color-ivory); }
 }
 @utility plaque {
   display: inline-flex; align-items: center; justify-content: center;
@@ -140,7 +143,11 @@
 /* ── living water ── */
 @keyframes drift { from { transform: translateX(0); } to { transform: translateX(calc(var(--dir, 1) * var(--period, 120px))); } }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
-@keyframes swim { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(calc(var(--dx, 36px) * .5), -4px) rotate(-1.5deg); } 50% { transform: translate(var(--dx, 36px), 0) rotate(0deg); } 75% { transform: translate(calc(var(--dx, 36px) * .5), 4px) rotate(1.5deg); } }
+/* the glide goes head-first: the unflipped fish faces left, so its surge is negative x */
+@keyframes swim { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(calc(var(--dx, 36px) * -.5), -4px) rotate(1.5deg); } 50% { transform: translate(calc(var(--dx, 36px) * -1), 0) rotate(0deg); } 75% { transform: translate(calc(var(--dx, 36px) * -.5), 4px) rotate(-1.5deg); } }
+/* a lane is as wide as the pond; moving it by 140% carries the fish from one edge, across, and fully out the other side before it re-enters */
+@keyframes cross { from { transform: translateX(0); } to { transform: translateX(calc(var(--dir, -1) * 140%)); } }
+.fish-lane { animation: cross var(--cross, 60s) linear infinite; animation-delay: var(--delay, 0s); will-change: transform; }
 @keyframes wag { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 .ripple-row, .wave-row { animation: drift var(--dur, 12s) linear infinite; will-change: transform; }
 .ripples { animation: bob 6s ease-in-out infinite; }
@@ -159,5 +166,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ripple-row, .wave-row, .ripples, .fish .fish-body, .fish .fish-tail, .leaf .leaf-spin { animation: none; }
+  .fish-lane { animation: none; transform: translateX(calc(var(--dir, -1) * 60%)); } /* parked mid-pond, still visible */
   .tilt { transform: none; }
 }

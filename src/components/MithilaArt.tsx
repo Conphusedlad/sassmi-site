@@ -78,6 +78,21 @@ const FISH_BODY: Record<FishVariant, { body: string; top: string; bottom: string
   fry:     { body: 'M30 50 C 60 20, 120 20, 150 50 C 120 80, 60 80, 30 50 Z', top: 'M84 26 C 94 14, 108 14, 118 26', bottom: 'M86 74 C 96 86, 108 86, 118 74', tail: 'M150 50 L 196 20 C 184 42, 184 58, 196 80 Z', scales: [[78, 14], [100, 13], [122, 9]], eye: [54, 46], gill: 13 },
 }
 
+/**
+ * One fish crossing the whole pond. The lane spans the scene's width and slides by 140% of it, so the fish
+ * enters from one edge, swims across, leaves fully at the other, and re-enters where it started. `dir` is the
+ * direction of travel (rtl = the natural left-facing fish); `phase` (0–1) is how far along it starts, so several
+ * lanes with different phases keep a fish in view at all times.
+ */
+export function FishLane({ bottom, dur = 60, phase = 0, dir = 'rtl', variant = 'rohu', size = 'w-24 md:w-40', opacity = 0.7, swim = 16, dx = 40, className = '' }:
+  { bottom: string; dur?: number; phase?: number; dir?: 'rtl' | 'ltr'; variant?: FishVariant; size?: string; opacity?: number; swim?: number; dx?: number; className?: string }) {
+  return (
+    <div className={`fish-lane absolute inset-x-0 ${className}`} style={{ bottom, ['--cross' as string]: `${dur}s`, ['--delay' as string]: `${-(dur * phase).toFixed(1)}s`, ['--dir' as string]: dir === 'rtl' ? '-1' : '1' }} aria-hidden>
+      <Fish className={`absolute bottom-0 ${dir === 'rtl' ? 'left-full' : 'right-full'} ${size}`} style={{ opacity }} flip={dir === 'ltr'} dur={swim} variant={variant} dx={dx} />
+    </div>
+  )
+}
+
 /** A fish that glides and wags its tail. `variant` changes the body; `flip` faces it the other way; `dx` is the glide distance. */
 export function Fish({ className = '', style, flip = false, dur = 14, variant = 'rohu', dx = 36 }: P & { flip?: boolean; dur?: number; variant?: FishVariant; dx?: number }) {
   const f = FISH_BODY[variant]
@@ -120,21 +135,23 @@ export function Ripples({ className = '', style, rows = 4, speed = 1 }: P & { ro
 
 /**
  * The pond for dark backgrounds — composed so motifs never overlap: leaves live in the bottom corners
- * (large screens only), the fish stay low in the water, and the lotus is a single centred flower, used only
- * where the section has room for it. Absolutely positioned; parent must be `relative overflow-hidden`.
+ * (large screens only), the fish cross low in the water in staggered lanes, and the lotus is a single centred
+ * flower, used only where the section has room for it. Absolutely positioned and self-clipping; parent must be `relative`.
  */
-export function PondScene({ className = '', opacity = 0.55, leaves = true, lotus = 'none', fish = 'school' }: { className?: string; opacity?: number; leaves?: boolean; lotus?: 'center' | 'none'; fish?: 'school' | 'pair' | 'none' }) {
+export function PondScene({ className = '', opacity = 0.55, leaves = true, lotus = 'none', fish = 'school', lift = '0%' }: { className?: string; opacity?: number; leaves?: boolean; lotus?: 'center' | 'none'; fish?: 'school' | 'pair' | 'none'; /** raises the fish band, for scenes whose bottom edge is covered by a caption or a wave divider */ lift?: string }) {
+  const at = (pct: number) => `calc(${pct}% + ${lift})`
   return (
-    <div className={`pointer-events-none absolute inset-0 text-gold ${className}`} style={{ opacity }} aria-hidden>
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden text-gold ${className}`} style={{ opacity }} aria-hidden>
       {leaves && <LotusLeaf className="absolute -left-10 bottom-4 hidden w-56 opacity-80 lg:block xl:w-64" spin={80} />}
       {leaves && <LotusLeaf className="absolute -right-10 bottom-4 hidden w-56 opacity-80 lg:block xl:w-64" spin={95} reverse />}
       {lotus === 'center' && <Lotus className="absolute bottom-16 left-1/2 w-40 -translate-x-1/2 md:w-56" />}
-      {fish !== 'none' && <Fish className="absolute bottom-[22%] left-[6%] w-24 opacity-70 md:w-40" flip dur={19} variant="rohu" dx={40} />}
-      {fish !== 'none' && <Fish className="absolute bottom-[19%] right-[6%] w-24 opacity-70 md:w-40" dur={16} variant="slender" dx={48} />}
-      {fish === 'school' && <Fish className="absolute bottom-[12%] left-[32%] hidden w-20 opacity-45 md:block" dur={11} variant="fry" dx={60} />}
-      {fish === 'school' && <Fish className="absolute bottom-[8%] left-[18%] hidden w-24 opacity-50 md:block" flip dur={23} variant="slender" dx={30} />}
-      {fish === 'school' && <Fish className="absolute bottom-[10%] right-[30%] hidden w-16 opacity-40 md:block" flip dur={13} variant="fry" dx={54} />}
-      {fish === 'school' && <Fish className="absolute bottom-[6%] right-[16%] hidden w-24 opacity-50 md:block" dur={26} variant="rohu" dx={28} />}
+      {/* fish cross the lower water band in lanes at staggered phases — under the copy, in front of the ripples, always one in view; 'pair' = three lanes, 'school' = six (three on phones) */}
+      {fish !== 'none' && <FishLane bottom={at(11)} dur={58} phase={0.12} dir="rtl" variant="rohu" size="w-24 md:w-40" opacity={0.7} swim={19} dx={40} />}
+      {fish !== 'none' && <FishLane bottom={at(6)} dur={66} phase={0.55} dir="ltr" variant="slender" size="w-20 md:w-32" opacity={0.6} swim={16} dx={48} />}
+      {fish !== 'none' && <FishLane bottom={at(2)} dur={49} phase={0.82} dir="rtl" variant="fry" size="w-14 md:w-20" opacity={0.45} swim={11} dx={60} />}
+      {fish === 'school' && <FishLane bottom={at(14)} dur={84} phase={0.38} dir="ltr" variant="slender" size="w-24" opacity={0.4} swim={23} dx={30} className="hidden md:block" />}
+      {fish === 'school' && <FishLane bottom={at(8)} dur={73} phase={0.68} dir="rtl" variant="rohu" size="w-28" opacity={0.5} swim={26} dx={28} className="hidden md:block" />}
+      {fish === 'school' && <FishLane bottom={at(4)} dur={41} phase={0.25} dir="ltr" variant="fry" size="w-16" opacity={0.35} swim={13} dx={54} className="hidden md:block" />}
       <Ripples className="absolute inset-x-0 bottom-0 h-28 w-full opacity-70" rows={5} />
       <Ripples className="absolute inset-x-0 bottom-[22%] h-16 w-full opacity-30" rows={2} speed={0.7} />
     </div>

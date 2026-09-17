@@ -133,7 +133,7 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 1.2, ease: EASE }}>
-          <Wordmark className="mx-auto h-auto w-[64vw] max-w-[460px]" />
+          <Wordmark className="mx-auto h-auto w-[64vw] max-w-[460px]" sizes="min(64vw, 460px)" />
         </motion.div>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 1 }} className="mt-10 flex items-center gap-3 text-[11px] uppercase tracking-[.28em] text-ivory/60">
           <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-gold" /></span>

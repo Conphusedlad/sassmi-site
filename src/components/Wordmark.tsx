@@ -1,18 +1,18 @@
-import { WORDMARK_H, WORDMARK_LEAF, WORDMARK_LETTERS, WORDMARK_TRANSFORM, WORDMARK_W, WORDMARK_X, WORDMARK_Y } from './wordmark-paths'
+import { asset } from '../lib/env'
 
 /**
- * The brush-script Sassmi wordmark as inline SVG (vectorised from the approved label artwork),
- * so it stays razor-sharp at any size. Letters take `currentColor`; the leaf is champagne gold.
+ * The Sassmi wordmark — the family's textured brush-stroke mark (ivory letters, gold leaf) on a transparent
+ * ground, exported from the approved "Sassmi Clean Logo" file at two sizes. It is a raster on purpose: the
+ * brush texture is the point, and 1500 px is 10× any size it is shown at. Size it with a height class.
  */
-export function Wordmark({ tone = 'ivory', className = '', leaf = '#D4B268' }: { tone?: 'ivory' | 'ink'; className?: string; leaf?: string }) {
+export function Wordmark({ className = '', sizes = '(min-width: 1024px) 120px, 100px', tone: _tone = 'ivory' }: { tone?: 'ivory' | 'ink'; className?: string; sizes?: string }) {
   return (
-    <svg viewBox={`${WORDMARK_X} ${WORDMARK_Y} ${WORDMARK_W} ${WORDMARK_H}`} className={`${tone === 'ivory' ? 'text-ivory' : 'text-ink'} ${className}`} role="img" aria-label="Sassmi" style={{ overflow: 'visible' }}>
-      <g transform={WORDMARK_TRANSFORM} fill="currentColor" stroke="none" fillRule="evenodd">
-        <path d={WORDMARK_LETTERS} />
-      </g>
-      <g transform={WORDMARK_TRANSFORM} fill={leaf} stroke="none" fillRule="evenodd">
-        <path d={WORDMARK_LEAF} />
-      </g>
-    </svg>
+    <img
+      src={asset('/img/brand/wordmark-600.webp')}
+      srcSet={`${asset('/img/brand/wordmark-600.webp')} 600w, ${asset('/img/brand/wordmark-1500.webp')} 1500w`}
+      sizes={sizes}
+      width={1500} height={800} alt="Sassmi" draggable={false} decoding="async"
+      className={`select-none ${className}`}
+    />
   )
 }

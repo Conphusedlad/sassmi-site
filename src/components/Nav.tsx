@@ -36,7 +36,7 @@ export function Nav() {
       <header className={`fixed inset-x-0 top-0 z-50 text-ivory transition-[background-color,border-color,backdrop-filter] duration-500 ${solid ? 'border-b border-gold/15 bg-night/85 backdrop-blur-md' : 'border-b border-transparent bg-transparent'}`}>
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link to="/" aria-label="Sassmi — home" className="flex items-center gap-3">
-            <Wordmark className="h-7 w-auto" />
+            <Wordmark className="h-11 w-auto sm:h-12 lg:h-14" />
             <span className="hidden whitespace-nowrap text-[10px] font-medium uppercase tracking-[.3em] text-gold xl:block">Premium Makhana</span>
           </Link>
           <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Primary">

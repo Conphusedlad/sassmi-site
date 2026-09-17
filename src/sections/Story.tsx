@@ -12,7 +12,7 @@ export function Story() {
           <motion.div {...fadeUp()} className="relative lg:col-span-6">
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-night shadow-tin grain">
               <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_60%_30%,rgba(201,168,103,.18),transparent_70%)]" />
-              <PondScene opacity={0.45} leaves={false} lotus="none" fish="pair" />
+              <PondScene opacity={0.45} leaves={false} lotus="none" fish="pair" lift="20%" />
               <img src={asset('/img/art/lotus.webp')} alt="" className="absolute right-[6%] top-[6%] w-[46%] drop-shadow-[0_30px_40px_rgba(0,0,0,.5)]" loading="lazy" aria-hidden />
               <img src={asset('/img/art/makhana-bowl.webp')} alt="A bowl of roasted makhana" className="absolute bottom-[22%] left-[4%] w-[62%] drop-shadow-[0_30px_40px_rgba(0,0,0,.55)]" loading="lazy" />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-night via-night/80 to-transparent px-8 pb-8 pt-16 text-ivory">

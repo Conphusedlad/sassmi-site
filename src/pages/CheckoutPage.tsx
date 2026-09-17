@@ -35,7 +35,7 @@ export default function CheckoutPage() {
       if (created.demo) { nav(`/order/${created.orderId}?email=${encodeURIComponent(customer.email)}&demo=1`); cart.clear(); return }
       const rzp = await openRazorpay({
         key: created.keyId, amount: created.amount, currency: created.currency, order_id: created.rzpOrderId,
-        name: 'Sassmi', description: `Order ${created.orderId}`, image: `${location.origin}${asset('/img/art/wordmark-ink.png')}`,
+        name: 'Sassmi', description: `Order ${created.orderId}`, image: `${location.origin}${asset('/img/brand/tile-512.png')}`,
         prefill: created.prefill, notes: { order: created.orderId },
         theme: { color: '#0F1A30', backdrop_color: 'rgba(15,26,48,0.85)' },
         retry: { enabled: true, max_count: 2 },

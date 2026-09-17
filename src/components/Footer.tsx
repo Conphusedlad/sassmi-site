@@ -28,7 +28,7 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-5 pb-10 pt-20 sm:px-8">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Wordmark className="h-10 w-auto" />
+            <Wordmark className="h-14 w-auto" sizes="110px" />
             <p className="mt-5 max-w-sm font-display text-2xl italic text-ivory/80">{business.motto}</p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory/55">Premium makhana from the ponds of Mithila — twelve roasted flavours and a ready-to-serve kheer, made in small batches in New Delhi.</p>
             <div className="mt-6 flex gap-3">
