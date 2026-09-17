@@ -9,11 +9,13 @@ import { fadeUp } from '../lib/motion'
 
 function Stars({ n, size = 14, onPick, hover }: { n: number; size?: number; onPick?: (v: number) => void; hover?: (v: number) => void }) {
   return (
-    <span className="inline-flex gap-0.5" role={onPick ? 'radiogroup' : undefined} aria-label={onPick ? 'Rating' : `${n} out of 5 stars`}>
-      {[1, 2, 3, 4, 5].map((v) => (
-        <button key={v} type="button" disabled={!onPick} onClick={() => onPick?.(v)} onMouseEnter={() => hover?.(v)} onMouseLeave={() => hover?.(0)} className={`${onPick ? 'cursor-pointer' : 'cursor-default'}`} aria-label={`${v} star${v > 1 ? 's' : ''}`}>
+    <span className="inline-flex gap-0.5" role={onPick ? 'radiogroup' : 'img'} aria-label={onPick ? 'Rating' : `${n} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((v) => onPick ? (
+        <button key={v} type="button" role="radio" aria-checked={v === n} onClick={() => onPick(v)} onMouseEnter={() => hover?.(v)} onMouseLeave={() => hover?.(0)} className="cursor-pointer" aria-label={`${v} star${v > 1 ? 's' : ''}`}>
           <Star size={size} className={v <= n ? 'fill-gold text-gold' : 'text-ink/20'} />
         </button>
+      ) : (
+        <Star key={v} size={size} aria-hidden className={v <= n ? 'fill-gold text-gold' : 'text-ink/20'} />
       ))}
     </span>
   )
@@ -26,7 +28,7 @@ export function Reviews({ productSlug }: { productSlug?: string }) {
   const [busy, setBusy] = useState(false)
   const [startedAt] = useState(() => Date.now())
 
-  useEffect(() => { backend.listReviews(productSlug).then(setList).catch(() => setList([])) }, [productSlug])
+  useEffect(() => { let alive = true; backend.listReviews(productSlug).then((l) => { if (alive) setList(l) }).catch(() => { if (alive) setList([]) }); return () => { alive = false } }, [productSlug])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()

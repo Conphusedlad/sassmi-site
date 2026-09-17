@@ -10,7 +10,7 @@ export async function sendMail(m: Mail): Promise<void> {
   try {
     if (env.resendApiKey) {
       const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
+        method: 'POST', signal: AbortSignal.timeout(10_000),
         headers: { Authorization: `Bearer ${env.resendApiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ from: env.mailFrom, to, subject: m.subject, html: m.html, reply_to: m.replyTo }),
       })

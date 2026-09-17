@@ -5,7 +5,7 @@ export const env = {
   razorpayKeySecret: get('RAZORPAY_KEY_SECRET'),
   razorpayWebhookSecret: get('RAZORPAY_WEBHOOK_SECRET'),
   databaseUrl: get('DATABASE_URL'),
-  adminPassword: get('ADMIN_PASSWORD'),
+  adminPassword: get('ADMIN_PASSWORD').length >= 16 ? get('ADMIN_PASSWORD') : '', // shorter passwords are ignored (brute-force floor)
   notifyEmail: get('NOTIFY_EMAIL', 'crunchymakhanaa@gmail.com'),
   resendApiKey: get('RESEND_API_KEY'),
   mailFrom: get('MAIL_FROM', 'Sassmi <onboarding@resend.dev>'),
@@ -17,3 +17,6 @@ export const env = {
 }
 
 export const paymentsEnabled = () => Boolean(env.razorpayKeyId && env.razorpayKeySecret)
+export const webhookEnabled = () => Boolean(env.razorpayWebhookSecret)
+if (get('ADMIN_PASSWORD') && !env.adminPassword) console.warn('[env] ADMIN_PASSWORD is shorter than 16 characters — admin panel disabled')
+if (paymentsEnabled() && !webhookEnabled()) console.warn('[env] RAZORPAY_WEBHOOK_SECRET is not set — payments rely on the checkout verify step only')

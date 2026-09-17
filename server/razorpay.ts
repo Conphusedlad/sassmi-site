@@ -6,11 +6,21 @@ const API = 'https://api.razorpay.com/v1'
 const authHeader = () => 'Basic ' + Buffer.from(`${env.razorpayKeyId}:${env.razorpayKeySecret}`).toString('base64')
 
 export type RzpOrder = { id: string; amount: number; currency: string; receipt: string; status: string }
+export type RzpPayment = { id: string; order_id: string; amount: number; currency: string; status: 'created' | 'authorized' | 'captured' | 'refunded' | 'failed' }
+
+/** Fetch a payment to confirm status, amount and currency before fulfilling. Returns null if Razorpay is unreachable. */
+export async function fetchPayment(paymentId: string): Promise<RzpPayment | null> {
+  try {
+    const res = await fetch(`${API}/payments/${encodeURIComponent(paymentId)}`, { headers: { Authorization: authHeader() }, signal: AbortSignal.timeout(8_000) })
+    if (!res.ok) return null
+    return (await res.json()) as RzpPayment
+  } catch { return null }
+}
 
 /** Create a Razorpay Order. `amountPaise` must be an integer in paise (₹1 = 100). */
 export async function createRazorpayOrder(input: { amountPaise: number; receipt: string; notes?: Record<string, string> }): Promise<RzpOrder> {
   const res = await fetch(`${API}/orders`, {
-    method: 'POST',
+    method: 'POST', signal: AbortSignal.timeout(10_000),
     headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ amount: input.amountPaise, currency: 'INR', receipt: input.receipt.slice(0, 40), notes: input.notes ?? {} }),
   })

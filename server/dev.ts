@@ -5,8 +5,12 @@ import { fileURLToPath } from 'node:url'
 try {
   const envPath = fileURLToPath(new URL('../.env', import.meta.url))
   for (const line of readFileSync(envPath, 'utf8').split('\n')) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/)
-    if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '')
+    const m = line.match(/^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*?)\s*$/)
+    if (!m || process.env[m[1]] !== undefined) continue
+    let v = m[2]
+    if (!/^["']/.test(v)) v = v.replace(/\s+#.*$/, '').trim()
+    v = v.replace(/^(["'])(.*)\1$/, '$2')
+    process.env[m[1]] = v
   }
 } catch { /* no .env — fine */ }
 

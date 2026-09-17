@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 
 const KEY = 'sassmi.intro.seen'
 const reduced = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-const seen = () => { try { return sessionStorage.getItem(KEY) === '1' } catch { return true } }
+const seen = () => { try { return sessionStorage.getItem(KEY) === '1' } catch { return false } }
 
 let show = !seen() && !reduced()
 const ls = new Set<() => void>()

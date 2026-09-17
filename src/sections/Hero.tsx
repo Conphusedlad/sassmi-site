@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+
+const MotionLink = motion.create(Link)
 import { Droplet, Leaf, Sparkles, WheatOff } from 'lucide-react'
 import { PondScene, WaveDivider } from '../components/MithilaArt'
 import { business } from '../../shared/config'
@@ -32,7 +34,7 @@ export function Hero() {
   return (
     <section id="top" ref={sec} onMouseMove={onMove} onMouseLeave={() => lantern.current?.classList.remove('on')} className="relative overflow-hidden bg-night text-ivory grain">
       <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_70%_40%,rgba(201,168,103,.14),transparent_70%)]" />
-      <PondScene opacity={0.5} />
+      <PondScene opacity={0.5} leaves lotus="none" fish="school" />
       <div ref={lantern} className="lantern" aria-hidden />
       <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center gap-10 px-5 pb-24 pt-28 sm:px-8 lg:grid-cols-12 lg:pt-24">
         <div className="relative z-10 lg:col-span-6">
@@ -41,7 +43,7 @@ export function Hero() {
             Rooted in Mithila.<br /><em className="gold-text font-normal italic">Crafted for today.</em>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.38 }} className="mt-7 max-w-lg text-[17px] leading-relaxed text-ivory/72 sm:text-lg">
-            A timeless superfood from the ponds of Mithila, roasted in olive oil and seasoned with honest ingredients — thirteen flavours, one midnight-blue tin.
+            A timeless superfood from the ponds of Mithila. Twelve tins slow-roasted in olive oil and seasoned with honest ingredients, and one ready-to-serve kheer — all in midnight blue.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.52 }} className="mt-10 flex flex-wrap gap-3">
             <Link to="/#collection" className="btn btn-gold">Shop the collection</Link>
@@ -65,9 +67,9 @@ export function Hero() {
           ))}
         </div>
       </div>
-      <motion.a href="#collection" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 1 }} className="absolute bottom-24 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[.3em] text-ivory/50 hover:text-gold lg:flex [@media(max-height:780px)]:!hidden" aria-label="Scroll to the collection">
+      <MotionLink to="/#collection" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 1 }} className="absolute bottom-24 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[.3em] text-ivory/50 hover:text-gold lg:flex [@media(max-height:780px)]:!hidden" aria-label="Scroll to the collection">
         Scroll<span className="relative block h-10 w-px overflow-hidden bg-ivory/20"><span className="absolute inset-x-0 top-0 h-4 w-px bg-gold" style={{ animation: 'cue 1.8s ease-in-out infinite' }} /></span>
-      </motion.a>
+      </MotionLink>
       <div className="absolute inset-x-0 bottom-0"><WaveDivider fill="var(--color-ivory)" /></div>
     </section>
   )

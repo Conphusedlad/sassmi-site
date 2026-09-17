@@ -37,9 +37,9 @@ const tin = (p: Omit<Product, 'kind' | 'netWeight' | 'price' | 'badges'> & Parti
 export const products: Product[] = [
   tin({
     slug: 'mint-royale', name: 'Mint Royale', tagline: 'Cool. Refreshing. Real.', profile: 'savoury', spice: 1, featured: true,
-    description: 'Garden mint over warm, freshly roasted makhana. Bright, clean and a little peppery — the tin that tastes like a Delhi evening breeze.',
+    description: 'Garden mint over warm, slow-roasted makhana. Bright, clean and a little peppery — the tin that tastes like a Delhi evening breeze.',
     pairing: 'Adrak chai at four. Crushed over dahi. The first tin to open for guests.',
-    ingredientHint: 'Real mint, rock salt', hex: '#3D663A', accent: '#6E9A67',
+    ingredientHint: 'Mint, rock salt', hex: '#3D663A', accent: '#6E9A67',
   }),
   tin({
     slug: 'garlic-fire', name: 'Garlic Fire', tagline: 'Bold. Aromatic. Irresistible.', profile: 'spicy', spice: 2,
@@ -67,7 +67,7 @@ export const products: Product[] = [
   }),
   tin({
     slug: 'divine-salt-pepper', name: 'Divine Salt & Pepper', tagline: 'Pure. Balanced. Timeless.', profile: 'savoury', spice: 1, featured: true,
-    description: 'Himalayan pink salt and freshly cracked black pepper. Nothing to hide behind — just the makhana, seasoned the way it has always been.',
+    description: 'Himalayan pink salt and cracked black pepper. Nothing to hide behind — just the makhana, seasoned the way it has always been.',
     pairing: 'Fasting days. Whisky. The tin for people who say they don’t like flavoured snacks.',
     ingredientHint: 'Himalayan pink salt, black pepper', hex: '#3A342C', accent: '#6E6455',
   }),

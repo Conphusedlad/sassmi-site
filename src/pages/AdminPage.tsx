@@ -41,7 +41,7 @@ export default function AdminPage() {
 
   if (!pw) {
     return (
-      <section className="bg-ivory pb-24 pt-32"><Container className="max-w-md">
+      <section className="bg-ivory pb-24 pt-32"><Container max="max-w-md">
         <p className="kicker">Sassmi admin</p><h1 className="mt-3 text-4xl">Family only.</h1>
         <form className="mt-8 space-y-3" onSubmit={(e) => { e.preventDefault(); void load(input) }}>
           <input className="input" type="password" placeholder="Admin password" value={input} onChange={(e) => setInput(e.target.value)} autoFocus />

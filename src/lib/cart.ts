@@ -3,6 +3,7 @@ import { priceItems } from '../../shared/pricing'
 import { bySlug } from '../../shared/products'
 
 export type CartItem = { slug: string; qty: number }
+export const MAX_QTY = 12
 const KEY = 'sassmi.cart.v1'
 
 const load = (): CartItem[] => {
@@ -16,16 +17,18 @@ let items: CartItem[] = load()
 const listeners = new Set<() => void>()
 const emit = () => { try { localStorage.setItem(KEY, JSON.stringify(items)) } catch { /* private mode */ } listeners.forEach((l) => l()) }
 const subscribe = (l: () => void) => { listeners.add(l); return () => { listeners.delete(l) } }
+// keep two open tabs in sync
+if (typeof window !== 'undefined') window.addEventListener('storage', (e) => { if (e.key === KEY) { items = load(); listeners.forEach((l) => l()) } })
 const get = () => items
 
 export const cart = {
   add(slug: string, qty = 1) {
     const ex = items.find((i) => i.slug === slug)
-    items = ex ? items.map((i) => (i.slug === slug ? { ...i, qty: Math.min(12, i.qty + qty) } : i)) : [...items, { slug, qty }]
+    items = ex ? items.map((i) => (i.slug === slug ? { ...i, qty: Math.min(MAX_QTY, i.qty + qty) } : i)) : [...items, { slug, qty: Math.min(MAX_QTY, qty) }]
     emit()
   },
   setQty(slug: string, qty: number) {
-    items = qty <= 0 ? items.filter((i) => i.slug !== slug) : items.map((i) => (i.slug === slug ? { ...i, qty: Math.min(12, qty) } : i))
+    items = qty <= 0 ? items.filter((i) => i.slug !== slug) : items.map((i) => (i.slug === slug ? { ...i, qty: Math.min(MAX_QTY, qty) } : i))
     emit()
   },
   remove(slug: string) { items = items.filter((i) => i.slug !== slug); emit() },

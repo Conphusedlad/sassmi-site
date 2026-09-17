@@ -41,7 +41,7 @@ export const business = {
     name: 'Sanjay Kumar Jha', // TODO: confirm who is named
     designation: 'Proprietor & Grievance Officer',
     email: 'crunchymakhanaa@gmail.com',
-    phone: '+91 99031 95739',
+    phone: '+91 98731 07076',
   },
 
   social: {

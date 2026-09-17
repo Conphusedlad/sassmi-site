@@ -22,10 +22,15 @@ async function sqliteDriver(file: string): Promise<Driver> {
   mkdirSync(dirname(file), { recursive: true })
   const db = new Database(file, { create: true })
   db.exec('PRAGMA journal_mode = WAL')
-  const conv = (q: string) => q.replace(/\$\d+/g, '?')
+  // map `$n` placeholders to positional `?` and reorder params to match (so a query may reuse or reorder $n)
+  const conv = (q: string, params: unknown[]) => {
+    const out: unknown[] = []
+    const sql = q.replace(/\$(\d+)/g, (_, n: string) => { out.push(params[Number(n) - 1]); return '?' })
+    return { sql, out }
+  }
   return {
-    async all<T>(q: string, params: unknown[] = []) { return db.query(conv(q)).all(...(params as never[])) as T[] },
-    async run(q: string, params: unknown[] = []) { db.query(conv(q)).run(...(params as never[])) },
+    async all<T>(q: string, params: unknown[] = []) { const { sql, out } = conv(q, params); return db.query(sql).all(...(out as never[])) as T[] },
+    async run(q: string, params: unknown[] = []) { const { sql, out } = conv(q, params); db.query(sql).run(...(out as never[])) },
   }
 }
 

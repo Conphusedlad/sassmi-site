@@ -17,7 +17,7 @@ export function HeatDots({ n }: { n: number }) {
 }
 
 export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   // subtle 3-D tilt on pointer devices
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current; if (!el || !window.matchMedia('(hover:hover)').matches) return
@@ -28,9 +28,8 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
   const onLeave = () => { const el = ref.current; if (!el) return; el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg') }
 
   return (
-    <motion.article ref={ref} onMouseMove={onMove} onMouseLeave={onLeave}
-      {...fadeUp((index % 3) * 0.08)}
-      className="tilt group relative flex flex-col overflow-hidden rounded-2xl border border-ivory-2 bg-cream shadow-card transition-shadow duration-500 hover:shadow-tin">
+    <motion.article {...fadeUp((index % 3) * 0.08)} className="group">
+    <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} className="tilt relative flex h-full flex-col overflow-hidden rounded-2xl border border-ivory-2 bg-cream shadow-card transition-shadow duration-500 hover:shadow-tin">
       <button onClick={() => uiStore.quickView(p.slug)} className="relative block aspect-[4/5] w-full overflow-hidden" aria-label={`Quick view ${p.name}`}
         style={{ background: `radial-gradient(90% 70% at 50% 100%, ${p.hex}26 0%, transparent 65%), linear-gradient(180deg, #FAF6EE 0%, #F1EADB 100%)` }}>
         <span className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(240px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.55), transparent 60%)' }} aria-hidden />
@@ -59,6 +58,7 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
           <AddControl slug={p.slug} />
         </div>
       </div>
+    </div>
     </motion.article>
   )
 }

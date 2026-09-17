@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Clock, Mail, MapPin, MessageCircle, Phone, ShieldCheck } from 'lucide-react'
-import { backend } from '../lib/backend'
+import { backend, ApiError } from '../lib/backend'
 import { toast } from '../lib/toast'
 import { Container, SectionHead } from '../components/ui/Section'
 import { business, queryTopics, whatsappLink, type QueryTopic } from '../../shared/config'
-import { contactStore, useContactPrefill } from '../lib/contact'
 import { fadeUp } from '../lib/motion'
 
 export function Contact() {
-  const prefill = useContactPrefill()
+  const loc = useLocation()
+  const prefill = (loc.state as { topic?: QueryTopic } | null)?.topic ?? null
   const [form, setForm] = useState<{ name: string; email: string; phone: string; topic: QueryTopic; message: string; website: string }>({ name: '', email: '', phone: '', topic: 'Something else', message: '', website: '' })
   const [busy, setBusy] = useState(false)
   const [ticket, setTicket] = useState<string | null>(null)
-  useEffect(() => { if (prefill) { setForm((f) => ({ ...f, topic: prefill })); contactStore.clear() } }, [prefill])
+  useEffect(() => { if (prefill && (queryTopics as readonly string[]).includes(prefill)) setForm((f) => ({ ...f, topic: prefill })) }, [prefill])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,7 +24,7 @@ export function Contact() {
       const r = await backend.postQuery({ ...form, phone: form.phone.replace(/\D/g, '').slice(-10) })
       setTicket(r.ticket)
       setForm({ name: '', email: '', phone: '', topic: 'Something else', message: '', website: '' })
-    } catch (err) { toast((err as Error).message || 'Could not send', 'err') }
+    } catch (err) { toast(err instanceof ApiError && err.issues?.length ? `${err.message} ${err.issues[0]}` : (err as Error).message || 'Could not send', 'err') }
     finally { setBusy(false) }
   }
 
@@ -57,7 +58,7 @@ export function Contact() {
               </div>
             ) : (
               <form onSubmit={submit} className="grid gap-4 rounded-3xl border border-ivory-2 bg-cream p-7 shadow-card sm:grid-cols-2 sm:p-9">
-                <input className="input" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required maxLength={80} />
+                <input className="input" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required minLength={2} maxLength={80} />
                 <input className="input" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required maxLength={120} />
                 <input className="input" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={15} />
                 <select className="input" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value as QueryTopic })} aria-label="Topic">

@@ -21,11 +21,11 @@ export default function PolicyPage() {
   const { slug = '' } = useParams()
   const raw = files[`../content/policies/${slug}.md`]
   const html = useMemo(() => (raw ? (marked.parse(fill(raw), { async: false }) as string) : ''), [raw])
-  useEffect(() => { if (TITLES[slug]) document.title = `${TITLES[slug]} — Sassmi` }, [slug])
+  useEffect(() => { if (TITLES[slug]) document.title = `${TITLES[slug]} — Sassmi`; return () => { document.title = 'Sassmi — Premium Makhana, Rooted in Mithila' } }, [slug])
   if (!raw) return <NotFound />
   return (
     <section className="bg-ivory pb-24 pt-32">
-      <Container className="max-w-3xl">
+      <Container max="max-w-3xl">
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[11px] uppercase tracking-[.2em] text-muted" aria-label="Policies">
           {Object.entries(TITLES).map(([s, t]) => <Link key={s} to={`/policies/${s}`} className={s === slug ? 'text-gold-deep' : 'hover:text-ink'}>{t}</Link>)}
         </nav>

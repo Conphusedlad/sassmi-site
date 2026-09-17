@@ -30,7 +30,7 @@ export function Footer() {
           <div className="md:col-span-5">
             <Wordmark className="h-10 w-auto" />
             <p className="mt-5 max-w-sm font-display text-2xl italic text-ivory/80">{business.motto}</p>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory/55">Premium roasted makhana in thirteen flavours, sourced from the ponds of Mithila and roasted in small batches in New Delhi.</p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory/55">Premium makhana from the ponds of Mithila — twelve roasted flavours and a ready-to-serve kheer, made in small batches in New Delhi.</p>
             <div className="mt-6 flex gap-3">
               <a href={whatsappLink('Hi Sassmi!')} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold" aria-label="WhatsApp"><MessageCircle size={17} strokeWidth={1.6} /></a>
               {business.social.instagramSassmi && <a href={business.social.instagramSassmi} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold" aria-label="Instagram"><InstagramIcon /></a>}
@@ -53,7 +53,7 @@ export function Footer() {
               <li><Link className="hover:text-gold" to="/#reviews">Reviews</Link></li>
               <li><Link className="hover:text-gold" to="/#faq">FAQ</Link></li>
               <li><Link className="hover:text-gold" to="/#contact">Contact</Link></li>
-              <li><button className="hover:text-gold" onClick={introStore.replay}>Replay the intro ✦</button></li>
+              <li><Link className="hover:text-gold" to="/" onClick={introStore.replay}>Replay the intro ✦</Link></li>
             </ul>
           </div>
           <div className="md:col-span-3">

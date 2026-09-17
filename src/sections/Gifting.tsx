@@ -4,14 +4,13 @@ import { Gift, Building2 } from 'lucide-react'
 import { PondScene } from '../components/MithilaArt'
 import { Container } from '../components/ui/Section'
 import { asset } from '../lib/env'
-import { contactStore } from '../lib/contact'
 import { fadeUp } from '../lib/motion'
 import { AddControl } from '../components/AddControl'
 
 export function Gifting() {
   return (
     <section id="gifting" className="relative scroll-mt-20 overflow-hidden bg-night py-24 text-ivory grain sm:py-32">
-      <PondScene opacity={0.35} />
+      <PondScene opacity={0.35} leaves={false} lotus="center" fish="pair" />
       <Container className="relative grid items-center gap-14 lg:grid-cols-12">
         <div className="lg:col-span-6">
           <motion.p {...fadeUp()} className="kicker">Diwali & corporate gifting</motion.p>
@@ -21,7 +20,7 @@ export function Gifting() {
           </motion.p>
           <motion.div {...fadeUp(0.15)} className="mt-9 flex flex-wrap gap-3">
             <span className="inline-flex items-center gap-3 rounded-full border border-gold/40 py-1 pl-4 pr-1 text-[12px] uppercase tracking-[.2em] text-gold"><Gift size={15} /> The Trio · ₹699 <AddControl slug="nocturne-trio" tone="gold" label="Add to cart" /></span>
-            <Link to="/#contact" onClick={() => contactStore.prefill('Bulk & corporate gifting')} className="btn btn-outline-gold"><Building2 size={15} /> Corporate enquiry</Link>
+            <Link to="/#contact" state={{ topic: 'Bulk & corporate gifting' }} className="btn btn-outline-gold"><Building2 size={15} /> Corporate enquiry</Link>
           </motion.div>
           <motion.ul {...fadeUp(0.2)} className="mt-10 grid gap-3 text-sm text-ivory/70 sm:grid-cols-3">
             <li className="border-l border-gold/50 pl-4">Custom boxes from 20 pieces</li>

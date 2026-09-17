@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react'
-import { cart, uiStore, useCart, useUI } from '../lib/cart'
-import { bySlug } from '../../shared/products'
+import { cart, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
+import { bySlug, tins } from '../../shared/products'
 import { business, formatINR, whatsappLink } from '../../shared/config'
 import { tinCut } from './ProductCard'
 import { EASE } from '../lib/motion'
@@ -28,17 +28,17 @@ export function CartDrawer() {
       {cartOpen && (
         <>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 backdrop-blur-[2px]" onClick={uiStore.closeCart} />
-          <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ duration: 0.55, ease: EASE }} role="dialog" aria-label="Your cart"
+          <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ duration: 0.55, ease: EASE }} role="dialog" aria-modal="true" aria-label="Your cart"
             className="fixed inset-y-0 right-0 z-[80] flex w-full max-w-md flex-col bg-ivory text-ink shadow-2xl">
             <header className="flex items-center justify-between border-b border-ivory-2 px-6 py-5">
               <h2 className="flex items-center gap-3 text-2xl"><ShoppingBag size={20} strokeWidth={1.5} /> Your cart</h2>
-              <button onClick={uiStore.closeCart} className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 hover:bg-night hover:text-ivory" aria-label="Close cart"><X size={16} /></button>
+              <button autoFocus onClick={uiStore.closeCart} className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 hover:bg-night hover:text-ivory" aria-label="Close cart"><X size={16} /></button>
             </header>
 
             {items.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
                 <p className="font-display text-3xl italic text-ink-soft">Your tin is empty.</p>
-                <p className="text-sm text-muted">Nine flavours are waiting.</p>
+                <p className="text-sm text-muted">{tins.length} flavours are waiting.</p>
                 <button className="btn btn-night mt-2" onClick={() => { uiStore.closeCart(); nav('/#collection') }}>Browse the collection</button>
               </div>
             ) : (
@@ -60,7 +60,7 @@ export function CartDrawer() {
                             <div className="flex items-center rounded-full border border-ink/15">
                               <button className="flex h-8 w-8 items-center justify-center hover:text-gold-deep" onClick={() => cart.setQty(it.slug, it.qty - 1)} aria-label="Decrease"><Minus size={13} /></button>
                               <span className="w-6 text-center text-sm">{it.qty}</span>
-                              <button className="flex h-8 w-8 items-center justify-center hover:text-gold-deep" onClick={() => cart.setQty(it.slug, it.qty + 1)} aria-label="Increase"><Plus size={13} /></button>
+                              <button className={`flex h-8 w-8 items-center justify-center hover:text-gold-deep ${it.qty >= MAX_QTY ? 'opacity-40' : ''}`} aria-disabled={it.qty >= MAX_QTY} onClick={() => cart.setQty(it.slug, it.qty + 1)} aria-label="Increase"><Plus size={13} /></button>
                             </div>
                             <button className="flex items-center gap-1 text-xs text-muted hover:text-crunchy-red" onClick={() => cart.remove(it.slug)}><Trash2 size={13} /> Remove</button>
                           </div>

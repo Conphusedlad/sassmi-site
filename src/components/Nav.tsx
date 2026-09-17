@@ -28,7 +28,7 @@ export function Nav() {
     return () => window.removeEventListener('scroll', f)
   }, [])
   useEffect(() => { setOpen(false) }, [pathname])
-  useEffect(() => { document.body.style.overflow = open ? 'hidden' : '' ; return () => { document.body.style.overflow = '' } }, [open])
+  useEffect(() => { if (!open) return; const prev = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = prev } }, [open])
 
   const solid = scrolled || pathname !== '/' || open
   return (
@@ -51,8 +51,10 @@ export function Nav() {
               <span className="hidden text-[11px] font-medium uppercase tracking-[.2em] sm:inline">Cart</span>
               <AnimatePresence>
                 {count > 0 && (
-                  <motion.span key={count} initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={{ type: 'spring', stiffness: 520, damping: 18 }}
-                    className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-semibold text-night tabular-nums">{count}</motion.span>
+                  <motion.span key="badge" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={{ type: 'spring', stiffness: 520, damping: 18 }}
+                    className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-semibold text-night tabular-nums">
+                    <motion.span key={count} initial={{ scale: 1.6 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 600, damping: 16 }}>{count}</motion.span>
+                  </motion.span>
                 )}
               </AnimatePresence>
             </button>
@@ -65,7 +67,7 @@ export function Nav() {
 
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} className="fixed inset-0 z-40 flex flex-col bg-night pt-[72px] text-ivory lg:hidden">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-0 z-40 flex flex-col bg-night pt-[72px] text-ivory lg:hidden">
             <nav className="flex flex-1 flex-col justify-center gap-2 px-8" aria-label="Mobile">
               {LINKS.map((l, i) => (
                 <motion.div key={l.to} initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.08 + i * 0.05, duration: 0.5, ease: EASE }}>

@@ -25,7 +25,7 @@ export function ZoomImage({ src, alt, className = '', frameClassName = '' }: { s
         aria-label={`${alt}. Click to zoom`} className={`group relative cursor-zoom-in select-none ${frameClassName}`}>
         <img src={src} alt={alt} className={className} draggable={false} />
         {lens && (
-          <div className="pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden
             style={{ backgroundImage: `url(${src})`, backgroundRepeat: 'no-repeat', backgroundSize: `${HOVER_ZOOM * 100}%`, backgroundPosition: `${lens.x}% ${lens.y}%` }} />
         )}
         <span className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-night/70 px-3 py-1.5 text-[10px] uppercase tracking-[.2em] text-ivory/90 backdrop-blur transition-opacity group-hover:opacity-100 sm:opacity-0"><ZoomIn size={12} /> Zoom</span>

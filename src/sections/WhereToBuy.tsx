@@ -10,7 +10,7 @@ export function WhereToBuy() {
         <SectionHead kicker="Where to find us" title="Direct, or wherever you already shop." />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link to="/#collection" className="group flex items-center justify-between rounded-2xl bg-night p-6 text-ivory shadow-card transition hover:-translate-y-0.5">
-            <div><p className="kicker">Order direct</p><p className="mt-2 font-display text-2xl">sassmiglobal.com</p><p className="mt-1 text-xs text-ivory/60">Freshest batches · free shipping above ₹{business.shipping.freeAbove}</p></div>
+            <div><p className="kicker">Order direct</p><p className="mt-2 font-display text-2xl">sassmiglobal.com</p><p className="mt-1 text-xs text-ivory/60">Straight from our roastery · free shipping above ₹{business.shipping.freeAbove}</p></div>
             <ShoppingBag className="text-gold" strokeWidth={1.4} />
           </Link>
           <a href={whatsappLink('Hi Sassmi! I would like to place an order.')} target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-2xl border border-ivory-2 bg-ivory p-6 shadow-card transition hover:-translate-y-0.5">

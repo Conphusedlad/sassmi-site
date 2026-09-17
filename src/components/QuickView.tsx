@@ -25,14 +25,14 @@ export function QuickView() {
     <AnimatePresence>
       {p && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[75] flex items-end justify-center bg-night/70 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={() => uiStore.quickView(null)}>
-          <motion.div initial={{ y: 40, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.5, ease: EASE }} onClick={(e) => e.stopPropagation()} role="dialog" aria-label={`${p.name} quick view`}
+          <motion.div initial={{ y: 40, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.5, ease: EASE }} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`${p.name} quick view`}
             className="grid max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-3xl bg-ivory text-ink shadow-2xl sm:grid-cols-2 sm:rounded-3xl">
             <div className="relative flex items-center justify-center p-8" style={{ background: `radial-gradient(80% 60% at 50% 100%, ${p.hex}44 0%, transparent 70%), linear-gradient(180deg,#FAF6EE,#EFE7D6)` }}>
               <img src={tinCut(p)} alt={p.name} className="h-[360px] w-auto drop-shadow-[0_40px_40px_rgba(15,26,48,.3)] sm:h-[420px]" />
               <span className="kicker absolute left-6 top-6">{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve' : `${p.profile} · ${p.netWeight}`}</span>
             </div>
             <div className="relative flex flex-col p-7 sm:p-9">
-              <button onClick={() => uiStore.quickView(null)} className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 hover:bg-night hover:text-ivory" aria-label="Close"><X size={16} /></button>
+              <button autoFocus onClick={() => uiStore.quickView(null)} className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 hover:bg-night hover:text-ivory" aria-label="Close"><X size={16} /></button>
               <h3 className="pr-10 text-[38px] leading-none">{p.name}</h3>
               <p className="mt-2 font-display text-xl italic text-ink-soft">{p.tagline}</p>
               <p className="mt-5 text-[15px] leading-relaxed text-ink-soft">{p.description}</p>

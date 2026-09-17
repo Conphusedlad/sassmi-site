@@ -4,7 +4,7 @@ import { Container } from '../components/ui/Section'
 import { business } from '../../shared/config'
 import { fadeUp } from '../lib/motion'
 
-const WORDS = ['Roasted, not fried', 'Gluten free', 'No added preservatives', 'Rich in protein', 'Sourced from Mithila', 'Roasted in small batches', 'Roasted in olive oil', 'Simple ingredients', 'Thirteen flavours']
+const WORDS = ['Roasted, not fried', 'Gluten free', 'No added preservatives', 'Rich in protein', 'Sourced from Mithila', 'Roasted in small batches', 'Roasted in olive oil', 'Simple ingredients', 'Twelve roasted flavours · one kheer']
 
 export function Manifesto() {
   return (

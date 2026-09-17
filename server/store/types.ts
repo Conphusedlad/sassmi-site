@@ -34,7 +34,8 @@ export interface Store {
   createOrder(o: Omit<Order, 'createdAt' | 'updatedAt'>): Promise<Order>
   getOrder(rzpOrderId: string): Promise<Order | null>
   getOrderById(id: string): Promise<Order | null>
-  markOrderPaid(rzpOrderId: string, paymentId: string, via: string): Promise<Order | null>
+  /** Marks paid exactly once; `transitioned` is true only for the call that flipped created→paid. */
+  markOrderPaid(rzpOrderId: string, paymentId: string, via: string): Promise<{ order: Order | null; transitioned: boolean }>
   markOrderFailed(rzpOrderId: string): Promise<void>
   listOrders(limit?: number): Promise<Order[]>
   addReview(r: Omit<Review, 'createdAt'>): Promise<Review>
@@ -46,6 +47,7 @@ export interface Store {
   setQueryStatus(id: string, status: Query['status']): Promise<void>
   addSubscriber(email: string): Promise<boolean>
   listSubscribers(): Promise<Subscriber[]>
-  hasWebhookEvent(eventId: string): Promise<boolean>
-  recordWebhookEvent(eventId: string, type: string): Promise<void>
+  /** Atomically claims a webhook event id; false if it was already processed. */
+  claimWebhookEvent(eventId: string, type: string): Promise<boolean>
+  releaseWebhookEvent(eventId: string): Promise<void>
 }

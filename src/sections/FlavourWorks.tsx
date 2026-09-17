@@ -4,7 +4,6 @@ import { Beaker, FlaskConical, Handshake, Lock } from 'lucide-react'
 import { Container, SectionHead } from '../components/ui/Section'
 import { Ripples } from '../components/MithilaArt'
 import { business, whatsappLink } from '../../shared/config'
-import { contactStore } from '../lib/contact'
 import { fadeUp } from '../lib/motion'
 
 const TIERS = [
@@ -41,7 +40,7 @@ export function FlavourWorks() {
             ))}
           </ol>
           <div className="flex flex-wrap items-center gap-3 lg:col-span-5 lg:justify-end">
-            <Link to="/#contact" onClick={() => contactStore.prefill('Flavour Works — B2B seasonings')} className="btn btn-gold">Request the blend list</Link>
+            <Link to="/#contact" state={{ topic: 'Flavour Works — B2B seasonings' }} className="btn btn-gold">Request the blend list</Link>
             <a href={whatsappLink('Hi, I run a snack brand and would like to talk to Sassmi Flavour Works about seasonings.')} target="_blank" rel="noreferrer" className="btn btn-outline-gold">WhatsApp {business.contact.phoneDisplay}</a>
           </div>
         </motion.div>

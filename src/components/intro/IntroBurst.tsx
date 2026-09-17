@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Wordmark } from '../Wordmark'
 import { PondScene } from '../MithilaArt'
-import { renderMakhana } from './makhana'
+import { asset } from '../../lib/env'
 import { EASE } from '../../lib/motion'
 
 type Particle = { x: number; y: number; vx: number; vy: number; r: number; c: string; life: number; decay: number }
@@ -10,32 +10,14 @@ type Particle = { x: number; y: number; vx: number; vy: number; r: number; c: st
 /**
  * The opening scene: one makhana floating over midnight water. Click, scroll, touch or any key
  * bursts it into cream-and-gold particles and dissolves the overlay to reveal the site beneath.
- * The makhana is painted on canvas at device resolution, so it is sharp on any screen.
+ * The makhana is the photographic seed from the label artwork, upscaled and sharpened; its display size is capped so it stays crisp.
  */
 export function IntroBurst({ onDone }: { onDone: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const seedRef = useRef<HTMLCanvasElement>(null)
-  const painted = useRef<HTMLCanvasElement | null>(null)
+  const seedRef = useRef<HTMLImageElement>(null)
   const [phase, setPhase] = useState<'idle' | 'burst' | 'fade'>('idle')
   const fired = useRef(false)
   const raf = useRef(0)
-
-  // paint the makhana at device resolution (and again if the viewport changes)
-  useEffect(() => {
-    const paint = () => {
-      const el = seedRef.current; if (!el) return
-      const css = Math.min(320, Math.max(200, Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.36)))
-      const dpr = Math.min(window.devicePixelRatio || 1, 3)
-      const src = renderMakhana(css, dpr, 11)
-      painted.current = src
-      el.width = src.width; el.height = src.height
-      el.style.width = `${css}px`; el.style.height = `${Math.round(css * 1.28)}px`
-      el.getContext('2d')!.drawImage(src, 0, 0)
-    }
-    paint()
-    window.addEventListener('resize', paint)
-    return () => window.removeEventListener('resize', paint)
-  }, [])
 
   useEffect(() => {
     const prev = document.body.style.overflow
@@ -46,8 +28,8 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
   const burst = useCallback(() => {
     if (fired.current) return
     fired.current = true
-    const canvas = canvasRef.current, seed = seedRef.current, src = painted.current
-    if (!canvas || !seed || !src) { onDone(); return }
+    const canvas = canvasRef.current, seed = seedRef.current
+    if (!canvas || !seed) { onDone(); return }
     setPhase('burst')
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -56,11 +38,15 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
     const ctx = canvas.getContext('2d')!
     ctx.scale(dpr, dpr)
 
+    // sample the photograph at 2× the displayed size for a dense particle field
     const rect = seed.getBoundingClientRect()
+    const src = document.createElement('canvas')
+    src.width = Math.max(1, Math.round(rect.width * 2)); src.height = Math.max(1, Math.round(rect.height * 2))
     const sctx = src.getContext('2d')!
-    const data = sctx.getImageData(0, 0, src.width, src.height).data
+    let data: Uint8ClampedArray
+    try { sctx.drawImage(seed, 0, 0, src.width, src.height); data = sctx.getImageData(0, 0, src.width, src.height).data } catch { onDone(); return }
     const scale = rect.width / src.width // canvas px → css px
-    const cx = rect.left + rect.width / 2, cy = rect.top + rect.width * 0.5
+    const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2
     const mobile = W < 640
     const stepCss = mobile ? 5 : 3
     const step = Math.max(1, Math.round(stepCss / scale))
@@ -71,8 +57,6 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
       for (let x = 0; x < src.width; x += step) {
         const i = (y * src.width + x) * 4
         if (data[i + 3] < 120) continue
-        // skip the ground shadow (very dark, mostly transparent-ish region below the seed)
-        if (y * scale > rect.width * 1.02 && data[i] < 60) continue
         const px = rect.left + x * scale, py = rect.top + y * scale
         let dx = px - cx, dy = py - cy
         const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d
@@ -118,7 +102,7 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     const onWheel = (e: WheelEvent) => { e.preventDefault(); burst() }
     const onTouch = (e: TouchEvent) => { e.preventDefault(); burst() }
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab') return; burst() }
+    const onKey = (e: KeyboardEvent) => { if (e.metaKey || e.ctrlKey || e.altKey || ['Tab', 'Shift', 'Meta', 'Control', 'Alt', 'CapsLock'].includes(e.key)) return; burst() }
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('touchmove', onTouch, { passive: false })
     window.addEventListener('keydown', onKey)
@@ -130,7 +114,7 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
     <div className={`fixed inset-0 z-[100] select-none ${phase === 'fade' ? 'pointer-events-none' : 'cursor-pointer'}`} onClick={burst} role="button" aria-label="Enter the Sassmi website" tabIndex={-1}>
       <div className="absolute inset-0 bg-night transition-opacity duration-[900ms] ease-out grain" style={{ opacity: phase === 'fade' ? 0 : 1 }}>
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_58%,rgba(201,168,103,.16),transparent_70%)]" />
-        <PondScene opacity={0.32} />
+        <PondScene opacity={0.32} leaves lotus="none" fish="pair" />
         <div className="pointer-events-none absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2" aria-hidden>
           {[0, 1, 2].map((i) => (
             <span key={i} className="absolute left-1/2 top-1/2 block h-[22vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-[100%] border border-gold/40" style={{ animation: `ripple 4.5s ${i * 1.5}s ease-out infinite` }} />
@@ -144,7 +128,8 @@ export function IntroBurst({ onDone }: { onDone: () => void }) {
         <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 1, ease: EASE }} className="kicker">Premium Makhana · Est. Mithila</motion.p>
         <motion.div initial={{ opacity: 0, scale: 0.8, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.15, duration: 1.4, ease: EASE }} className="my-3 sm:my-5">
           <div className="animate-float">
-            <canvas ref={seedRef} aria-hidden style={{ opacity: idle ? 1 : 0 }} />
+            <img ref={seedRef} src={asset('/img/art/makhana-single.png')} alt="" width={1024} height={1376} draggable={false} decoding="sync"
+              className="h-[30vmin] w-auto max-h-[300px] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)]" style={{ opacity: idle ? 1 : 0 }} />
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 1.2, ease: EASE }}>

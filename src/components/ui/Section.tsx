@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { fadeUp } from '../../lib/motion'
 
-export function Container({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-7xl px-5 sm:px-8 ${className}`}>{children}</div>
+export function Container({ children, className = '', max = 'max-w-7xl' }: { children: React.ReactNode; className?: string; max?: string }) {
+  return <div className={`mx-auto w-full ${max} px-5 sm:px-8 ${className}`}>{children}</div>
 }
 
 export function SectionHead({ kicker, title, sub, align = 'center', tone = 'light' }: { kicker?: string; title: React.ReactNode; sub?: React.ReactNode; align?: 'center' | 'left'; tone?: 'light' | 'dark' }) {

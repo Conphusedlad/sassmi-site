@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, Store } from 'lucide-react'
 import { business, formatINR, whatsappLink } from '../../shared/config'
 import { Container } from '../components/ui/Section'
-import { contactStore } from '../lib/contact'
 import { asset } from '../lib/env'
 import { fadeUp } from '../lib/motion'
 
@@ -46,7 +45,7 @@ export function Crunchy({ standalone = false }: { standalone?: boolean }) {
             </motion.div>
             <motion.div {...fadeUp(0.3)} className="mt-9 flex flex-wrap gap-3">
               <a href={c.website} target="_blank" rel="noreferrer" className="btn bg-crunchy-gold text-crunchy-deep hover:bg-[#FFD65A]"><ArrowUpRight size={15} /> crunchymakhana.in</a>
-              <Link to="/#contact" onClick={() => contactStore.prefill('Distributor enquiry')} className="btn border-white/40 text-ivory hover:bg-white/10"><Store size={15} /> Become a distributor</Link>
+              <Link to="/#contact" state={{ topic: 'Distributor enquiry' }} className="btn border-white/40 text-ivory hover:bg-white/10"><Store size={15} /> Become a distributor</Link>
               <a href={whatsappLink('Hi! I run a store in Delhi NCR and would like to stock Crunchy Makhana.')} target="_blank" rel="noreferrer" className="btn border-white/40 text-ivory hover:bg-white/10">Stock it in your store</a>
             </motion.div>
             <p className="mt-6 text-xs text-ivory/60">Instagram <a className="underline underline-offset-4 hover:text-crunchy-gold" href={c.instagram} target="_blank" rel="noreferrer">@crunchy_makhana</a> · Distributor orders via WhatsApp {business.contact.phoneDisplay} · Crunchy helpline {c.phoneDisplay}</p>

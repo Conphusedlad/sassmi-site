@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus } from 'lucide-react'
 import { bySlug } from '../../shared/products'
-import { cart, useCart } from '../lib/cart'
+import { cart, MAX_QTY, useCart } from '../lib/cart'
 import { toast } from '../lib/toast'
 import { EASE } from '../lib/motion'
 
@@ -32,7 +32,7 @@ export function AddControl({ slug, size = 'sm', tone = 'night', label = 'Add', c
             className={`${h} flex items-center rounded-full border ${tone === 'gold' ? 'border-gold bg-gold text-night' : 'border-night bg-night text-ivory'}`} role="group" aria-label={`${p?.name ?? 'Item'} quantity`}>
             <button type="button" className={`flex ${h} w-10 items-center justify-center rounded-l-full transition hover:bg-white/15`} onClick={(e) => { e.preventDefault(); cart.setQty(slug, qty - step) }} aria-label="Decrease quantity"><Minus size={14} /></button>
             <motion.span key={qty} initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.2 }} className="w-7 text-center font-display text-lg leading-none tabular-nums">{qty}</motion.span>
-            <button type="button" className={`flex ${h} w-10 items-center justify-center rounded-r-full transition hover:bg-white/15`} onClick={(e) => { e.preventDefault(); cart.setQty(slug, qty + step) }} aria-label="Increase quantity"><Plus size={14} /></button>
+            <button type="button" className={`flex ${h} w-10 items-center justify-center rounded-r-full transition hover:bg-white/15 ${qty >= MAX_QTY ? 'opacity-40' : ''}`} aria-disabled={qty >= MAX_QTY} onClick={(e) => { e.preventDefault(); if (qty >= MAX_QTY) { toast(`Maximum ${MAX_QTY} per item — for more, use the corporate enquiry.`, 'err'); return } cart.setQty(slug, qty + step) }} aria-label="Increase quantity"><Plus size={14} /></button>
           </motion.div>
         )}
       </AnimatePresence>

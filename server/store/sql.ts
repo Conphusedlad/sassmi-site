@@ -100,11 +100,11 @@ export class SqlStore implements Store {
     return rows[0] ? toOrder(rows[0]) : null
   }
   async markOrderPaid(rzpOrderId: string, paymentId: string, via: string) {
-    await this.db.run(
-      `UPDATE orders SET status = 'paid', rzp_payment_id = $1, paid_via = $2, updated_at = $3 WHERE rzp_order_id = $4 AND status <> 'paid'`,
+    const rows = await this.db.all<{ id: string }>(
+      `UPDATE orders SET status = 'paid', rzp_payment_id = $1, paid_via = $2, updated_at = $3 WHERE rzp_order_id = $4 AND status <> 'paid' RETURNING id`,
       [paymentId, via, now(), rzpOrderId],
     )
-    return this.getOrder(rzpOrderId)
+    return { order: await this.getOrder(rzpOrderId), transitioned: rows.length > 0 }
   }
   async markOrderFailed(rzpOrderId: string) {
     await this.db.run(`UPDATE orders SET status = 'failed', updated_at = $1 WHERE rzp_order_id = $2 AND status = 'created'`, [now(), rzpOrderId])
@@ -154,21 +154,17 @@ export class SqlStore implements Store {
   }
 
   async addSubscriber(email: string) {
-    const exists = await this.db.all(`SELECT email FROM subscribers WHERE email = $1`, [email])
-    if (exists.length) return false
-    await this.db.run(`INSERT INTO subscribers (email, created_at) VALUES ($1,$2)`, [email, now()])
-    return true
+    const rows = await this.db.all(`INSERT INTO subscribers (email, created_at) VALUES ($1,$2) ON CONFLICT (email) DO NOTHING RETURNING email`, [email, now()])
+    return rows.length > 0
   }
   async listSubscribers() {
     return this.db.all<Subscriber & { created_at: string }>(`SELECT email, created_at FROM subscribers ORDER BY created_at DESC`)
       .then((rows) => rows.map((r) => ({ email: r.email, createdAt: r.created_at })))
   }
 
-  async hasWebhookEvent(eventId: string) {
-    const rows = await this.db.all(`SELECT id FROM webhook_events WHERE id = $1`, [eventId])
+  async claimWebhookEvent(eventId: string, type: string) {
+    const rows = await this.db.all(`INSERT INTO webhook_events (id, type, created_at) VALUES ($1,$2,$3) ON CONFLICT (id) DO NOTHING RETURNING id`, [eventId, type, now()])
     return rows.length > 0
   }
-  async recordWebhookEvent(eventId: string, type: string) {
-    await this.db.run(`INSERT INTO webhook_events (id, type, created_at) VALUES ($1,$2,$3)`, [eventId, type, now()])
-  }
+  async releaseWebhookEvent(eventId: string) { await this.db.run(`DELETE FROM webhook_events WHERE id = $1`, [eventId]) }
 }

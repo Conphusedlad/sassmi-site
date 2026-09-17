@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
-import { timingSafeEqual } from 'node:crypto'
+import { randomBytes, timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
-import { env, paymentsEnabled } from './env'
+import { env, paymentsEnabled, webhookEnabled } from './env'
 import { getStore } from './store'
-import { createRazorpayOrder, verifyPaymentSignature, verifyWebhookSignature } from './razorpay'
+import { createRazorpayOrder, fetchPayment, verifyPaymentSignature, verifyWebhookSignature } from './razorpay'
 import { sendOrderEmails, sendQueryEmails } from './mail'
 import { waitUntil } from '@vercel/functions'
 
@@ -19,7 +19,7 @@ const app = new Hono().basePath('/api')
 // ───────────────────────── helpers ─────────────────────────
 const rid = (prefix: string) => {
   const t = Date.now().toString(36).toUpperCase().slice(-6)
-  const r = Math.random().toString(36).toUpperCase().slice(2, 5)
+  const r = randomBytes(3).toString('hex').toUpperCase()
   return `${prefix}-${t}${r}`
 }
 const uuid = () => crypto.randomUUID()
@@ -28,6 +28,7 @@ const uuid = () => crypto.randomUUID()
 const buckets = new Map<string, { n: number; t: number }>()
 const rateLimit = (key: string, max: number, windowMs = 60_000) => {
   const now = Date.now(); const b = buckets.get(key)
+  if (buckets.size > 5000) for (const [k, v] of buckets) if (now - v.t > windowMs) buckets.delete(k)
   if (!b || now - b.t > windowMs) { buckets.set(key, { n: 1, t: now }); return true }
   b.n += 1; return b.n <= max
 }
@@ -37,8 +38,14 @@ const ipOf = (c: { req: { header: (k: string) => string | undefined } }) =>
 const honeypot = z.string().max(0).optional() // must stay empty
 const phoneIN = z.string().trim().regex(/^[6-9]\d{9}$/, 'Enter a 10-digit Indian mobile number')
 
+// every JSON-writing route must say so (blocks form-post CSRF and sloppy clients); the webhook also sends JSON
+app.use('/api/*', async (c, next) => {
+  if (['POST', 'PATCH', 'PUT'].includes(c.req.method) && !(c.req.header('content-type') ?? '').toLowerCase().startsWith('application/json')) return c.json({ error: 'Expected application/json' }, 415)
+  await next()
+})
+
 // ───────────────────────── public ─────────────────────────
-app.get('/health', (c) => c.json({ ok: true, time: new Date().toISOString(), payments: paymentsEnabled(), db: env.databaseUrl ? 'postgres' : env.isBun ? 'sqlite' : 'none' }))
+app.get('/health', (c) => c.json({ ok: true, time: new Date().toISOString(), payments: paymentsEnabled(), webhook: webhookEnabled(), admin: Boolean(env.adminPassword), db: env.databaseUrl ? 'postgres' : env.isBun ? 'sqlite' : 'none' }))
 
 app.get('/config', (c) => c.json({
   paymentsEnabled: paymentsEnabled(),
@@ -76,7 +83,7 @@ app.post('/reviews', async (c) => {
 const QueryIn = z.object({
   name: z.string().trim().min(2).max(80),
   email: z.email().max(120),
-  phone: z.string().trim().max(15).optional().or(z.literal('')),
+  phone: z.string().trim().max(20).optional().or(z.literal('')).transform((v) => (v ? v.replace(/\D/g, '').slice(-10) : '')).pipe(z.string().regex(/^[6-9]\d{9}$/).or(z.literal(''))),
   topic: z.enum(queryTopics),
   message: z.string().trim().min(10).max(2000),
   website: honeypot,
@@ -123,14 +130,15 @@ app.post('/checkout/order', async (c) => {
   if (!rateLimit(`ord:${ipOf(c)}`, 10)) return c.json({ error: 'Too many requests.' }, 429)
   const parsed = OrderIn.safeParse(await c.req.json().catch(() => null))
   if (!parsed.success) return c.json({ error: 'Please check your details.', issues: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) }, 400)
-  const { items, customer } = parsed.data
+  const { customer } = parsed.data
+  const items = [...parsed.data.items.reduce((m, i) => m.set(i.slug, Math.min(12, (m.get(i.slug) ?? 0) + i.qty)), new Map<string, number>())].map(([slug, qty]) => ({ slug, qty }))
   const unknown = items.filter((i) => !bySlug(i.slug)).map((i) => i.slug)
   if (unknown.length) return c.json({ error: `Unknown product(s): ${unknown.join(', ')}. Please refresh the page and try again.` }, 400)
   const priced = priceItems(items)
   if (priced.lines.length === 0) return c.json({ error: 'Your cart is empty.' }, 400)
   const id = rid('SM')
   const rzp = await createRazorpayOrder({
-    amountPaise: priced.total * 100,
+    amountPaise: Math.round(priced.total * 100),
     receipt: id,
     notes: {
       customer: customer.name.slice(0, 200), phone: customer.phone, email: customer.email.slice(0, 200),
@@ -155,11 +163,19 @@ app.post('/checkout/verify', async (c) => {
   if (!verifyPaymentSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) return c.json({ error: 'Payment could not be verified. If money was deducted, it will be auto-refunded by Razorpay; please contact us with your payment ID.' }, 400)
   const store = await getStore()
   const before = await store.getOrder(razorpay_order_id)
-  if (!before) return c.json({ error: 'Order not found' }, 404)
-  const alreadyPaid = before.status === 'paid'
-  const order = (await store.markOrderPaid(razorpay_order_id, razorpay_payment_id, 'checkout')) as Order
-  if (!alreadyPaid) defer(sendOrderEmails(order))
-  return c.json({ ok: true, order: publicOrder(order) })
+  if (!before) {
+    console.error('[verify] signed payment for an order we do not have', { razorpay_order_id, razorpay_payment_id })
+    return c.json({ error: 'Order not found. Your payment is safe — please WhatsApp us with this payment ID: ' + razorpay_payment_id }, 404)
+  }
+  // defence in depth: the payment must be for this order, this amount, in INR, and authorised/captured
+  const payment = await fetchPayment(razorpay_payment_id)
+  if (payment && (payment.order_id !== razorpay_order_id || payment.amount !== before.amount || payment.currency !== 'INR' || !['authorized', 'captured'].includes(payment.status))) {
+    console.error('[verify] payment mismatch', { razorpay_order_id, razorpay_payment_id, payment, expected: before.amount })
+    return c.json({ error: 'Payment details did not match the order. Please contact us with payment ID ' + razorpay_payment_id }, 400)
+  }
+  const { order, transitioned } = await store.markOrderPaid(razorpay_order_id, razorpay_payment_id, 'checkout')
+  if (transitioned && order) defer(sendOrderEmails(order))
+  return c.json({ ok: true, order: publicOrder(order as Order) })
 })
 
 const publicOrder = (o: Order) => ({ id: o.id, status: o.status, amount: o.amount, subtotal: o.subtotal, shippingFee: o.shippingFee, items: o.items, customerName: o.customer.name, email: o.customer.email, createdAt: o.createdAt })
@@ -178,23 +194,26 @@ app.post('/razorpay/webhook', async (c) => {
   const raw = await c.req.text()
   const sig = c.req.header('x-razorpay-signature') ?? ''
   if (!verifyWebhookSignature(raw, sig)) return c.json({ error: 'invalid signature' }, 400)
-  type WebhookBody = { event: string; payload: { payment?: { entity: { id: string; order_id: string; status: string } }; order?: { entity: { id: string } } } }
+  type WebhookBody = { event: string; payload: { payment?: { entity: { id: string; order_id: string; status: string; amount?: number } }; order?: { entity: { id: string } } } }
   let body: WebhookBody
   try { body = JSON.parse(raw) as WebhookBody } catch { return c.json({ error: 'bad json' }, 400) }
   const store = await getStore()
   const eventId = c.req.header('x-razorpay-event-id') ?? `${body.event}:${body.payload.payment?.entity.id ?? body.payload.order?.entity.id ?? raw.length}`
-  if (await store.hasWebhookEvent(eventId)) return c.json({ ok: true, duplicate: true })
-  await store.recordWebhookEvent(eventId, body.event)
-  const payment = body.payload.payment?.entity
-  const orderId = payment?.order_id ?? body.payload.order?.entity.id
-  if (orderId && (body.event === 'payment.captured' || body.event === 'order.paid') && payment) {
-    const before = await store.getOrder(orderId)
-    if (before && before.status !== 'paid') {
-      const order = await store.markOrderPaid(orderId, payment.id, 'webhook')
-      if (order) defer(sendOrderEmails(order))
+  if (!(await store.claimWebhookEvent(eventId, body.event))) return c.json({ ok: true, duplicate: true })
+  try {
+    const payment = body.payload.payment?.entity
+    const orderId = payment?.order_id ?? body.payload.order?.entity.id
+    if (orderId && (body.event === 'payment.captured' || body.event === 'order.paid') && payment) {
+      const before = await store.getOrder(orderId)
+      if (before && payment.amount !== undefined && payment.amount !== before.amount) console.error('[webhook] amount mismatch', { orderId, got: payment.amount, expected: before.amount })
+      const { order, transitioned } = await store.markOrderPaid(orderId, payment.id, 'webhook')
+      if (transitioned && order) defer(sendOrderEmails(order))
+    } else if (orderId && body.event === 'payment.failed') {
+      await store.markOrderFailed(orderId)
     }
-  } else if (orderId && body.event === 'payment.failed') {
-    await store.markOrderFailed(orderId)
+  } catch (err) {
+    await store.releaseWebhookEvent(eventId).catch(() => undefined) // let Razorpay retry
+    throw err
   }
   return c.json({ ok: true })
 })
@@ -202,11 +221,17 @@ app.post('/razorpay/webhook', async (c) => {
 // ───────────────────────── admin ─────────────────────────
 const admin = new Hono()
 admin.use('*', async (c, next) => {
-  if (!env.adminPassword) return c.json({ error: 'Admin is disabled: set ADMIN_PASSWORD' }, 503)
+  if (!env.adminPassword) return c.json({ error: 'Admin is disabled: set ADMIN_PASSWORD (16+ characters)' }, 503)
+  const ip = ipOf(c)
+  if (!rateLimit(`adm:${ip}`, 30, 10 * 60_000)) return c.json({ error: 'Too many attempts. Try again in 10 minutes.' }, 429)
   const auth = c.req.header('authorization') ?? ''
   const given = auth.startsWith('Bearer ') ? auth.slice(7) : ''
   const a = Buffer.from(given); const b = Buffer.from(env.adminPassword)
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return c.json({ error: 'Unauthorised' }, 401)
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
+    // burn extra budget on failures so a brute force locks out after ~10 wrong guesses
+    rateLimit(`adm:${ip}`, 30, 10 * 60_000); rateLimit(`adm:${ip}`, 30, 10 * 60_000)
+    return c.json({ error: 'Unauthorised' }, 401)
+  }
   await next()
 })
 admin.get('/summary', async (c) => {

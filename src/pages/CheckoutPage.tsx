@@ -32,7 +32,7 @@ export default function CheckoutPage() {
     try {
       const customer = { ...c, phone: c.phone.replace(/\D/g, '').slice(-10) }
       const created = await backend.createOrder(items, customer)
-      if (created.demo) { cart.clear(); nav(`/order/${created.orderId}?email=${encodeURIComponent(customer.email)}&demo=1`); return }
+      if (created.demo) { nav(`/order/${created.orderId}?email=${encodeURIComponent(customer.email)}&demo=1`); cart.clear(); return }
       const rzp = await openRazorpay({
         key: created.keyId, amount: created.amount, currency: created.currency, order_id: created.rzpOrderId,
         name: 'Sassmi', description: `Order ${created.orderId}`, image: `${location.origin}${asset('/img/art/wordmark-ink.png')}`,
@@ -41,11 +41,20 @@ export default function CheckoutPage() {
         retry: { enabled: true, max_count: 2 },
         modal: { ondismiss: () => { setBusy(false); toast('Payment cancelled — your cart is safe.', 'err') }, confirm_close: true, escape: false },
         handler: async (r) => {
-          try {
-            const v = await backend.verifyPayment(r)
-            cart.clear()
-            nav(`/order/${v.order.id}?email=${encodeURIComponent(v.order.email)}`)
-          } catch (err) { toast((err as Error).message, 'err'); setBusy(false) }
+          // money has moved at this point — never re-arm the Pay button. Verify with retries, then fall back to the webhook-confirmed order page.
+          for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+              const v = await backend.verifyPayment(r)
+              nav(`/order/${v.order.id}?email=${encodeURIComponent(v.order.email)}`)
+              cart.clear()
+              return
+            } catch (err) {
+              if (err instanceof ApiError && err.status === 400) { toast(err.message, 'err'); setBusy(false); return } // genuine mismatch
+              await new Promise((res) => setTimeout(res, 800 * (attempt + 1)))
+            }
+          }
+          nav(`/order/${created.orderId}?email=${encodeURIComponent(customer.email)}&pending=1`)
+          cart.clear()
         },
       })
       rzp.on('payment.failed', (r) => { toast(`Payment failed: ${r.error.description}. You can try again.`, 'err'); setBusy(false) })

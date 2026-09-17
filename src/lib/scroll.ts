@@ -4,7 +4,7 @@ import { uiStore } from './cart'
 
 /** Scroll to top on route change; to the element on hash change. */
 export function useScrollManager() {
-  const { pathname, hash } = useLocation()
+  const { pathname, hash, key } = useLocation()
   useEffect(() => {
     // any overlay (cart drawer, quick view) closes when the route changes
     uiStore.closeCart(); uiStore.quickView(null)
@@ -15,5 +15,5 @@ export function useScrollManager() {
       return () => clearTimeout(t)
     }
     window.scrollTo({ top: 0, behavior: 'auto' })
-  }, [pathname, hash])
+  }, [pathname, hash, key])
 }

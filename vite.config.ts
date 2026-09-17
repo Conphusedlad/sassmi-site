@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     base: isArtifact ? './' : '/',
+    envDir: false, // the client needs no .env values; also stops Vite restarting (and dropping its port) when .env is edited
     build: {
       outDir: isArtifact ? 'dist-artifact' : 'dist',
       sourcemap: false,
