@@ -3,6 +3,9 @@
 
 **What this is:** the Sassmi dynamic website (React + Vite front-end, Hono API on Vercel, Postgres on Supabase, Razorpay payments, email notifications, review moderation, contact tickets, admin panel). Code lives at `/Users/spmcil/Strategy-HQ/SASSMI/brand-web/sassmi-site/`.
 
+
+**Status 17 Sep 2026:** code is on GitHub at https://github.com/Conphusedlad/sassmi-site (public repo, account Conphusedlad, logged in via `gh`). Public preview (simulated checkout) is live on GitHub Pages: **https://conphusedlad.github.io/sassmi-site/** — rebuild with `bun run build:pages`, then `git add -A && git commit -m "update" && git push`. The claude.ai artifact preview is https://claude.ai/code/artifact/e266efa1-7fbf-48c4-9ffe-027be421f510.
+
 **Local preview (no accounts needed):**
 ```bash
 ~/.bun/bin/bun run dev
