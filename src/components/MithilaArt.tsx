@@ -39,7 +39,7 @@ export function LotusLeaf({ className = '', style }: P) {
 /** A fish that glides and wags its tail. `flip` makes it face the other way. */
 export function Fish({ className = '', style, flip = false, dur = 14 }: P & { flip?: boolean; dur?: number }) {
   return (
-    <svg viewBox="0 0 220 100" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`fish ${className}`} style={{ ...style, transform: flip ? 'scaleX(-1)' : undefined, ['--swim' as string]: `${dur}s` }} aria-hidden>
+    <svg viewBox="0 0 220 100" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`fish ${className}`} style={{ ...style, overflow: 'visible', transform: flip ? 'scaleX(-1)' : undefined, ['--swim' as string]: `${dur}s` }} aria-hidden>
       <g className="fish-body">
         <path d="M20 50 C 60 10, 130 10, 170 50 C 130 90, 60 90, 20 50 Z" />
         <path d="M90 22 C 100 8, 116 8, 128 20" />
