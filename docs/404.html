@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sassmi</title>
+<meta name="robots" content="noindex">
+<script>
+  // GitHub Pages serves this for any unknown path (old /lander links, typos).
+  // The site uses hash routing, so send visitors to the home page and keep a known route if there is one.
+  var p = location.pathname.replace(/\/+$/, '');
+  var known = /^\/(product\/[a-z0-9-]+|checkout|order\/[A-Za-z0-9-]+|crunchy-makhana|policies\/[a-z-]+|admin)$/.test(p);
+  location.replace('/' + (known ? '#' + p : '') + location.search);
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=/"></noscript>
+<p><a href="/">Continue to Sassmi</a></p>

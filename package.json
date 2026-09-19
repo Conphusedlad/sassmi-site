@@ -12,7 +12,7 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.server.json --noEmit",
     "lint": "oxlint",
     "preview": "vite preview",
-    "build:pages": "VITE_TARGET=artifact vite build --mode artifact --outDir docs && touch docs/.nojekyll && echo sassmi.com > docs/CNAME"
+    "build:pages": "VITE_TARGET=artifact vite build --mode artifact --outDir docs && touch docs/.nojekyll && echo sassmi.com > docs/CNAME && cp pages-extra/404.html docs/404.html"
   },
   "dependencies": {
     "@vercel/functions": "^3.9.8",
