@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 const MotionLink = motion.create(Link)
 import { Droplet, Leaf, Sparkles, WheatOff } from 'lucide-react'
 import { PondScene, WaveDivider } from '../components/MithilaArt'
-import { business } from '../../shared/config'
+import { business, STORE_OPEN } from '../../shared/config'
 import { asset } from '../lib/env'
 import { EASE } from '../lib/motion'
 
@@ -38,6 +38,7 @@ export function Hero() {
       <div ref={lantern} className="lantern" aria-hidden />
       <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center gap-10 px-5 pb-24 pt-28 sm:px-8 lg:grid-cols-12 lg:pt-24">
         <div className="relative z-10 lg:col-span-6">
+          {!STORE_OPEN && <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE }} className="mb-5 inline-flex rounded-full border border-gold/60 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[.26em] text-gold">Launching soon</motion.p>}
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE, delay: 0.1 }} className="kicker">{business.promise}</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease: EASE, delay: 0.2 }} className="mt-6 text-balance text-[clamp(40px,11.2vw,46px)] leading-[0.98] sm:text-[clamp(46px,7.2vw,96px)]">
             Rooted in tradition.<br /><em className="gold-text font-normal italic">Crafted for today.</em>
@@ -46,7 +47,7 @@ export function Hero() {
             A timeless superfood from the ponds of Mithila. Twelve tins slow-roasted in olive oil and seasoned with honest ingredients, and one ready-to-serve kheer — all in midnight blue.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.52 }} className="mt-10 flex flex-wrap gap-3">
-            <Link to="/#collection" className="btn btn-gold">Shop the collection</Link>
+            <Link to="/#collection" className="btn btn-gold">{STORE_OPEN ? 'Shop the collection' : 'Explore the flavours'}</Link>
             <Link to="/#story" className="btn btn-outline-gold">Our story</Link>
           </motion.div>
           <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }} className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">

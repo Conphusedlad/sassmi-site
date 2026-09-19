@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { bySlug, tins } from '../../shared/products'
-import { business, formatINR } from '../../shared/config'
+import { business, formatINR, STORE_OPEN } from '../../shared/config'
+import { Soon } from '../components/ComingSoon'
 import { AddControl } from '../components/AddControl'
 import { tinCut, ProductCard, HeatDots } from '../components/ProductCard'
 import { PondScene } from '../components/MithilaArt'
@@ -52,10 +53,12 @@ export default function ProductPage() {
             <p className="mt-4 text-[15px] text-ivory/70"><span className="kicker mr-3 !text-[9px]">Pairs with</span>{p.pairing}</p>
             <ul className="mt-6 flex flex-wrap gap-2">{p.badges.map((b) => <li key={b} className="rounded-full border border-gold/50 px-3 py-1 text-[11px] uppercase tracking-[.15em] text-gold">{b}</li>)}</ul>
             <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-ivory/10 pt-8">
-              <div><p className="font-display text-4xl">{formatINR(p.price)}</p><p className="text-[11px] uppercase tracking-[.15em] text-ivory/50">{p.netWeight} · incl. of all taxes</p></div>
+              {STORE_OPEN
+                ? <div><p className="font-display text-4xl">{formatINR(p.price)}</p><p className="text-[11px] uppercase tracking-[.15em] text-ivory/50">{p.netWeight} · incl. of all taxes</p></div>
+                : <Soon tone="dark" className="!px-4 !py-2 !text-[11px]" />}
               <AddControl slug={p.slug} size="lg" tone="gold" label="Add to cart" />
             </div>
-            <p className="mt-4 text-xs text-ivory/50">Dispatch in 1–2 working days · Free shipping above {formatINR(business.shipping.freeAbove)}</p>
+            <p className="mt-4 text-xs text-ivory/50">{STORE_OPEN ? `Dispatch in 1–2 working days · Free shipping above ${formatINR(business.shipping.freeAbove)}` : 'The Sassmi range launches soon. Ask us on WhatsApp about launch dates or bulk and corporate orders.'}</p>
           </motion.div>
         </Container>
       </section>
@@ -68,8 +71,8 @@ export default function ProductPage() {
             <dl className="mt-8 grid gap-x-8 gap-y-5 text-[15px] sm:grid-cols-2">
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Ingredients</dt><dd className="mt-1 text-ink-soft">{p.kind === 'bundle' ? 'Any three tins from the collection — each tin carries its own ingredient list.' : p.format === 'ready-to-serve' ? `${p.ingredientHint}.` : `Makhana (fox nut), olive oil, ${p.ingredientHint.replace(/^With /i, '').toLowerCase()}.`}{p.kind !== 'bundle' && <span className="text-muted"> Full list on pack.</span>}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Allergen advice</dt><dd className="mt-1 text-ink-soft">Processed in a facility that also handles tree nuts and milk. {p.allergens ? `${p.allergens}. ` : ''}</dd></div>
-              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Net quantity</dt><dd className="mt-1 text-ink-soft">{p.netWeight}</dd></div>
-              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">MRP</dt><dd className="mt-1 text-ink-soft">{formatINR(p.price)} (inclusive of all taxes)</dd></div>
+              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Net quantity</dt><dd className="mt-1 text-ink-soft">{STORE_OPEN ? p.netWeight : 'To be announced at launch'}</dd></div>
+              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">MRP</dt><dd className="mt-1 text-ink-soft">{STORE_OPEN ? `${formatINR(p.price)} (inclusive of all taxes)` : 'To be announced at launch'}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Best before</dt><dd className="mt-1 text-ink-soft">Printed on the base of each tin. Store cool, dry and away from sunlight; keep lid tightly closed.</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Country of origin</dt><dd className="mt-1 text-ink-soft">India</dd></div>
               <div className="sm:col-span-2"><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Manufactured & marketed by</dt><dd className="mt-1 text-ink-soft">{business.operator.name}, {business.operator.address}. FSSAI Lic. No. {business.operator.fssai}. Customer care: {business.contact.phoneDisplay} · {business.contact.email}</dd></div>

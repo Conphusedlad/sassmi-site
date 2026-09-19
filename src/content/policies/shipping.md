@@ -4,12 +4,7 @@ We ship across India through reputed courier partners. We do not ship internatio
 
 ## Charges
 
-| Order value | Shipping |
-|---|---|
-| ₹{{FREE_ABOVE}} and above | **Free** |
-| Below ₹{{FREE_ABOVE}} | ₹{{SHIPPING_FEE}} flat |
-
-The shipping charge, if any, is shown at checkout before you pay.
+{{CHARGES}}
 
 ## Timelines
 
@@ -23,7 +18,7 @@ You will receive the courier name and tracking number by email (and WhatsApp whe
 
 ## Failed delivery and wrong address
 
-Please check your address and phone number carefully at checkout — couriers call before delivery. If a parcel is returned to us because the address was incomplete or nobody was available after two attempts, we will contact you to re-ship; a re-shipping charge of ₹{{SHIPPING_FEE}} may apply.
+Please check your address and phone number carefully at checkout — couriers call before delivery. If a parcel is returned to us because the address was incomplete or nobody was available after two attempts, we will contact you to re-ship; a re-shipping charge{{RESHIP_FEE}} may apply.
 
 ## Damaged in transit
 

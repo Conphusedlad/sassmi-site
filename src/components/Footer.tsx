@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 import { Wordmark } from './Wordmark'
 import { Ripples } from './MithilaArt'
 import { tins } from '../../shared/products'
-import { business, whatsappLink } from '../../shared/config'
+import { business, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { introStore } from '../lib/intro'
 import { asset } from '../lib/env'
 
@@ -37,7 +37,7 @@ export function Footer() {
             </div>
           </div>
           <div className="md:col-span-2">
-            <h4 className="kicker">Shop</h4>
+            <h4 className="kicker">{STORE_OPEN ? 'Shop' : 'The collection'}</h4>
             <ul className="mt-5 space-y-2.5 text-sm text-ivory/70">
               {tins.map((p) => <li key={p.slug}><Link className="hover:text-gold" to={`/product/${p.slug}`}>{p.name}</Link></li>)}
               <li><Link className="hover:text-gold" to="/product/nocturne-trio">The Nocturne Trio</Link></li>
@@ -74,7 +74,7 @@ export function Footer() {
         <div className="mt-14 border-t border-ivory/10 pt-8 text-[12.5px] leading-relaxed text-ivory/45">
           <p><span className="text-ivory/70">Manufactured & marketed by</span> {business.operator.name} · {business.operator.address} · FSSAI Lic. No. {business.operator.fssai} · GSTIN {business.operator.gstin}</p>
           <p className="mt-2">{business.brandLegal} is a brand of {business.owner.name} ({business.owner.formerly}) · CIN {business.owner.cin} · {business.owner.address}</p>
-          <p className="mt-2">Country of origin: India · All prices are inclusive of taxes · © {new Date().getFullYear()} {business.owner.name}. All rights reserved.</p>
+          <p className="mt-2">Country of origin: India · {STORE_OPEN && 'All prices are inclusive of taxes · '}© {new Date().getFullYear()} {business.owner.name}. All rights reserved.</p>
         </div>
       </div>
     </footer>

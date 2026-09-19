@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, MessageCircle, ShoppingBag, X } from 'lucide-react'
 import { Wordmark } from './Wordmark'
 import { useCart, uiStore } from '../lib/cart'
-import { business, whatsappLink } from '../../shared/config'
+import { business, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { EASE } from '../lib/motion'
 
 const LINKS = [
@@ -43,10 +43,10 @@ export function Nav() {
             {LINKS.map((l) => <Link key={l.to} to={l.to} className="nav-link whitespace-nowrap text-ivory/85 hover:text-ivory">{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2 sm:gap-3">
-            <a href={whatsappLink('Hi Sassmi! I have a question about your makhana.')} target="_blank" rel="noreferrer" className="hidden h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold sm:flex" aria-label={`WhatsApp ${business.contact.phoneDisplay}`}>
+            <a href={whatsappLink('Hi Sassmi! I have a question about your makhana.')} target="_blank" rel="noreferrer" className={`${STORE_OPEN ? 'hidden sm:flex' : 'flex'} h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold`} aria-label={`WhatsApp ${business.contact.phoneDisplay}`}>
               <MessageCircle size={18} strokeWidth={1.6} />
             </a>
-            <button onClick={uiStore.openCart} className="relative flex h-10 items-center gap-2 rounded-full border border-ivory/15 px-3 text-ivory/90 transition hover:border-gold hover:text-gold sm:px-4" aria-label={`Open cart, ${count} items`}>
+            {STORE_OPEN && <button onClick={uiStore.openCart} className="relative flex h-10 items-center gap-2 rounded-full border border-ivory/15 px-3 text-ivory/90 transition hover:border-gold hover:text-gold sm:px-4" aria-label={`Open cart, ${count} items`}>
               <ShoppingBag size={18} strokeWidth={1.6} />
               <span className="hidden text-[11px] font-medium uppercase tracking-[.2em] sm:inline">Cart</span>
               <AnimatePresence>
@@ -57,7 +57,7 @@ export function Nav() {
                   </motion.span>
                 )}
               </AnimatePresence>
-            </button>
+            </button>}
             <button onClick={() => setOpen((v) => !v)} className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>

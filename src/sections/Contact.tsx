@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Clock, Mail, MapPin, MessageCircle, Phone, ShieldCheck } from 'lucide-react'
-import { backend, ApiError } from '../lib/backend'
+import { backend, ApiError, FORMS_OFFLINE } from '../lib/backend'
 import { toast } from '../lib/toast'
 import { Container, SectionHead } from '../components/ui/Section'
 import { business, queryTopics, whatsappLink, type QueryTopic } from '../../shared/config'
@@ -19,6 +19,12 @@ export function Contact() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (form.message.trim().length < 10) return toast('Tell us a little more (at least 10 characters)', 'err')
+    if (FORMS_OFFLINE) {
+      const contact = [form.email, form.phone].filter(Boolean).join(' · ')
+      const text = `Hi Sassmi! I'm ${form.name.trim()}.\nTopic: ${form.topic}\n\n${form.message.trim()}${contact ? `\n\n${contact}` : ''}`
+      window.open(whatsappLink(text), '_blank', 'noopener')
+      return
+    }
     setBusy(true)
     try {
       const r = await backend.postQuery({ ...form, phone: form.phone.replace(/\D/g, '').slice(-10) })
@@ -32,7 +38,7 @@ export function Contact() {
     <section id="contact" className="scroll-mt-20 bg-ivory py-24 sm:py-32">
       <Container>
         <SectionHead kicker="Contact" title="Write to us. A person replies." sub="Orders, bulk gifting, distribution, press — or just to tell us which flavour won." />
-        <div className="mt-14 grid gap-10 lg:grid-cols-12">
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
           <motion.div {...fadeUp()} className="space-y-6 lg:col-span-5">
             <a href={whatsappLink('Hi Sassmi!')} target="_blank" rel="noreferrer" className="flex items-start gap-4 rounded-2xl bg-night p-6 text-ivory shadow-card transition hover:-translate-y-0.5">
               <MessageCircle className="mt-0.5 shrink-0 text-gold" strokeWidth={1.4} />
@@ -59,7 +65,7 @@ export function Contact() {
             ) : (
               <form onSubmit={submit} className="grid gap-4 rounded-3xl border border-ivory-2 bg-cream p-7 shadow-card sm:grid-cols-2 sm:p-9">
                 <input className="input" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required minLength={2} maxLength={80} />
-                <input className="input" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required maxLength={120} />
+                <input className="input" type="email" placeholder={FORMS_OFFLINE ? 'Email (optional)' : 'Email'} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required={!FORMS_OFFLINE} maxLength={120} />
                 <input className="input" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={15} />
                 <select className="input" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value as QueryTopic })} aria-label="Topic">
                   {queryTopics.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -67,8 +73,8 @@ export function Contact() {
                 <textarea className="input min-h-[140px] sm:col-span-2" placeholder="How can we help?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required maxLength={2000} />
                 <input type="text" name="website" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
                 <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-[11px] text-muted">By sending, you agree to our privacy policy. We use your details only to reply.</p>
-                  <button className="btn btn-night" disabled={busy}>{busy ? 'Sending…' : 'Send message'}</button>
+                  <p className="text-[11px] text-muted">{FORMS_OFFLINE ? 'This opens WhatsApp with your message ready to send.' : 'By sending, you agree to our privacy policy. We use your details only to reply.'}</p>
+                  <button className="btn btn-night max-w-full whitespace-normal !px-5 sm:!px-[30px]" disabled={busy}>{FORMS_OFFLINE ? <><MessageCircle size={15} /> Send on WhatsApp</> : busy ? 'Sending…' : 'Send message'}</button>
                 </div>
               </form>
             )}

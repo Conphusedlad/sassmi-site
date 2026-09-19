@@ -1,20 +1,27 @@
 import { ArrowUpRight, MessageCircle, ShoppingBag } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { business, whatsappLink } from '../../shared/config'
+import { business, whatsappLink, soonWhatsApp, STORE_OPEN } from '../../shared/config'
 import { Container, SectionHead } from '../components/ui/Section'
 
 export function WhereToBuy() {
   return (
     <section id="where-to-buy" className="scroll-mt-20 bg-cream py-20 sm:py-24">
       <Container>
-        <SectionHead kicker="Where to find us" title="Direct, or wherever you already shop." />
+        <SectionHead kicker="Where to find us" title={STORE_OPEN ? 'Direct, or wherever you already shop.' : 'Launching soon — direct, and wherever you already shop.'} />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Link to="/#collection" className="group flex items-center justify-between rounded-2xl bg-night p-6 text-ivory shadow-card transition hover:-translate-y-0.5">
-            <div><p className="kicker">Order direct</p><p className="mt-2 font-display text-2xl">sassmiglobal.com</p><p className="mt-1 text-xs text-ivory/60">Straight from our roastery · free shipping above ₹{business.shipping.freeAbove}</p></div>
-            <ShoppingBag className="text-gold" strokeWidth={1.4} />
-          </Link>
-          <a href={whatsappLink('Hi Sassmi! I would like to place an order.')} target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-2xl border border-ivory-2 bg-ivory p-6 shadow-card transition hover:-translate-y-0.5">
-            <div><p className="kicker !text-gold-deep">WhatsApp</p><p className="mt-2 font-display text-2xl">{business.contact.phoneDisplay}</p><p className="mt-1 text-xs text-muted">Orders, bulk, questions — a human replies</p></div>
+          {STORE_OPEN ? (
+            <Link to="/#collection" className="group flex items-center justify-between rounded-2xl bg-night p-6 text-ivory shadow-card transition hover:-translate-y-0.5">
+              <div><p className="kicker">Order direct</p><p className="mt-2 font-display text-2xl">{business.domain}</p><p className="mt-1 text-xs text-ivory/60">Straight from our roastery · free shipping above ₹{business.shipping.freeAbove}</p></div>
+              <ShoppingBag className="text-gold" strokeWidth={1.4} />
+            </Link>
+          ) : (
+            <a href={soonWhatsApp()} target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-2xl bg-night p-6 text-ivory shadow-card transition hover:-translate-y-0.5">
+              <div><p className="kicker">Online store</p><p className="mt-2 font-display text-2xl">Coming soon</p><p className="mt-1 text-xs text-ivory/60">Straight from our roastery · ask on WhatsApp meanwhile</p></div>
+              <ShoppingBag className="text-gold" strokeWidth={1.4} />
+            </a>
+          )}
+          <a href={STORE_OPEN ? whatsappLink('Hi Sassmi! I would like to place an order.') : soonWhatsApp()} target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-2xl border border-ivory-2 bg-ivory p-6 shadow-card transition hover:-translate-y-0.5">
+            <div><p className="kicker !text-gold-deep">WhatsApp</p><p className="mt-2 font-display text-2xl">{business.contact.phoneDisplay}</p><p className="mt-1 text-xs text-muted">{STORE_OPEN ? 'Orders, bulk, questions — a human replies' : 'Launch dates, bulk, questions — a human replies'}</p></div>
             <MessageCircle className="text-gold-deep" strokeWidth={1.4} />
           </a>
           {business.channels.map((ch) => (

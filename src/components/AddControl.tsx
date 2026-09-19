@@ -4,6 +4,8 @@ import { bySlug } from '../../shared/products'
 import { cart, MAX_QTY, useCart } from '../lib/cart'
 import { toast } from '../lib/toast'
 import { EASE } from '../lib/motion'
+import { STORE_OPEN } from '../../shared/config'
+import { AskWhatsApp } from './ComingSoon'
 
 type Props = { slug: string; size?: 'sm' | 'lg'; tone?: 'night' | 'gold'; label?: string; className?: string; step?: number }
 
@@ -11,7 +13,13 @@ type Props = { slug: string; size?: 'sm' | 'lg'; tone?: 'night' | 'gold'; label?
  * One control for every "add to cart" moment. Shows "Add" until the item is in the cart,
  * then turns into a − qty + stepper that mirrors the cart exactly. Never opens the drawer.
  */
-export function AddControl({ slug, size = 'sm', tone = 'night', label = 'Add', className = '', step = 1 }: Props) {
+export function AddControl(props: Props) {
+  // store closed: every add-to-cart becomes a WhatsApp enquiry about that product
+  if (!STORE_OPEN) return <AskWhatsApp what={bySlug(props.slug)?.name} size={props.size} tone={props.tone} className={props.className} />
+  return <CartControl {...props} />
+}
+
+function CartControl({ slug, size = 'sm', tone = 'night', label = 'Add', className = '', step = 1 }: Props) {
   const { items } = useCart()
   const qty = items.find((i) => i.slug === slug)?.qty ?? 0
   const p = bySlug(slug)

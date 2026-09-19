@@ -124,4 +124,7 @@ const preview: Backend = {
 }
 
 export const backend: Backend = IS_ARTIFACT ? preview : live
+
+/** true when there is no server behind the site (the static build): forms go to WhatsApp instead of pretending to send. */
+export const FORMS_OFFLINE = backend.mode === 'preview'
 export const shippingInfo = business.shipping

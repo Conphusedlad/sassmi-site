@@ -126,6 +126,7 @@ const OrderIn = z.object({
 })
 
 app.post('/checkout/order', async (c) => {
+  if (!business.store.open) return c.json({ error: 'Online ordering opens soon. Please message us on WhatsApp.' }, 403)
   if (!paymentsEnabled()) return c.json({ error: 'Online payments are not enabled yet. Please order via WhatsApp.' }, 503)
   if (!rateLimit(`ord:${ipOf(c)}`, 10)) return c.json({ error: 'Too many requests.' }, 429)
   const parsed = OrderIn.safeParse(await c.req.json().catch(() => null))

@@ -7,14 +7,19 @@ import { useSiteConfig } from '../lib/useConfig'
 import { openRazorpay } from '../lib/razorpay'
 import { toast } from '../lib/toast'
 import { bySlug } from '../../shared/products'
-import { business, formatINR, whatsappLink } from '../../shared/config'
+import { business, formatINR, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { tinCut } from '../components/ProductCard'
 import { Container } from '../components/ui/Section'
+import { OrderingSoon } from '../components/ComingSoon'
 import { asset } from '../lib/env'
 
 const STATES = ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman & Nicobar Islands', 'Chandigarh', 'Dadra & Nagar Haveli and Daman & Diu', 'Delhi', 'Jammu & Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry']
 
 export default function CheckoutPage() {
+  return STORE_OPEN ? <Checkout /> : <OrderingSoon />
+}
+
+function Checkout() {
   const { items, lines, subtotal, shippingFee, total } = useCart()
   const cfg = useSiteConfig()
   const nav = useNavigate()

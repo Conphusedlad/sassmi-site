@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Flame } from 'lucide-react'
 import { productImage, type Product } from '../../shared/products'
-import { formatINR } from '../../shared/config'
+import { formatINR, STORE_OPEN } from '../../shared/config'
+import { Soon } from './ComingSoon'
 import { uiStore } from '../lib/cart'
 import { asset } from '../lib/env'
 import { fadeUp } from '../lib/motion'
@@ -47,11 +48,14 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
           <div className="min-w-0">
             <h3 className="text-[25px] leading-none"><Link to={`/product/${p.slug}`} className="hover:text-gold-deep">{p.name}</Link></h3>
             <p className="mt-1.5 font-display text-[15px] italic text-ink-soft">{p.tagline}</p>
+            {!STORE_OPEN && <Soon className="mt-3" />}
           </div>
-          <div className="shrink-0 text-right">
-            <p className="font-display text-xl">{formatINR(p.price)}</p>
-            <p className="text-[11px] uppercase tracking-[.15em] text-muted">{p.netWeight}</p>
-          </div>
+          {STORE_OPEN && (
+            <div className="shrink-0 text-right">
+              <p className="font-display text-xl">{formatINR(p.price)}</p>
+              <p className="text-[11px] uppercase tracking-[.15em] text-muted">{p.netWeight}</p>
+            </div>
+          )}
         </div>
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-ivory-2 pt-4">
           <span className="flex min-w-0 items-center gap-2 text-[12px] text-muted"><HeatDots n={p.spice} /><span className="truncate">{p.ingredientHint}</span></span>

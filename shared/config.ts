@@ -11,6 +11,13 @@ export const business = {
   domain: 'sassmiglobal.com',
   siteUrl: 'https://sassmiglobal.com',
 
+  /**
+   * The online-store switch. While `open` is false the Sassmi tins show "Coming soon" instead of prices,
+   * and every add-to-cart, checkout and order button sends the visitor to WhatsApp. Crunchy Makhana is
+   * on sale in stores and is not affected. Flip to true only once prices, pack size and payments are confirmed.
+   */
+  store: { open: false },
+
   /** Brand owner (holds the trademark) */
   owner: {
     name: 'SASSMI Global Private Limited',
@@ -90,6 +97,13 @@ export const business = {
 
 export const whatsappLink = (text: string) =>
   `https://wa.me/${business.contact.whatsapp}?text=${encodeURIComponent(text)}`
+
+/** true once the family opens online ordering (see `business.store`). */
+export const STORE_OPEN: boolean = business.store.open
+
+/** WhatsApp link for "coming soon" moments: asks about one product, or about the launch in general. */
+export const soonWhatsApp = (what?: string) =>
+  whatsappLink(what ? `Hi Sassmi! I'm interested in ${what}. When can I order it?` : 'Hi Sassmi! Please let me know when the tins launch.')
 
 export const formatINR = (rupees: number) =>
   '₹' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(rupees)

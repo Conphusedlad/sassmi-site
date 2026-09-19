@@ -2,19 +2,23 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { Container, SectionHead } from '../components/ui/Section'
-import { business } from '../../shared/config'
+import { business, STORE_OPEN } from '../../shared/config'
 import { EASE } from '../lib/motion'
 
-const QA = [
+const SOON = { q: 'When can I buy Sassmi?', a: `The Sassmi tins are launching soon. Until online ordering opens, message us on WhatsApp (${business.contact.phoneDisplay}) for launch dates or bulk and corporate orders. Crunchy Makhana, our everyday range, is on sale now in stores across Delhi NCR.` }
+
+const QA_ALL = [
   { q: 'What exactly is makhana?', a: 'Makhana (fox nut, or popped lotus seed) is the seed of the prickly water lily, grown in ponds — most famously in the Mithila region of Bihar. The seeds are harvested, dried and popped over heat into light, crunchy puffs. It has been eaten in India for centuries, especially during fasts.' },
   { q: 'Is it fried?', a: 'No. Sassmi makhana is slow-roasted in small batches in olive oil over gentle heat, then tumbled with seasoning. Nothing is deep-fried. The Royal Makhana Kheer is a simmered dessert, not a roasted snack.' },
   { q: 'Does it contain allergens?', a: 'Some flavours contain milk solids (Cream Onion Bliss, Honey Cheese Bliss, Royal Makhana Kheer) and tree nuts (Royal Makhana Kheer). All tins are produced in a facility that handles nuts and dairy, so traces are possible. Full ingredient lists are printed on every tin and on each product page.' },
   { q: 'How long does a tin keep?', a: 'Sealed, several months — the exact best-before date is printed on the base of each tin. Once opened, keep the lid tightly closed and finish within two to three weeks for the best crunch. Store in a cool, dry place away from sunlight.' },
-  { q: 'How fast do you ship?', a: `We dispatch within 1–2 working days and delivery usually takes ${business.shipping.etaDays} across India. Shipping is free on orders above ₹${business.shipping.freeAbove}; below that a flat ₹${business.shipping.flatFee} applies.` },
-  { q: 'Do you accept cash on delivery?', a: business.shipping.codAvailable ? 'Yes, cash on delivery is available at checkout.' : 'Not yet. We accept UPI, cards, net-banking and wallets through Razorpay. You can also order over WhatsApp.' },
+  { q: 'How fast do you ship?', a: !STORE_OPEN ? `Once online ordering opens, orders will leave us within 1–2 working days and usually reach you in ${business.shipping.etaDays} across India. Shipping charges will be shown at checkout.` : `We dispatch within 1–2 working days and delivery usually takes ${business.shipping.etaDays} across India. Shipping is free on orders above ₹${business.shipping.freeAbove}; below that a flat ₹${business.shipping.flatFee} applies.` },
+  { q: 'Do you accept cash on delivery?', a: !STORE_OPEN ? 'Online ordering hasn’t opened yet. When it does, you’ll be able to pay by UPI, cards, net-banking and wallets. Until then, WhatsApp us.' : business.shipping.codAvailable ? 'Yes, cash on delivery is available at checkout.' : 'Not yet. We accept UPI, cards, net-banking and wallets through Razorpay. You can also order over WhatsApp.' },
   { q: 'Can I order in bulk or for corporate gifting?', a: 'Yes — from twenty boxes upward we build custom gift boxes, with your logo on the card. Use the corporate enquiry option in the contact form or WhatsApp us, and tell us the quantity and the date you need them by.' },
   { q: 'Where is Sassmi made?', a: `Sassmi is roasted and packed at our own FSSAI-licensed facility in Todapur, New Delhi (Lic. No. ${business.operator.fssai}), from makhana sourced in Mithila, Bihar.` },
 ]
+
+const QA = STORE_OPEN ? QA_ALL : [SOON, ...QA_ALL]
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0)

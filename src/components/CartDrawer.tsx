@@ -4,11 +4,15 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react'
 import { cart, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
 import { bySlug, tins } from '../../shared/products'
-import { business, formatINR, whatsappLink } from '../../shared/config'
+import { business, formatINR, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { tinCut } from './ProductCard'
 import { EASE } from '../lib/motion'
 
 export function CartDrawer() {
+  return STORE_OPEN ? <Drawer /> : null
+}
+
+function Drawer() {
   const { cartOpen } = useUI()
   const { items, lines, subtotal, shippingFee, total } = useCart()
   const nav = useNavigate()

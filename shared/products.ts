@@ -120,7 +120,7 @@ export const products: Product[] = [
     tagline: 'Three tins. One midnight-blue box.',
     description: 'Choose any three flavours, boxed in indigo with a gold ribbon and a hand-written card. Our answer to the Diwali gift that gets re-gifted.',
     pairing: 'Corporate gifting, house-warmings, thank-yous.',
-    ingredientHint: 'Any three 100 g tins',
+    ingredientHint: 'Any three tins',
     netWeight: `3 × ${PACK_SIZE}`, price: 699, compareAt: 747, hex: '#0F1A30', accent: '#C9A867', badges: ['Gift box', 'Free card'],
   },
 ]

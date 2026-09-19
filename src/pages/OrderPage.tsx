@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { CheckCircle2 } from 'lucide-react'
 import { backend, type OrderPublic } from '../lib/backend'
-import { business, formatINR, whatsappLink } from '../../shared/config'
+import { business, formatINR, whatsappLink, STORE_OPEN } from '../../shared/config'
+import { OrderingSoon } from '../components/ComingSoon'
 import { Container } from '../components/ui/Section'
 import { PondScene } from '../components/MithilaArt'
 
 export default function OrderPage() {
+  return STORE_OPEN ? <OrderConfirmation /> : <OrderingSoon />
+}
+
+function OrderConfirmation() {
   const { id = '' } = useParams()
   const [sp] = useSearchParams()
   const [order, setOrder] = useState<OrderPublic | { id: string; status: string } | null | undefined>(undefined)

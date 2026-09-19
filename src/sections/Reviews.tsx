@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Star } from 'lucide-react'
-import { backend, type ReviewPublic } from '../lib/backend'
+import { backend, FORMS_OFFLINE, type ReviewPublic } from '../lib/backend'
+import { MessageCircle } from 'lucide-react'
+import { STORE_OPEN, whatsappLink } from '../../shared/config'
 import { toast } from '../lib/toast'
 import { Container, SectionHead } from '../components/ui/Section'
 import { tins } from '../../shared/products'
@@ -22,6 +24,21 @@ function Stars({ n, size = 14, onPick, hover }: { n: number; size?: number; onPi
 }
 
 export function Reviews({ productSlug }: { productSlug?: string }) {
+  return !STORE_OPEN || FORMS_OFFLINE ? <ReviewsSoon /> : <ReviewsLive productSlug={productSlug} />
+}
+
+function ReviewsSoon() {
+  return (
+    <section id="reviews" className="scroll-mt-20 bg-cream py-20 sm:py-24">
+      <Container max="max-w-3xl" className="text-center">
+        <SectionHead kicker="Reviews" title="What people say between bites." sub="Reviews open when the tins launch." />
+        <a href={whatsappLink('Hi Sassmi! I tasted your makhana and wanted to share what I thought:')} target="_blank" rel="noreferrer" className="btn btn-outline-ink mt-8 max-w-full whitespace-normal text-center"><MessageCircle size={15} className="shrink-0" /> Tasted it? Tell us on WhatsApp</a>
+      </Container>
+    </section>
+  )
+}
+
+function ReviewsLive({ productSlug }: { productSlug?: string }) {
   const [list, setList] = useState<ReviewPublic[] | null>(null)
   const [form, setForm] = useState({ name: '', rating: 5, text: '', productSlug: productSlug ?? '', website: '' })
   const [hover, setHover] = useState(0)

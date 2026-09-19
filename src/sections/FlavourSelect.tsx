@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion, useReducedMotion, useSpring, useTransform, type MotionValue } from 'framer-motion'
 import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Flame } from 'lucide-react'
 import { products, tins, productImage, type Product } from '../../shared/products'
-import { formatINR } from '../../shared/config'
+import { formatINR, STORE_OPEN } from '../../shared/config'
+import { Soon } from '../components/ComingSoon'
 import { THEMES } from '../lib/flavourTheme'
 import { useFlavourSelector } from '../lib/useFlavourSelector'
 import { LotusLeaf, Ripples, FishLane } from '../components/MithilaArt'
@@ -80,7 +81,7 @@ function Plate({ f, index, total, locked, onChoose, part = 'all' }: { f: Product
         </motion.div>
         <motion.div className={`flex flex-wrap items-center gap-3 ${part === 'facts' ? 'mt-4' : 'mt-7'}`} {...rise(0.42)}>
           {!locked && <button onClick={onChoose} className="btn btn-outline-gold !text-[11px]">Highlight this tin</button>}
-          <span className="text-[12px] text-ivory/45">{formatINR(f.price)} · {f.netWeight}</span>
+          {STORE_OPEN ? <span className="text-[12px] text-ivory/45">{formatINR(f.price)} · {f.netWeight}</span> : part === 'facts' ? <span className="text-[12px] text-gold/80">Coming soon</span> : <Soon tone="dark" />}
         </motion.div>
       </>}
     </motion.div>
@@ -99,7 +100,9 @@ function Panel({ f, coarse, open, onClose, onRestoreFocus }: { f: Product; coars
       <p className="mt-3 text-[13px] text-ivory/75"><span className="fs-ink mr-2 text-[11px] font-medium uppercase tracking-[.22em]">Pairs with</span>{f.pairing}</p>
       {f.allergens && <p className="mt-3 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/60">{f.allergens}</p>}
       <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-        <p className="font-display text-[28px] leading-none text-ivory">{formatINR(f.price)} <span className="ml-2 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/50">{f.netWeight} tin</span></p>
+        {STORE_OPEN
+          ? <p className="font-display text-[28px] leading-none text-ivory">{formatINR(f.price)} <span className="ml-2 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/50">{f.netWeight} tin</span></p>
+          : <Soon tone="dark" className="!px-4 !py-2 !text-[11px]" />}
         <AddControl slug={f.slug} size="lg" tone="gold" label="Add to cart" />
         <Link to={`/product/${f.slug}`} className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/80 underline-offset-4 hover:text-gold hover:underline">View the tin <ArrowUpRight size={13} /></Link>
       </div>
@@ -270,7 +273,7 @@ export function FlavourSelect() {
               {products.map((p, i) => <ProductCard key={p.slug} p={p} index={i} />)}
             </div>
           </details>
-          <p className="mt-8 text-center text-xs text-muted">Prices inclusive of all taxes · Free shipping on orders above ₹499 · Ships across India</p>
+          <p className="mt-8 text-center text-xs text-muted">{STORE_OPEN ? 'Prices inclusive of all taxes · Free shipping on orders above ₹499 · Ships across India' : 'The Sassmi range launches soon · Questions, bulk and corporate orders on WhatsApp'}</p>
         </Container>
       </section>
     </MotionConfig>

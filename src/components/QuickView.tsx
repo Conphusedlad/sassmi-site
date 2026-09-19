@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ShoppingBag, X } from 'lucide-react'
 import { bySlug } from '../../shared/products'
-import { formatINR } from '../../shared/config'
+import { formatINR, STORE_OPEN } from '../../shared/config'
+import { Soon } from './ComingSoon'
 import { uiStore, useCart, useUI } from '../lib/cart'
 import { tinCut, HeatDots } from './ProductCard'
 import { AddControl } from './AddControl'
@@ -29,7 +30,7 @@ export function QuickView() {
             className="grid max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-3xl bg-ivory text-ink shadow-2xl sm:grid-cols-2 sm:rounded-3xl">
             <div className="relative flex items-center justify-center p-8" style={{ background: `radial-gradient(80% 60% at 50% 100%, ${p.hex}44 0%, transparent 70%), linear-gradient(180deg,#FAF6EE,#EFE7D6)` }}>
               <img src={tinCut(p)} alt={p.name} className="h-[360px] w-auto drop-shadow-[0_40px_40px_rgba(15,26,48,.3)] sm:h-[420px]" />
-              <span className="kicker absolute left-6 top-6">{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve' : `${p.profile} · ${p.netWeight}`}</span>
+              <span className="kicker absolute left-6 top-6">{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve' : STORE_OPEN ? `${p.profile} · ${p.netWeight}` : p.profile}</span>
             </div>
             <div className="relative flex flex-col p-7 sm:p-9">
               <button autoFocus onClick={() => uiStore.quickView(null)} className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 hover:bg-night hover:text-ivory" aria-label="Close"><X size={16} /></button>
@@ -40,12 +41,12 @@ export function QuickView() {
               <ul className="mt-5 flex flex-wrap gap-2">{p.badges.map((b) => <li key={b} className="rounded-full border border-gold/50 px-3 py-1 text-[11px] uppercase tracking-[.15em] text-gold-deep">{b}</li>)}</ul>
               <p className="mt-3 flex items-center gap-2 text-xs text-muted"><HeatDots n={p.spice} />{p.ingredientHint}{p.allergens ? ` · ${p.allergens}` : ''}</p>
               <div className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-ivory-2 pt-6">
-                <p className="font-display text-3xl">{formatINR(p.price)}</p>
+                {STORE_OPEN ? <p className="font-display text-3xl">{formatINR(p.price)}</p> : <Soon />}
                 <AddControl slug={p.slug} size="lg" label="Add to cart" />
               </div>
               <div className="mt-4 flex items-center justify-between text-xs uppercase tracking-[.2em] text-ink-soft">
                 <Link to={`/product/${p.slug}`} onClick={() => uiStore.quickView(null)} className="underline-offset-4 hover:text-gold-deep hover:underline">Full details →</Link>
-                {count > 0 && <button onClick={() => { uiStore.quickView(null); uiStore.openCart() }} className="flex items-center gap-1.5 hover:text-gold-deep"><ShoppingBag size={13} /> View cart ({count})</button>}
+                {STORE_OPEN && count > 0 && <button onClick={() => { uiStore.quickView(null); uiStore.openCart() }} className="flex items-center gap-1.5 hover:text-gold-deep"><ShoppingBag size={13} /> View cart ({count})</button>}
               </div>
             </div>
           </motion.div>
