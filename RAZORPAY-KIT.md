@@ -717,3 +717,44 @@ The code is done and it is good. The Razorpay integration is correct against Raz
 4. **The KYC** — a day of Dad's paperwork, then up to 3 working days per review round.
 
 Do not sign up for Razorpay "to look around" first. The 0% offer is one redemption per PAN, and it is the first Merchant ID that counts.
+
+---
+
+## Appendix — Shopify and the other gateways (researched 20 September 2026)
+
+### Is Shopify cheaper? No, not for us.
+
+**Shopify Payments does not operate in India** ([supported countries](https://help.shopify.com/en/manual/payments/shopify-payments/supported-countries)). So we would still pay Razorpay **and** Shopify's third-party transaction surcharge on top: **2% on Basic**, 1% on Grow, 0.6% on Advanced ([pricing](https://www.shopify.com/in/pricing)). The surcharge is charged on products − discounts + tax + shipping, and is **not returned on a refund** ([help](https://help.shopify.com/en/manual/your-account/manage-billing/billing-charges/types-of-charges/third-party-charges/third-party-transaction-fees)). A prepaid order therefore costs **≈ 4.36%** on Shopify Basic against **2.36%** on our own site.
+
+| | Our site (planned) | Shopify Basic |
+|---|---|---|
+| Subscription | Vercel Pro $20 + Supabase Pro $25 ≈ ₹4,300/mo | ₹1,994/mo monthly, or ₹1,499/mo on annual (₹17,988 upfront). No GST once the GSTIN is on file |
+| Per prepaid order | 2.36% | 4.36% (2.36% Razorpay + 2% Shopify) |
+| COD orders | n/a | Surcharge does not apply to COD/manual payments |
+| Break-even | — | ≈ **₹1.41 lakh/month** of online sales. Below it Shopify is ~₹900/mo cheaper; a ₹5 lakh Diwali month costs ~₹9,000 **more** |
+
+Also: Shopify does **not** produce GST-compliant invoices (needs an app, ~$9.90/mo past 50 orders/month) and **Shopify Shipping is not available in India**. Basic includes **zero** staff accounts (owner and collaborators exempt). Rebuilding the flavour wheel and Mithila design on a Shopify theme is a rebuild, not a migration, and lands on top of Diwali. Note too that we pay **₹0/month today** on GitHub Pages, so every "saving" is against a bill we have not started paying. If anyone still wants to try it, Shopify's own intro offer is 3 days free then ₹20/month for 3 months — about ₹60 to settle the argument.
+
+### The 15 October 2026 UPI change (applies whatever we choose)
+
+NPCI/DFS: from **15 October 2026**, UPI merchant payments **above ₹2,000** carry **0.4% MDR** (capped ₹300); at or below ₹2,000 stays zero, and **merchants may not pass MDR to customers** ([DFS FAQ PDF](https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf)). Our tins sit under ₹2,000; **gift boxes are the exposure**. Pricing a box at ₹1,999 rather than ₹2,100 avoids the charge on the whole transaction. No gateway has published how it will pass this through — ask in writing.
+
+### Cheaper or easier gateways than Razorpay
+
+Razorpay charges **2% even on UPI**, and its own page calls it "Zero MDR — 2% platform fee applies" ([pricing](https://razorpay.com/pricing/)). That is the avoidable line.
+
+| Gateway | UPI | Cards | Port effort | Verdict |
+|---|---|---|---|---|
+| **Razorpay** (built) | 2% + GST | 2% + GST | none — written and reviewed | Default. 90-day/₹5 lakh 0% offer for new accounts |
+| **Cashfree** | 1.95% standard; **0% under a launch offer** up to **₹20 lakh cumulative** GMV to 31 Mar 2027 | 1.95% | **~1 day** — same shape (server order → hosted checkout → HMAC-SHA256 webhook over the raw body) | Best case, **if eligible** |
+| **Paytm PG** | **0.00%**, published as lifetime free; RuPay debit 0.00% | 1.40–1.99% | 1–2 days | The only permanent published zero on UPI |
+| **PhonePe PG** | Flat 1.99% "free for a limited period"; no per-method card published | not itemised | 1–2 days | Cannot underwrite an unpublished rate card |
+| **PayU** | not published | 2% | 1–2 days (form-POST) | No better than Razorpay |
+| **CCAvenue / Instamojo / Stripe India** | 2% or worse | 2%+ | — | Worse at our basket size |
+| **ICICI eazypay** | free below ₹2,000, 0.80% above | 1.18% above ₹2,000 | — | Needs an ICICI current account; we bank Kotak |
+
+**Cashfree's eligibility is contradictory and must be confirmed in writing before any porting work:** their pricing terms say merchants signing up **on or after 21 July 2026** qualify, while their own blog says **before 31 July 2026**. One email to Cashfree settles it — ask the same email for (a) whether the ₹20 lakh cap is cumulative, (b) the chargeback/dispute fee, (c) how the 15 October MDR will be passed through.
+
+**Money at our expected volume** (₹1–1.5 lakh/month): Paytm's zero-UPI saves roughly ₹1,700/month; Cashfree's offer is worth roughly ₹17,000 in total if we qualify. Neither justifies porting on rate grounds alone — but Cashfree at one day of work, during a free window, with an account manager, is the one worth an email.
+
+**Ask the CA one thing:** the 18% GST on gateway fees may be claimable as input tax credit for a GST-registered business, which would make the true cost 2% rather than 2.36% and narrows every gap above.
