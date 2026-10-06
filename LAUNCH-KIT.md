@@ -20,6 +20,12 @@
 
 **Razorpay runbook — 20 Sep 2026:** the full, source-checked plan for taking payments now lives in **`RAZORPAY-KIT.md`** (same folder): costs, the decisions that block everything (FSSAI e-commerce licence, price, merchant of record, domain), the KYC document list, the exact deploy order (Supabase → Vercel → test webhook → domain → KYC → live keys), every environment variable, the test plan, the go-live checklist and the incident runbook. The Razorpay sections below are superseded by it where they disagree.
 
+**SITE TAKEN DOWN — 6 Oct 2026 (holding page).** On Shivansh's instruction sassmi.com now serves a single holding page and nothing else: the wordmark, "Something good is coming.", one line of copy, and a gold **Message us** button to WhatsApp (+91 98688 15333). Source is `pages-extra/holding.html` (one standalone file, no build step, no JS). `docs/` contains only `index.html`, an identical `404.html` (so every old URL — `/product/garlic-fire`, `/checkout`, `/crunchy` — lands on the holding page), `CNAME`, `favicon.svg`, `robots.txt` with `Disallow: /`, `.nojekyll` and one wordmark image. The page is also `noindex, nofollow`, so Google will drop the old pages from search. Nothing in `src/`, `server/`, `shared/` or the assets changed — the full site is intact in git, commit `19bbed3` is the last build of it.
+
+- **Put the holding page back up:** `bun run build:holding && git add -A && git commit -m "holding page" && git push`
+- **Restore the full (coming-soon) site:** `bun run build:pages && git add -A && git commit -m "restore site" && git push` — live in about 30–60 seconds, DNS and the HTTPS certificate are untouched either way.
+- Edit the wording or the WhatsApp message in `pages-extra/holding.html`, then re-run `build:holding`.
+
 **Local preview (no accounts needed):**
 ```bash
 ~/.bun/bin/bun run dev
