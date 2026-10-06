@@ -4,23 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0F1A30" />
-    <title>Sassmi — Premium Makhana, Rooted in Mithila</title>
-    <meta name="description" content="Sassmi premium makhana — twelve roasted flavours and a ready-to-serve kheer. Sourced from the ponds of Mithila, made in small batches in New Delhi. Launching soon." />
-    <meta property="og:title" content="Sassmi — Premium Makhana" />
-    <meta property="og:description" content="Rooted in Mithila. Crafted for today. Thirteen flavours of premium makhana." />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sassmi</title>
+    <meta name="description" content="Sassmi — premium makhana from the ponds of Mithila. Opening soon." />
+    <meta property="og:title" content="Sassmi" />
+    <meta property="og:description" content="Premium makhana from the ponds of Mithila. Opening soon." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://sassmi.com/img/art/lineup-v2.webp" />
-    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=Kaushan+Script&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="./assets/index-CHRSRxNA.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/jsx-runtime-Dk72oS4N.js">
-    <link rel="modulepreload" crossorigin href="./assets/defineProperty-BEx3OREV.js">
-    <link rel="modulepreload" crossorigin href="./assets/backend-0Olgf1Pl.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-FnOOlioq.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root { --night:#0F1A30; --night-2:#0A1224; --ivory:#F4EEE1; --gold:#C9A867; --gold-light:#E6CF95; }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0; display: flex; align-items: center; justify-content: center;
+        padding: 40px 24px calc(40px + env(safe-area-inset-bottom, 0px));
+        background: radial-gradient(70% 55% at 50% 42%, #1B2A47 0%, transparent 70%), linear-gradient(180deg, var(--night) 0%, var(--night-2) 100%);
+        color: var(--ivory); font-family: Jost, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: 300;
+        -webkit-font-smoothing: antialiased; text-align: center;
+      }
+      main { display: flex; flex-direction: column; align-items: center; gap: 26px; max-width: 460px; width: 100%; }
+      img.wordmark { width: min(62vw, 260px); height: auto; }
+      .rule { width: 56px; height: 1px; background: var(--gold); opacity: .8; }
+      h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-style: italic; font-size: clamp(26px, 6.4vw, 38px); line-height: 1.15; margin: 0; text-wrap: balance; }
+      p { margin: 0; font-size: 15px; line-height: 1.65; color: rgba(244,238,225,.72); max-width: 34ch; }
+      a.wa {
+        display: inline-flex; align-items: center; gap: 10px; margin-top: 4px;
+        padding: 13px 26px; border-radius: 999px; background: var(--gold); color: var(--night);
+        text-decoration: none; font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase;
+        transition: background-color .3s ease, transform .3s ease;
+      }
+      a.wa:hover, a.wa:focus-visible { background: var(--gold-light); transform: translateY(-2px); }
+      a.wa svg { width: 16px; height: 16px; }
+      :focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+      footer { margin-top: 10px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: rgba(244,238,225,.38); }
+      @media (prefers-reduced-motion: reduce) { a.wa { transition: none; } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <main>
+      <img class="wordmark" src="/img/brand/wordmark-600.webp" alt="Sassmi" />
+      <span class="rule"></span>
+      <h1>Something good is coming.</h1>
+      <p>Premium makhana from the ponds of Mithila. Our shop opens soon — until then, a message reaches a person.</p>
+      <a class="wa" href="https://wa.me/919868815333?text=Hi%20Sassmi!%20Please%20let%20me%20know%20when%20you%20open." target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Message us
+      </a>
+      <footer>Sassmi™ · New Delhi</footer>
+    </main>
   </body>
 </html>

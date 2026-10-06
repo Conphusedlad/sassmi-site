@@ -12,7 +12,8 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.server.json --noEmit",
     "lint": "oxlint",
     "preview": "vite preview",
-    "build:pages": "VITE_TARGET=artifact vite build --mode artifact --outDir docs && touch docs/.nojekyll && echo sassmi.com > docs/CNAME && cp pages-extra/404.html docs/404.html"
+    "build:pages": "VITE_TARGET=artifact vite build --mode artifact --outDir docs && touch docs/.nojekyll && echo sassmi.com > docs/CNAME && cp pages-extra/404.html docs/404.html",
+    "build:holding": "rm -rf docs && mkdir -p docs/img/brand && cp pages-extra/holding.html docs/index.html && cp pages-extra/holding.html docs/404.html && cp public/favicon.svg docs/favicon.svg && cp public/img/brand/wordmark-600.webp docs/img/brand/wordmark-600.webp && printf 'User-agent: *\\nDisallow: /\\n' > docs/robots.txt && echo sassmi.com > docs/CNAME && touch docs/.nojekyll"
   },
   "dependencies": {
     "@vercel/functions": "^3.9.8",
