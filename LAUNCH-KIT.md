@@ -26,6 +26,8 @@
 - **Restore the full (coming-soon) site:** `bun run build:pages && git add -A && git commit -m "restore site" && git push` — live in about 30–60 seconds, DNS and the HTTPS certificate are untouched either way.
 - Edit the wording or the WhatsApp message in `pages-extra/holding.html`, then re-run `build:holding`.
 
+**Restored — 11 Oct 2026.** Full coming-soon site back at sassmi.com (`bun run build:pages`, commit, push). The holding page stays available with `bun run build:holding`; both are one command + push, ~60 s to go live.
+
 **Local preview (no accounts needed):**
 ```bash
 ~/.bun/bin/bun run dev
