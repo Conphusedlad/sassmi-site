@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { backend, FORMS_OFFLINE } from '../lib/backend'
 import { MessageCircle } from 'lucide-react'
-import { soonWhatsApp } from '../../shared/config'
+import { soonWhatsApp, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { toast } from '../lib/toast'
 import { Container } from '../components/ui/Section'
 
@@ -10,6 +10,23 @@ export function Newsletter() {
 }
 
 function LaunchList() {
+  if (STORE_OPEN) {
+    // the store is open but we have no mailing-list API here (Shopify build): keep the conversation on WhatsApp
+    return (
+      <section className="border-t border-ivory-2 bg-cream py-16">
+        <Container className="grid items-center gap-8 md:grid-cols-2">
+          <div>
+            <p className="kicker">Letters from the pond</p>
+            <h2 className="mt-3 text-4xl">New flavours, harvest notes, the occasional recipe.</h2>
+            <p className="mt-3 text-sm text-ink-soft">One WhatsApp message from us when there is something worth telling. No discount spam — we don’t do discounts.</p>
+          </div>
+          <div className="md:justify-self-end">
+            <a href={whatsappLink('Hi Sassmi! Please keep me posted about new flavours and harvest notes.')} target="_blank" rel="noreferrer" className="btn btn-night"><MessageCircle size={15} /> Keep me posted on WhatsApp</a>
+          </div>
+        </Container>
+      </section>
+    )
+  }
   return (
     <section className="border-t border-ivory-2 bg-cream py-16">
       <Container className="grid items-center gap-8 md:grid-cols-2">

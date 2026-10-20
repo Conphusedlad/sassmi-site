@@ -26,7 +26,7 @@
 - **Restore the full (coming-soon) site:** `bun run build:pages && git add -A && git commit -m "restore site" && git push` — live in about 30–60 seconds, DNS and the HTTPS certificate are untouched either way.
 - Edit the wording or the WhatsApp message in `pages-extra/holding.html`, then re-run `build:holding`.
 
-**Restored — 11 Oct 2026.** Full coming-soon site back at sassmi.com (`bun run build:pages`, commit, push). The holding page stays available with `bun run build:holding`; both are one command + push, ~60 s to go live.
+**11 Oct 2026.** Restored the full site in the morning, then back to the holding page the same day on Shivansh's instruction — **current state: holding page.** Full site: `bun run build:pages`, commit, push (`bun run build:pages`, commit, push). The holding page stays available with `bun run build:holding`; both are one command + push, ~60 s to go live.
 
 **Local preview (no accounts needed):**
 ```bash
@@ -111,3 +111,48 @@ cd /Users/spmcil/Strategy-HQ/SASSMI/brand-web/sassmi-site && git remote add orig
 
 ## 7. Claims discipline (from the compliance review)
 Allowed on the site because they are on the approved packs: Roasted in Olive Oil · Gluten Free · No Added Preservatives · Rich in Protein · the thirteen on-pack flavour lines (as printed on the 17-Sep tin renders) · "Rooted in Mithila" as an origin statement. Keep lab reports for gluten (≤20 mg/kg) and protein (≥20% RDA per 100 g) on file per SKU. Never: organic, any health/medical wording, "natural", "fresh", "homemade", "Mithila Makhana" (registered GI), ® before registration, superlatives ("India's best").
+
+## 8. Shopify theme build (added 20 Oct 2026)
+
+Shopify's storefront runs Liquid themes, not React, so the site ships to Shopify as a **theme that loads the React bundle**:
+`layout/theme.liquid` mounts the app into `#root`, the app routes by hash (`/#/product/mint-royale`), and Shopify's own
+Ajax cart and hosted checkout sit underneath (`src/lib/shopify.ts`, `src/lib/cart.ts`). Checkout, orders, admin and
+Razorpay-direct are **not** in this build — Shopify does those (Razorpay via the Shopify app).
+
+**Build and package (one command):**
+```bash
+bun run build:shopify
+```
+→ `dist-shopify/sassmi-theme-<date>.zip` (≈6 MB) and `dist-shopify/theme/`. Upload in Shopify admin: **Online Store › Themes › Add theme › Upload zip file.**
+It arrives unpublished; use its **Preview** link to test, then **Publish**. Re-upload the new zip for every change (theme assets are cached a year, the `?v=` from `asset_url` handles busting).
+
+**Products CSV (handles = our slugs, the theme looks products up by handle — never rename them in Shopify):**
+```bash
+bun scripts/shopify-products.ts
+```
+→ `dist-shopify/shopify-products.csv` → Shopify admin **Products › Import**. Prices/pack size are the catalogue placeholders (`shared/products.ts`); fix them there and re-export, or edit in Shopify.
+
+**Local test without a store** (`scripts/shopify-mock.ts` renders the Liquid with liquidjs and fakes the Ajax cart — a test double, not Shopify):
+```bash
+bun scripts/shopify-mock.ts
+```
+→ http://localhost:8790 (also in `.claude/launch.json` as `sassmi-shopify-mock`). Verified 20 Oct 2026: home, product, policy and Crunchy routes; `/products/<handle>`, `/cart`, `/collections/*`, `/pages/*`, 404 and customer URLs all land on the right app route; add/+/−/remove stay in sync with the Shopify cart under rapid clicks; checkout posts the documented cart form.
+
+**What the store owner must set up in Shopify (the theme cannot do these):**
+1. Import the products CSV; every product must be **Active** and published to the **Online Store** sales channel (otherwise add-to-cart says "isn't in the Shopify catalogue yet").
+2. **Shipping rate**: free at ₹499 and above, else ₹49 — the drawer shows this as an *estimate* from `shared/config.ts`; the real charge is Shopify's rate at checkout, so keep the two identical.
+3. **Razorpay** app from the Shopify App Store (Shopify Payments is not available in India); test mode first.
+4. **Password page**: Online Store › Preferences › Password protection ON until launch. The theme's password page is the holding page design. *Development stores never show the custom password page publicly.*
+5. **Legal policies**: paste the four policies (`src/content/policies/*.md`) into Settings › Policies so checkout's footer links have content; the app also serves them at `/#/policies/…`.
+6. **Domain**: when ready, connect sassmi.com in Shopify (Settings › Domains) and remove the GitHub Pages CNAME in this repo (`build:pages`/`build:holding`).
+
+**Known limits of this build (same as GitHub Pages today):** contact and newsletter forms open WhatsApp (no API server of ours on Shopify; Shopify's own forms carry hCaptcha and would need a real `<form>`), reviews show "coming soon", the `#/admin` route hands off to Shopify admin. The free-shipping bar and prices in the drawer come from `shared/products.ts`, so a price edited only in Shopify would show wrong in the drawer until the catalogue is updated and the zip re-uploaded.
+
+**Files involved:** `vite.config.ts` (target `shopify`: one `sassmi.js` + `sassmi.css`, `__STORE_OPEN__` define), `src/lib/env.ts` (`IS_SHOPIFY`, `asset()` → CDN map injected by the layout), `src/router.tsx` (hash router; checkout/order/admin become hand-offs), `src/lib/shopify.ts`, `src/lib/cart.ts` (write-through queue), `src/components/CartDrawer.tsx`, `src/lib/backend.ts` (preview mode), `shared/config.ts` (`STORE_OPEN` override), `scripts/shopify-theme/` (the Liquid skeleton), `scripts/shopify-theme.ts` (packager), `scripts/shopify-products.ts`, `scripts/shopify-mock.ts`.
+
+**Decisions the review surfaced (20 Oct 2026) — need the family / the developer:**
+- **The Nocturne Trio says "choose any three flavours" but has no chooser.** On Shopify it imports as one plain product, so an order arrives as "Nocturne Trio × 1" with no flavours. Either make it a fixed trio (change the copy in `shared/products.ts`), or ask the developer to add Shopify variants / line-item properties for the three picks. Same gap exists on the own-site build.
+- **SEO trade-off of hash routing:** Shopify's `/products/<handle>` URLs redirect to `/#/product/<handle>`, so crawlers see one page. The layout now emits product title/description/image meta on product URLs (shared links preview correctly); real per-product indexing would need Liquid product templates — a later job if organic search matters.
+- **Customer accounts:** use Shopify's *new* customer accounts (Settings › Customer accounts). The theme redirects the classic `/account/*` templates to the home page.
+- **Social preview image** is the WebP lineup; WhatsApp previews are unreliable with WebP. A 1200×630 PNG/JPG card in `public/img/brand/` would fix it (not done).
+- **Prices now come from Shopify in the drawer**, but product cards, quick view and product pages still print the catalogue price (`shared/products.ts`). Keep both identical or the shopper sees ₹249 on the card and Shopify's number in the cart.

@@ -1,0 +1,9 @@
+{%- comment -%} Sassmi: layout/theme.liquid redirects to /#/product/handle; this is what a no-JS reader or crawler sees {%- endcomment -%}
+<noscript>
+  <article>
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.price | money }}</p>
+    {{ product.description }}
+    <p><a href="/">Continue to Sassmi</a></p>
+  </article>
+</noscript>

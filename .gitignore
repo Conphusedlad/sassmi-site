@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-artifact
+dist-shopify
 .env
 .env.local
 .env.*.local

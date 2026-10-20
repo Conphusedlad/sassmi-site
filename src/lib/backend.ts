@@ -3,7 +3,7 @@
  * (no server): reviews/queries persist in the artifact's shared db when available, else localStorage,
  * and checkout is simulated so the family can walk through the flow.
  */
-import { IS_ARTIFACT } from './env'
+import { IS_ARTIFACT, IS_SHOPIFY } from './env'
 import { business } from '../../shared/config'
 import { priceItems } from '../../shared/pricing'
 
@@ -123,7 +123,7 @@ const preview: Backend = {
   async admin() { throw new ApiError('The admin panel is available on the live site only.', 503) },
 }
 
-export const backend: Backend = IS_ARTIFACT ? preview : live
+export const backend: Backend = IS_ARTIFACT || IS_SHOPIFY ? preview : live // Shopify: no API of our own, so forms behave as on GitHub Pages
 
 /** true when there is no server behind the site (the static build): forms go to WhatsApp instead of pretending to send. */
 export const FORMS_OFFLINE = backend.mode === 'preview'

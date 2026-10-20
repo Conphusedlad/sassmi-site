@@ -98,8 +98,10 @@ export const business = {
 export const whatsappLink = (text: string) =>
   `https://wa.me/${business.contact.whatsapp}?text=${encodeURIComponent(text)}`
 
-/** true once the family opens online ordering (see `business.store`). */
-export const STORE_OPEN: boolean = business.store.open
+/** Set by Vite's `define` (true for the Shopify theme build); absent in the server builds. */
+declare const __STORE_OPEN__: boolean | undefined
+/** true once the family opens online ordering (see `business.store`) — or in a build that forces it open. */
+export const STORE_OPEN: boolean = business.store.open || (typeof __STORE_OPEN__ !== 'undefined' && __STORE_OPEN__ === true)
 
 /** WhatsApp link for "coming soon" moments: asks about one product, or about the launch in general. */
 export const soonWhatsApp = (what?: string) =>

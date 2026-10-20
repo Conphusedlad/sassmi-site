@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react'
-import { cart, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
-import { bySlug, tins } from '../../shared/products'
+import { cart, cartPending, cartSettled, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
+import { IS_SHOPIFY } from '../lib/env'
+import { goToCheckout } from '../lib/shopify'
+import { tins } from '../../shared/products'
 import { business, formatINR, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { tinCut } from './ProductCard'
 import { EASE } from '../lib/motion'
@@ -14,8 +16,9 @@ export function CartDrawer() {
 
 function Drawer() {
   const { cartOpen } = useUI()
-  const { items, lines, subtotal, shippingFee, total } = useCart()
+  const { items, lines, subtotal, shippingFee, total, shippingAtCheckout } = useCart()
   const nav = useNavigate()
+  const [handing, setHanding] = useState(false)
   useEffect(() => {
     if (!cartOpen) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') uiStore.closeCart() }
@@ -48,17 +51,17 @@ function Drawer() {
             ) : (
               <>
                 <ul className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
-                  {items.map((it) => {
-                    const p = bySlug(it.slug)!
+                  {lines.map((it) => {
+                    const p = it.product
                     return (
                       <li key={it.slug} className="flex gap-4">
                         <div className="flex h-24 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-ivory-2 bg-cream">
-                          <img src={tinCut(p)} alt="" className="h-[88%] w-auto" />
+                          {p ? <img src={tinCut(p)} alt="" className="h-[88%] w-auto" /> : it.image ? <img src={it.image} alt="" className="h-full w-full object-cover" /> : null}
                         </div>
                         <div className="flex flex-1 flex-col">
                           <div className="flex justify-between gap-3">
-                            <div><p className="font-display text-lg leading-tight">{p.name}</p><p className="text-xs text-muted">{p.netWeight}</p></div>
-                            <p className="font-display text-lg">{formatINR(p.price * it.qty)}</p>
+                            <div><p className="font-display text-lg leading-tight">{it.name}</p><p className="text-xs text-muted">{p ? p.netWeight : 'From the Sassmi store'}</p></div>
+                            <p className="font-display text-lg">{formatINR(it.unitPrice * it.qty)}</p>
                           </div>
                           <div className="mt-auto flex items-center justify-between">
                             <div className="flex items-center rounded-full border border-ink/15">
@@ -82,10 +85,16 @@ function Drawer() {
                   ) : <p className="mb-4 text-xs text-gold-deep">✦ You’ve unlocked free shipping</p>}
                   <dl className="space-y-1.5 text-sm">
                     <div className="flex justify-between"><dt className="text-ink-soft">Subtotal</dt><dd>{formatINR(subtotal)}</dd></div>
-                    <div className="flex justify-between"><dt className="text-ink-soft">Shipping</dt><dd>{shippingFee ? formatINR(shippingFee) : 'Free'}</dd></div>
+                    <div className="flex justify-between"><dt className="text-ink-soft">Shipping</dt><dd>{shippingAtCheckout ? <span className="text-ink-soft">Calculated at checkout</span> : shippingFee ? formatINR(shippingFee) : 'Free'}</dd></div>
                     <div className="flex justify-between border-t border-ivory-2 pt-2 font-display text-xl"><dt>Total</dt><dd>{formatINR(total)}</dd></div>
                   </dl>
-                  <button className="btn btn-gold mt-5 w-full" onClick={() => { uiStore.closeCart(); nav('/checkout') }}>Checkout securely</button>
+                  <button className="btn btn-gold mt-5 w-full" disabled={handing} onClick={async () => {
+                    if (!IS_SHOPIFY) { uiStore.closeCart(); nav('/checkout'); return }
+                    if (handing) return
+                    setHanding(true)
+                    try { while (cartPending() > 0) await cartSettled() } finally { /* hand off even if a sync failed: Shopify's cart is what it is */ }
+                    goToCheckout()
+                  }}>{handing ? 'Opening checkout…' : 'Checkout securely'}</button>
                   <a className="mt-3 block text-center text-xs text-ink-soft underline-offset-4 hover:text-gold-deep hover:underline" href={whatsappLink(waText)} target="_blank" rel="noreferrer">or order on WhatsApp</a>
                 </footer>
               </>
