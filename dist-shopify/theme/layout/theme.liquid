@@ -1,0 +1,163 @@
+{%- comment -%}
+  Sassmi — Shopify theme shell. Generated into dist-shopify/theme by scripts/shopify-theme.ts; the source is
+  scripts/shopify-theme/layout/theme.liquid. The storefront is the React app (assets/sassmi.js + sassmi.css);
+  it mounts into #root and routes by hash (/#/product/…), so every Shopify URL rendered through this layout
+  is sent to the matching app route below. Shopify keeps /cart (Ajax), /checkout, /account and /password.
+{%- endcomment -%}
+{%- liquid
+  assign sassmi_title = 'Sassmi — Premium Makhana, Rooted in Mithila'
+  if template.name != 'index' and page_title != blank
+    assign sassmi_title = page_title | append: ' — Sassmi'
+  endif
+  assign sassmi_og_image = 'img-art-lineup-v2.webp' | asset_url
+  unless sassmi_og_image contains 'https:'
+    assign sassmi_og_image = sassmi_og_image | prepend: 'https:'
+  endunless
+
+  comment
+    Which URLs mount the app. Shopify pages we don't know (an extra page made in the admin, the legal policies,
+    a blog) render their own content inside the shell further down instead.
+  endcomment
+  assign sassmi_app = false
+  case template.name
+    when 'index' or 'product' or 'collection' or 'list-collections' or 'cart' or '404' or 'search'
+      assign sassmi_app = true
+    when 'page'
+      if page.handle == 'privacy' or page.handle == 'terms' or page.handle == 'shipping' or page.handle == 'refunds' or page.handle == 'crunchy-makhana'
+        assign sassmi_app = true
+      endif
+  endcase
+  if template.directory == 'customers'
+    assign sassmi_app = true
+  endif
+-%}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0F1A30">
+    <title>{{ sassmi_title }}</title>
+    <meta name="description" content="Sassmi premium makhana — twelve roasted flavours and a ready-to-serve kheer. Sourced from the ponds of Mithila, made in small batches in New Delhi.">
+    <meta property="og:title" content="Sassmi — Premium Makhana">
+    <meta property="og:description" content="Rooted in Mithila. Crafted for today. Thirteen flavours of premium makhana.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ sassmi_og_image }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="icon" href="{{ 'favicon.svg' | asset_url }}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=Kaushan+Script&display=swap" rel="stylesheet">
+    {%- if sassmi_app %}
+    <link rel="stylesheet" href="{{ 'sassmi.css' | asset_url }}">
+    <script>
+      // Written by scripts/shopify-theme.ts: public path → CDN URL. The app resolves every image through it (src/lib/env.ts → asset()).
+      window.SASSMI_ASSETS = {
+        "favicon.svg": {{ 'favicon.svg' | asset_url | json }},
+        "img/art/gold-strip.png": {{ 'img-art-gold-strip.png' | asset_url | json }},
+        "img/art/lineup-v2.webp": {{ 'img-art-lineup-v2.webp' | asset_url | json }},
+        "img/art/lotus-leaves.webp": {{ 'img-art-lotus-leaves.webp' | asset_url | json }},
+        "img/art/lotus.webp": {{ 'img-art-lotus.webp' | asset_url | json }},
+        "img/art/makhana-bowl.webp": {{ 'img-art-makhana-bowl.webp' | asset_url | json }},
+        "img/art/makhana-single.png": {{ 'img-art-makhana-single.png' | asset_url | json }},
+        "img/art/nocturne-board.webp": {{ 'img-art-nocturne-board.webp' | asset_url | json }},
+        "img/brand/tile-512.png": {{ 'img-brand-tile-512.png' | asset_url | json }},
+        "img/brand/wordmark-1500.webp": {{ 'img-brand-wordmark-1500.webp' | asset_url | json }},
+        "img/brand/wordmark-600.webp": {{ 'img-brand-wordmark-600.webp' | asset_url | json }},
+        "img/crunchy/logo-tile.webp": {{ 'img-crunchy-logo-tile.webp' | asset_url | json }},
+        "img/crunchy/pack-hero.webp": {{ 'img-crunchy-pack-hero.webp' | asset_url | json }},
+        "img/crunchy/six-packs.webp": {{ 'img-crunchy-six-packs.webp' | asset_url | json }},
+        "img/tins-2x/caramel-crunch.webp": {{ 'img-tins-2x-caramel-crunch.webp' | asset_url | json }},
+        "img/tins-2x/choco-indulgence.webp": {{ 'img-tins-2x-choco-indulgence.webp' | asset_url | json }},
+        "img/tins-2x/cream-onion-bliss.webp": {{ 'img-tins-2x-cream-onion-bliss.webp' | asset_url | json }},
+        "img/tins-2x/divine-salt-pepper.webp": {{ 'img-tins-2x-divine-salt-pepper.webp' | asset_url | json }},
+        "img/tins-2x/garlic-fire.webp": {{ 'img-tins-2x-garlic-fire.webp' | asset_url | json }},
+        "img/tins-2x/honey-cheese-bliss.webp": {{ 'img-tins-2x-honey-cheese-bliss.webp' | asset_url | json }},
+        "img/tins-2x/hot-schezwan.webp": {{ 'img-tins-2x-hot-schezwan.webp' | asset_url | json }},
+        "img/tins-2x/jaggery-heritage.webp": {{ 'img-tins-2x-jaggery-heritage.webp' | asset_url | json }},
+        "img/tins-2x/jalapeno-zing.webp": {{ 'img-tins-2x-jalapeno-zing.webp' | asset_url | json }},
+        "img/tins-2x/mint-royale.webp": {{ 'img-tins-2x-mint-royale.webp' | asset_url | json }},
+        "img/tins-2x/peri-peri-blaze.webp": {{ 'img-tins-2x-peri-peri-blaze.webp' | asset_url | json }},
+        "img/tins-2x/royal-makhana-kheer.webp": {{ 'img-tins-2x-royal-makhana-kheer.webp' | asset_url | json }},
+        "img/tins-2x/thai-sweet-chilly.webp": {{ 'img-tins-2x-thai-sweet-chilly.webp' | asset_url | json }},
+        "img/tins/caramel-crunch.png": {{ 'img-tins-caramel-crunch.png' | asset_url | json }},
+        "img/tins/choco-indulgence.png": {{ 'img-tins-choco-indulgence.png' | asset_url | json }},
+        "img/tins/cream-onion-bliss.png": {{ 'img-tins-cream-onion-bliss.png' | asset_url | json }},
+        "img/tins/divine-salt-pepper.png": {{ 'img-tins-divine-salt-pepper.png' | asset_url | json }},
+        "img/tins/garlic-fire.png": {{ 'img-tins-garlic-fire.png' | asset_url | json }},
+        "img/tins/honey-cheese-bliss.png": {{ 'img-tins-honey-cheese-bliss.png' | asset_url | json }},
+        "img/tins/hot-schezwan.png": {{ 'img-tins-hot-schezwan.png' | asset_url | json }},
+        "img/tins/jaggery-heritage.png": {{ 'img-tins-jaggery-heritage.png' | asset_url | json }},
+        "img/tins/jalapeno-zing.png": {{ 'img-tins-jalapeno-zing.png' | asset_url | json }},
+        "img/tins/mint-royale.png": {{ 'img-tins-mint-royale.png' | asset_url | json }},
+        "img/tins/peri-peri-blaze.png": {{ 'img-tins-peri-peri-blaze.png' | asset_url | json }},
+        "img/tins/royal-makhana-kheer.png": {{ 'img-tins-royal-makhana-kheer.png' | asset_url | json }},
+        "img/tins/thai-sweet-chilly.png": {{ 'img-tins-thai-sweet-chilly.png' | asset_url | json }}
+      };
+      window.SASSMI_SHOP = {
+        template: {{ template.name | json }},
+        handle: {% if template.name == 'product' and product %}{{ product.handle | json }}{% elsif template.name == 'page' and page %}{{ page.handle | json }}{% elsif template.name == 'collection' and collection %}{{ collection.handle | json }}{% else %}null{% endif %},
+        root: {{ routes.root_url | json }},
+        cartUrl: {{ routes.cart_url | json }},
+        currency: {{ cart.currency.iso_code | json }},
+        cartCount: {{ cart.item_count | default: 0 }},
+        moneyFormat: {{ shop.money_format | json }},
+        domain: {{ shop.url | json }}
+      };
+      {%- case template.name %}
+        {%- when 'product' %}
+          {%- if product %}location.replace('/#/product/{{ product.handle }}');{% endif %}
+        {%- when 'cart' %}
+          location.replace('/?cart=open#/');
+        {%- when 'page' %}
+          {%- if page.handle == 'crunchy-makhana' %}location.replace('/#/crunchy-makhana');{% else %}location.replace('/#/policies/{{ page.handle }}');{% endif %}
+        {%- when '404' %}
+          (function () {
+            // old own-site links (/product/mint-royale, /policies/privacy) keep working; anything else lands on the app's 404
+            var p = location.pathname.replace(/\/+$/, '');
+            var known = /^\/(product\/[a-z0-9-]+|crunchy-makhana|policies\/[a-z-]+)$/.test(p);
+            location.replace('/' + (known ? '#' + p : '#/404') + location.search);
+          })();
+        {%- when 'collection' or 'list-collections' or 'search' %}
+          location.replace('/#/');
+      {%- endcase %}
+      {%- if template.directory == 'customers' %}location.replace('/#/');{% endif %}
+    </script>
+    <script type="module" src="{{ 'sassmi.js' | asset_url }}"></script>
+    {%- else %}
+    <style>
+      /* Shell for pages Shopify renders itself (admin-made pages, legal policies, blog): the brand palette, nothing more. */
+      :root { --night: #0F1A30; --ivory: #F4EEE1; --ink: #1A1A1A; --ink-soft: #4A4A4A; --gold: #C9A867; --gold-deep: #9C7D3C; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--ivory); color: var(--ink); font-family: Jost, ui-sans-serif, system-ui, sans-serif; font-weight: 300; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+      .sassmi-shell { max-width: 46rem; margin: 0 auto; padding: 40px 24px 80px; }
+      .sassmi-shell__nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 28px; border-bottom: 1px solid rgba(15,26,48,.12); }
+      .sassmi-shell__nav img { width: 128px; height: auto; }
+      .sassmi-shell__nav a { color: var(--gold-deep); text-decoration: none; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+      .sassmi-shell h1, .sassmi-shell h2, .sassmi-shell h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; line-height: 1.15; text-wrap: balance; }
+      .sassmi-shell h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 40px 0 20px; }
+      .sassmi-shell a { color: var(--gold-deep); }
+      .sassmi-shell img { max-width: 100%; height: auto; }
+      .sassmi-shell table { border-collapse: collapse; width: 100%; } .sassmi-shell td, .sassmi-shell th { border-bottom: 1px solid rgba(15,26,48,.12); padding: 8px 10px; text-align: left; }
+      .sassmi-shell footer { margin-top: 56px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+    </style>
+    {%- endif %}
+    {{ content_for_header }}
+  </head>
+  <body>
+    {%- if sassmi_app %}
+    <div id="root"></div>
+    {{ content_for_layout }}
+    {%- else %}
+    <main class="sassmi-shell">
+      <nav class="sassmi-shell__nav">
+        <a href="{{ routes.root_url }}" aria-label="Sassmi home"><img src="{{ 'img-brand-wordmark-600.webp' | asset_url }}" alt="Sassmi"></a>
+        <a href="{{ routes.root_url }}">Back to the shop</a>
+      </nav>
+      {{ content_for_layout }}
+      <footer>Sassmi™ · New Delhi</footer>
+    </main>
+    {%- endif %}
+  </body>
+</html>
