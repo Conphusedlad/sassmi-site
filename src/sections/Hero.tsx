@@ -37,14 +37,12 @@ const onStage = (): { p: Product; cls: string; delay: number; float: string }[] 
   })
 }
 const TINS = onStage()
-// "Twelve tins … and one ready-to-serve kheer — all in midnight blue", kept true to what is on sale
+// "Six jars slow-roasted … and one ready-to-serve kheer", kept true to what is on sale
 const heroLine = () => {
   const roasted = tins.filter((t) => t.format !== 'ready-to-serve')
   const kheer = tins.some((t) => t.format === 'ready-to-serve')
-  const jars = roasted.length > 0 && roasted.every((t) => t.pack === 'jar')
-  const noun = jars ? 'jars' : 'tins'
   const n = roasted.length
-  return `A timeless superfood from the ponds of Mithila. ${n === 1 ? `One ${noun.slice(0, -1)}` : `${countWord(n).replace(/^./, (c) => c.toUpperCase())} ${noun}`} slow-roasted in olive oil and seasoned with honest ingredients${kheer ? ', and one ready-to-serve kheer' : ''}${jars ? '.' : ' — all in midnight blue.'}`
+  return `A timeless superfood from the ponds of Mithila. ${n === 1 ? 'One jar' : `${countWord(n).replace(/^./, (c) => c.toUpperCase())} jars`} slow-roasted in olive oil and seasoned with honest ingredients${kheer ? ', and one ready-to-serve kheer' : ''}.`
 }
 
 export function Hero() {

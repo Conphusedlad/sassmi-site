@@ -36,7 +36,7 @@ export default function ProductPage() {
           </nav>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE }} className="relative flex flex-col items-center justify-center gap-4 lg:col-span-6">
             <div className="absolute top-1/2 h-64 w-[70%] -translate-y-1/2 rounded-[100%] blur-3xl" style={{ background: `${p.hex}AA` }} />
-            <ZoomImage key={gallery[shot]} src={gallery[shot]} alt={`${p.name} — Sassmi premium makhana tin`} frameClassName="relative flex h-[420px] w-full items-center justify-center rounded-3xl py-6 sm:h-[540px]"
+            <ZoomImage key={gallery[shot]} src={gallery[shot]} alt={`${p.name} — Sassmi premium makhana jar`} frameClassName="relative flex h-[420px] w-full items-center justify-center rounded-3xl py-6 sm:h-[540px]"
               className={`h-[88%] w-auto drop-shadow-[0_60px_60px_rgba(0,0,0,.6)] ${shot === 0 ? 'animate-float' : ''}`} />
             {gallery.length > 1 && (
               <div className="relative flex gap-2">
@@ -69,11 +69,11 @@ export default function ProductPage() {
             <p className="kicker">What’s inside</p>
             <h2 className="mt-3 text-4xl">Ingredients & declarations</h2>
             <dl className="mt-8 grid gap-x-8 gap-y-5 text-[15px] sm:grid-cols-2">
-              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Ingredients</dt><dd className="mt-1 text-ink-soft">{p.kind === 'bundle' ? 'Any three tins from the collection — each tin carries its own ingredient list.' : p.format === 'ready-to-serve' ? `${p.ingredientHint}.` : `Makhana (fox nut), olive oil, ${p.ingredientHint.replace(/^With /i, '').toLowerCase()}.`}{p.kind !== 'bundle' && <span className="text-muted"> Full list on pack.</span>}</dd></div>
+              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Ingredients</dt><dd className="mt-1 text-ink-soft">{p.kind === 'bundle' ? 'Any three jars from the collection — each jar carries its own ingredient list.' : p.format === 'ready-to-serve' ? `${p.ingredientHint}.` : `Makhana (fox nut), olive oil, ${p.ingredientHint.replace(/^With /i, '').toLowerCase()}.`}{p.kind !== 'bundle' && <span className="text-muted"> Full list on pack.</span>}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Allergen advice</dt><dd className="mt-1 text-ink-soft">Processed in a facility that also handles tree nuts and milk. {p.allergens ? `${p.allergens}. ` : ''}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Net quantity</dt><dd className="mt-1 text-ink-soft">{STORE_OPEN ? p.netWeight : 'To be announced at launch'}</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">MRP</dt><dd className="mt-1 text-ink-soft">{STORE_OPEN ? `${formatINR(p.price)} (inclusive of all taxes)` : 'To be announced at launch'}</dd></div>
-              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Best before</dt><dd className="mt-1 text-ink-soft">Printed on the base of each tin. Store cool, dry and away from sunlight; keep lid tightly closed.</dd></div>
+              <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Best before</dt><dd className="mt-1 text-ink-soft">Printed on each jar. Store cool, dry and away from sunlight; keep lid tightly closed.</dd></div>
               <div><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Country of origin</dt><dd className="mt-1 text-ink-soft">India</dd></div>
               <div className="sm:col-span-2"><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Manufactured & marketed by</dt><dd className="mt-1 text-ink-soft">{business.operator.name}, {business.operator.address}. FSSAI Lic. No. {business.operator.fssai}. Customer care: {business.contact.phoneDisplay} · {business.contact.email}</dd></div>
               <div className="sm:col-span-2"><dt className="text-[11px] uppercase tracking-[.2em] text-muted">Veg / Non-veg</dt><dd className="mt-1 flex items-center gap-2 text-ink-soft"><span className="inline-flex h-4 w-4 items-center justify-center border border-green-700"><span className="h-2 w-2 rounded-full bg-green-700" /></span> Vegetarian</dd></div>
@@ -87,7 +87,7 @@ export default function ProductPage() {
               <div><div className="flex justify-between"><span>Crunch</span><span className="text-muted">Always</span></div><div className="mt-1.5 h-1.5 rounded-full bg-ivory-2"><div className="h-full w-full rounded-full bg-gold" /></div></div>
             </div>
             <div className="mt-8 h-24 rounded-2xl" style={{ background: `linear-gradient(135deg, ${p.hex}, ${p.accent})` }} />
-            <p className="mt-3 text-xs text-muted">Tin colour · The Mithila Nocturne collection</p>
+            <p className="mt-3 text-xs text-muted">Label colour · The Mithila Nocturne collection</p>
           </aside>
         </Container>
       </section>

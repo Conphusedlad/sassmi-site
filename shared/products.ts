@@ -16,7 +16,7 @@ export type Product = {
   netWeight: string
   price: number
   compareAt?: number
-  hex: string // tin body colour
+  hex: string // label colour
   accent: string // lighter accent for gradients/chips
   spice: 0 | 1 | 2 | 3
   profile: 'savoury' | 'sweet' | 'spicy'
@@ -35,7 +35,7 @@ export type Product = {
 import { SHOPIFY_CATALOGUE } from './shopify-catalogue'
 
 export const PACK_SIZE = '100 g' // TODO confirm — earlier render said 65 g, 12-Sep label draft said 100 g (4 × 25 g)
-export const TIN_PRICE = 249 // TODO confirm — placeholder MRP per tin, incl. of all taxes
+export const TIN_PRICE = 249 // TODO confirm — placeholder MRP per jar, incl. of all taxes
 
 const BADGES = ['Roasted in Olive Oil', 'Gluten Free', 'No Added Preservatives', 'Rich in Protein']
 const tin = (p: Omit<Product, 'kind' | 'netWeight' | 'price' | 'badges'> & Partial<Pick<Product, 'netWeight' | 'price' | 'badges'>>): Product => ({
@@ -46,8 +46,8 @@ const tin = (p: Omit<Product, 'kind' | 'netWeight' | 'price' | 'badges'> & Parti
 export const catalogue: Product[] = [
   tin({
     slug: 'mint-royale', pack: 'jar', name: 'Mint Royale', tagline: 'Cool. Refreshing. Real.', profile: 'savoury', spice: 1, featured: true,
-    description: 'Garden mint over warm, slow-roasted makhana. Bright, clean and a little peppery — the tin that tastes like a Delhi evening breeze.',
-    pairing: 'Adrak chai at four. Crushed over dahi. The first tin to open for guests.',
+    description: 'Garden mint over warm, slow-roasted makhana. Bright, clean and a little peppery — the jar that tastes like a Delhi evening breeze.',
+    pairing: 'Adrak chai at four. Crushed over dahi. The first jar to open for guests.',
     ingredientHint: 'Mint, rock salt', hex: '#3D663A', accent: '#6E9A67',
   }),
   tin({
@@ -77,7 +77,7 @@ export const catalogue: Product[] = [
   tin({
     slug: 'divine-salt-pepper', pack: 'jar', name: 'Divine Salt & Pepper', tagline: 'Pure. Balanced. Timeless.', profile: 'savoury', spice: 1, featured: true,
     description: 'Himalayan pink salt and cracked black pepper. Nothing to hide behind — just the makhana, seasoned the way it has always been.',
-    pairing: 'Fasting days. Whisky. The tin for people who say they don’t like flavoured snacks.',
+    pairing: 'Fasting days. Whisky. The jar for people who say they don’t like flavoured snacks.',
     ingredientHint: 'Himalayan pink salt, black pepper', hex: '#3A342C', accent: '#6E6455',
   }),
   tin({
@@ -88,13 +88,13 @@ export const catalogue: Product[] = [
   }),
   tin({
     slug: 'hot-schezwan', name: 'Hot Schezwan', tagline: 'Bold. Spicy. Authentic.', profile: 'spicy', spice: 3,
-    description: 'Our loudest tin. Dried red chillies, garlic and Sichuan-style tang, roasted deep into the pop.',
+    description: 'Our loudest jar. Dried red chillies, garlic and Sichuan-style tang, roasted deep into the pop.',
     pairing: 'Momos. Rainy evenings. Dares.',
     ingredientHint: 'Schezwan seasoning: chilli, garlic, spices', hex: '#BF261F', accent: '#DE5A4E',
   }),
   tin({
     slug: 'honey-cheese-bliss', name: 'Honey Cheese Bliss', tagline: 'Sweet meets savoury.', profile: 'savoury', spice: 0,
-    description: 'Sharp cheese seasoning glazed with honey. The tin people argue over — and then finish.',
+    description: 'Sharp cheese seasoning glazed with honey. The jar people argue over — and then finish.',
     pairing: 'Picnics. Kids’ tiffin. A cheese board that needed a surprise.',
     ingredientHint: 'Honey & cheese seasoning', allergens: 'Contains milk solids', hex: '#DE9924', accent: '#F0BE5A',
   }),
@@ -112,24 +112,24 @@ export const catalogue: Product[] = [
   }),
   tin({
     slug: 'jaggery-heritage', name: 'Jaggery Heritage', tagline: 'Traditional. Nourishing. Real.', profile: 'sweet', spice: 0, featured: true,
-    description: 'Unrefined gur, the way our grandmothers sweetened everything. Deep, earthy, faintly smoky — the most Mithila of all our tins.',
+    description: 'Unrefined gur, the way our grandmothers sweetened everything. Deep, earthy, faintly smoky — the most Mithila of all our jars.',
     pairing: 'Winter afternoons. Post-workout. With a glass of warm milk.',
     ingredientHint: 'Jaggery (gur)', hex: '#B66824', accent: '#D48C48',
   }),
   tin({
     slug: 'royal-makhana-kheer', name: 'Royal Makhana Kheer', tagline: 'Traditional taste. Modern convenience.', profile: 'sweet', spice: 0, format: 'ready-to-serve',
     description: 'Festival kheer, ready when you are: makhana simmered in milk with cardamom, almonds and pistachio. Open, chill or warm, serve.',
-    pairing: 'Pooja thalis. Diwali evenings. The grandparents’ tin.',
+    pairing: 'Pooja thalis. Diwali evenings. The grandparents’ jar.',
     ingredientHint: 'Makhana, milk, almonds, pistachios, cardamom', allergens: 'Contains milk and tree nuts',
     hex: '#4FB0C4', accent: '#86CDD9', badges: ['Ready to Serve', 'Gluten Free', 'No Added Preservatives'],
     netWeight: PACK_SIZE, // TODO: confirm the kheer pack size — a ready-to-serve format is unlikely to be 100 g
   }),
   {
     slug: 'nocturne-trio', name: 'The Nocturne Trio', kind: 'bundle', profile: 'sweet', spice: 0,
-    tagline: 'Three tins. One midnight-blue box.',
+    tagline: 'Three jars. One midnight-blue box.',
     description: 'Choose any three flavours, boxed in indigo with a gold ribbon and a hand-written card. Our answer to the Diwali gift that gets re-gifted.',
     pairing: 'Corporate gifting, house-warmings, thank-yous.',
-    ingredientHint: 'Any three tins',
+    ingredientHint: 'Any three jars',
     netWeight: `3 × ${PACK_SIZE}`, price: 699, compareAt: 747, hex: '#0F1A30', accent: '#C9A867', badges: ['Gift box', 'Free card'],
   },
 ]
@@ -154,8 +154,8 @@ export const products: Product[] = onSale.length > 0 ? onSale : catalogue
 
 export const bySlug = (slug: string) => products.find((p) => p.slug === slug)
 export const tins = products.filter((p) => p.kind === 'tin')
-/** "tin" or "jar" — for alt text and copy. */
-export const packNoun = (p: Product) => p.pack ?? 'tin'
+/** The brand word for the container (the family chose "jar", 22 Oct 2026). `pack` only says which renders a product has. */
+export const packNoun = (_p: Product) => 'jar'
 /** Public image path for a product (tins and jars are transparent PNG cut-outs; bundles use the lineup render). */
 export const productImage = (p: Product) => (p.kind !== 'tin' ? '/img/art/lineup-v2.webp' : p.pack === 'jar' ? `/img/jars/${p.slug}.png` : `/img/tins/${p.slug}.png`)
 /** Retina cut-out (WebP, 2×) for the flavour wheel. */

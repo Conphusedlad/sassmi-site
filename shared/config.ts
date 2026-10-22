@@ -110,7 +110,7 @@ export const STORE_OPEN: boolean = business.store.open || (typeof __STORE_OPEN__
 
 /** WhatsApp link for "coming soon" moments: asks about one product, or about the launch in general. */
 export const soonWhatsApp = (what?: string) =>
-  whatsappLink(what ? `Hi Sassmi! I'm interested in ${what}. When can I order it?` : 'Hi Sassmi! Please let me know when the tins launch.')
+  whatsappLink(what ? `Hi Sassmi! I'm interested in ${what}. When can I order it?` : 'Hi Sassmi! Please let me know when the jars launch.')
 
 export const formatINR = (rupees: number) =>
   '₹' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(rupees)

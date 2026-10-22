@@ -80,7 +80,7 @@ function Plate({ f, index, total, locked, onChoose, part = 'all' }: { f: Product
           {f.format === 'ready-to-serve' && <span className="rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[.2em]" style={t.chipFill ? { background: t.chipFill, color: t.chipInk } : { border: `1px solid ${t.ink}`, color: t.ink }}>Ready to serve</span>}
         </motion.div>
         <motion.div className={`flex flex-wrap items-center gap-3 ${part === 'facts' ? 'mt-4' : 'mt-7'}`} {...rise(0.42)}>
-          {!locked && <button onClick={onChoose} className="btn btn-outline-gold !text-[11px]">Highlight this tin</button>}
+          {!locked && <button onClick={onChoose} className="btn btn-outline-gold !text-[11px]">Highlight this jar</button>}
           {STORE_OPEN ? <span className="text-[12px] text-ivory/45">{formatINR(f.price)} · {f.netWeight}</span> : part === 'facts' ? <span className="text-[12px] text-gold/80">Coming soon</span> : <Soon tone="dark" />}
         </motion.div>
       </>}
@@ -101,10 +101,10 @@ function Panel({ f, coarse, open, onClose, onRestoreFocus }: { f: Product; coars
       {f.allergens && <p className="mt-3 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/60">{f.allergens}</p>}
       <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
         {STORE_OPEN
-          ? <p className="font-display text-[28px] leading-none text-ivory">{formatINR(f.price)} <span className="ml-2 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/50">{f.netWeight} tin</span></p>
+          ? <p className="font-display text-[28px] leading-none text-ivory">{formatINR(f.price)} <span className="ml-2 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/50">{f.netWeight} jar</span></p>
           : <Soon tone="dark" className="!px-4 !py-2 !text-[11px]" />}
         <AddControl slug={f.slug} size="lg" tone="gold" label="Add to cart" />
-        <Link to={`/product/${f.slug}`} className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/80 underline-offset-4 hover:text-gold hover:underline">View the tin <ArrowUpRight size={13} /></Link>
+        <Link to={`/product/${f.slug}`} className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[.22em] text-ivory/80 underline-offset-4 hover:text-gold hover:underline">View the jar <ArrowUpRight size={13} /></Link>
       </div>
       <p className="mt-4 text-[11px] text-ivory/40">Turn the wheel or click anywhere to close.</p>
     </>

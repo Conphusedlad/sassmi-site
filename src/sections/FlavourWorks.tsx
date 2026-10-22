@@ -19,7 +19,7 @@ export function FlavourWorks() {
       <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_20%,rgba(201,168,103,.12),transparent_70%)]" />
       <Ripples className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full text-gold opacity-20" rows={3} speed={0.8} />
       <Container className="relative">
-        <SectionHead tone="dark" kicker="Sassmi Flavour Works · B2B" title="The seasoning lab behind the tins." sub="Every Sassmi and Crunchy Makhana flavour is developed and produced in our own chef-led lab in New Delhi. We make blends for other brands too." />
+        <SectionHead tone="dark" kicker="Sassmi Flavour Works · B2B" title="The seasoning lab behind the jars." sub="Every Sassmi and Crunchy Makhana flavour is developed and produced in our own chef-led lab in New Delhi. We make blends for other brands too." />
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
           {TIERS.map(({ icon: Icon, title, body, meta }, i) => (
             <motion.article key={title} {...fadeUp(i * 0.08)} className="group flex flex-col rounded-3xl border border-gold/20 bg-night-soft/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-gold/50">

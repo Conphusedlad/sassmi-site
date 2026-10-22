@@ -7,7 +7,7 @@ These Terms & Conditions govern your use of {{DOMAIN}} and any purchase you make
 ## 2. Products and pricing
 
 - All prices are in Indian Rupees and are **inclusive of all taxes** (GST). The price shown at checkout is the price you pay, plus any shipping charge shown before payment.
-- Product images are indicative. Tins, colours and the seasoning on each kernel vary slightly from batch to batch because our makhana is roasted in small batches.
+- Product images are indicative. Jars, colours and the seasoning on each kernel vary slightly from batch to batch because our makhana is roasted in small batches.
 - Net quantity, ingredients, allergen advice, batch number and best-before date are printed on every pack and summarised on each product page.
 - We may correct pricing errors and cancel an order placed at an obviously wrong price; you will be refunded in full.
 

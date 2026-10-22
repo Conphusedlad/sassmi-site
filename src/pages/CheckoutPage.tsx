@@ -85,7 +85,7 @@ function Checkout() {
       <Container className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <p className="kicker">Checkout</p>
-          <h1 className="mt-3 text-5xl">Where should the tins go?</h1>
+          <h1 className="mt-3 text-5xl">Where should the jars go?</h1>
           {cfg?.demo && <p className="mt-4 rounded-xl border border-gold/40 bg-cream px-4 py-3 text-sm text-ink-soft">Preview mode: this walk-through simulates the payment step. On the live site, Razorpay opens here with UPI, cards, net-banking and wallets.</p>}
           {paymentsOff && <p className="mt-4 rounded-xl border border-blush/50 bg-cream px-4 py-3 text-sm text-ink-soft">Online payments are being switched on. Until then, send your order on WhatsApp and we’ll confirm within the hour.</p>}
           <form onSubmit={pay} className="mt-8 grid gap-4 sm:grid-cols-2">

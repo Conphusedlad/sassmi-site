@@ -32,7 +32,7 @@ function LaunchList() {
       <Container className="grid items-center gap-8 md:grid-cols-2">
         <div>
           <p className="kicker">The launch list</p>
-          <h2 className="mt-3 text-4xl">Be first to hear when the tins launch.</h2>
+          <h2 className="mt-3 text-4xl">Be first to hear when the jars launch.</h2>
           <p className="mt-3 text-sm text-ink-soft">Send us one message on WhatsApp and we’ll tell you the day they’re out. Nothing else.</p>
         </div>
         <div className="md:justify-self-end">

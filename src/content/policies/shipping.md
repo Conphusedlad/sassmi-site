@@ -22,7 +22,7 @@ Please check your address and phone number carefully at checkout — couriers ca
 
 ## Damaged in transit
 
-If the outer box arrives visibly damaged, please photograph it before opening and see our Refund & Cancellation Policy — we replace damaged tins free of charge.
+If the outer box arrives visibly damaged, please photograph it before opening and see our Refund & Cancellation Policy — we replace damaged jars free of charge.
 
 ## Bulk and corporate orders
 

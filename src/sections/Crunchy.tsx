@@ -30,7 +30,7 @@ export function Crunchy({ standalone = false }: { standalone?: boolean }) {
             </motion.div>
             <motion.h2 {...fadeUp(0.1)} className="mt-6 text-balance text-[clamp(34px,4.6vw,58px)] text-ivory">The everyday range. The same makhana, in a ₹20 pouch.</motion.h2>
             <motion.p {...fadeUp(0.15)} className="mt-5 max-w-xl text-[16.5px] leading-relaxed text-ivory/85">
-              Before the midnight tin there was the red pouch. Crunchy Makhana is our value brand — roasted the same way, seasoned with the same in-house blends, and sold at kirana stores and general trade across Delhi NCR in six flavours and four pack sizes. Tagline says it all: <em>“{c.tagline}”</em>
+              Before the Sassmi jar there was the red pouch. Crunchy Makhana is our value brand — roasted the same way, seasoned with the same in-house blends, and sold at kirana stores and general trade across Delhi NCR in six flavours and four pack sizes. Tagline says it all: <em>“{c.tagline}”</em>
             </motion.p>
             <motion.ul {...fadeUp(0.2)} className="mt-7 flex flex-wrap gap-2">
               {c.flavours.map((f) => <li key={f.name} className="rounded-full px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[.15em] text-white ring-1 ring-white/25" style={{ background: f.hex }}>{f.name}</li>)}

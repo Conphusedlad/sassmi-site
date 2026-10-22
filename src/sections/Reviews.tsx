@@ -31,7 +31,7 @@ function ReviewsSoon() {
   return (
     <section id="reviews" className="scroll-mt-20 bg-cream py-20 sm:py-24">
       <Container max="max-w-3xl" className="text-center">
-        <SectionHead kicker="Reviews" title="What people say between bites." sub={STORE_OPEN ? 'Tasted one? Tell us on WhatsApp — the first reviews go up here.' : 'Reviews open when the tins launch.'} />
+        <SectionHead kicker="Reviews" title="What people say between bites." sub={STORE_OPEN ? 'Tasted one? Tell us on WhatsApp — the first reviews go up here.' : 'Reviews open when the jars launch.'} />
         <a href={whatsappLink('Hi Sassmi! I tasted your makhana and wanted to share what I thought:')} target="_blank" rel="noreferrer" className="btn btn-outline-ink mt-8 max-w-full whitespace-normal text-center"><MessageCircle size={15} className="shrink-0" /> Tasted it? Tell us on WhatsApp</a>
       </Container>
     </section>
@@ -65,7 +65,7 @@ function ReviewsLive({ productSlug }: { productSlug?: string }) {
   return (
     <section id="reviews" className="scroll-mt-20 bg-cream py-24 sm:py-32">
       <Container>
-        <SectionHead kicker="Reviews" title="What people say between bites." sub={avg ? `${avg.toFixed(1)} out of 5 from ${list!.length} review${list!.length === 1 ? '' : 's'}` : 'Tried a tin? Tell us — and everyone else — what you thought.'} />
+        <SectionHead kicker="Reviews" title="What people say between bites." sub={avg ? `${avg.toFixed(1)} out of 5 from ${list!.length} review${list!.length === 1 ? '' : 's'}` : 'Tried a jar? Tell us — and everyone else — what you thought.'} />
         <div className="mt-14 grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             {list === null && <p className="text-sm text-muted">Loading reviews…</p>}

@@ -45,7 +45,7 @@ function Drawer() {
 
             {items.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
-                <p className="font-display text-3xl italic text-ink-soft">Your tin is empty.</p>
+                <p className="font-display text-3xl italic text-ink-soft">Your jar is empty.</p>
                 <p className="text-sm text-muted">{tins.length} flavours are waiting.</p>
                 <button className="btn btn-night mt-2" onClick={() => { uiStore.closeCart(); nav('/#collection') }}>Browse the collection</button>
               </div>
