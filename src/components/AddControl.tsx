@@ -15,7 +15,10 @@ type Props = { slug: string; size?: 'sm' | 'lg'; tone?: 'night' | 'gold'; label?
  */
 export function AddControl(props: Props) {
   // store closed: every add-to-cart becomes a WhatsApp enquiry about that product
-  if (!STORE_OPEN) return <AskWhatsApp what={bySlug(props.slug)?.name} size={props.size} tone={props.tone} className={props.className} />
+  const p = bySlug(props.slug)
+  if (!STORE_OPEN) return <AskWhatsApp what={p?.name} size={props.size} tone={props.tone} className={props.className} />
+  // Shopify says sold out: no add button, a WhatsApp nudge instead
+  if (p?.available === false) return <AskWhatsApp what={p.name} size={props.size} tone={props.tone} className={props.className} label={props.size === 'lg' ? 'Sold out · ask on WhatsApp' : 'Sold out'} />
   return <CartControl {...props} />
 }
 

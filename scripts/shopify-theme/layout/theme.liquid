@@ -76,7 +76,15 @@
         currency: {{ cart.currency.iso_code | json }},
         cartCount: {{ cart.item_count | default: 0 }},
         moneyFormat: {{ shop.money_format | json }},
-        domain: {{ shop.url | json }}
+        domain: {{ shop.url | json }},
+        {%- comment -%} What is on sale, from the admin: active products published to the Online Store. Drafts are absent, so they vanish from the app. {%- endcomment %}
+        products: [
+          {%- paginate collections.all.products by 250 -%}
+          {%- for sassmi_p in collections.all.products -%}
+          { handle: {{ sassmi_p.handle | json }}, title: {{ sassmi_p.title | json }}, available: {{ sassmi_p.available | json }}, price: {{ sassmi_p.price | json }}, compareAtPrice: {{ sassmi_p.compare_at_price | json }}, variantId: {{ sassmi_p.first_available_variant.id | default: sassmi_p.variants.first.id | json }}, image: {% if sassmi_p.featured_image %}{{ sassmi_p.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %}, url: {{ sassmi_p.url | json }} }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+          {%- endpaginate -%}
+        ]
       };
       (function () {
         // Shopify renders its own URLs through this layout; send each to the app route, keeping the query string (utm_*, preview params).

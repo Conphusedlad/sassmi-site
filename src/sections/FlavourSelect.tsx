@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion, useReducedMotion, useSpring, useTransform, type MotionValue } from 'framer-motion'
 import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Flame } from 'lucide-react'
-import { products, tins, productImage, type Product } from '../../shared/products'
+import { products, tins, productImage, productImage2x, packNoun, countWord, type Product } from '../../shared/products'
 import { formatINR, STORE_OPEN } from '../../shared/config'
 import { Soon } from '../components/ComingSoon'
 import { THEMES } from '../lib/flavourTheme'
@@ -26,7 +26,7 @@ const STORE = 'sassmi.select'
 const FLAVOURS: Product[] = tins
 const HEAT = ['No heat', 'Mild', 'Medium', 'Hot']
 const tin1x = (p: Product) => asset(productImage(p))
-const tin2x = (p: Product) => asset(`/img/tins-2x/${p.slug}.webp`)
+const tin2x = (p: Product) => asset(productImage2x(p))
 const groundBg = (th: { glowStrong: string; stage: string; stageDeep: string }) => `radial-gradient(70% 60% at 50% 46%, ${th.glowStrong} 0%, transparent 62%), linear-gradient(180deg, ${th.stage} 0%, ${th.stageDeep} 100%)`
 
 function useMedia(q: string) {
@@ -267,7 +267,7 @@ export function FlavourSelect() {
         <Container>
           <details className="group">
             <summary className="mx-auto flex w-max max-w-full cursor-pointer list-none items-center gap-2 rounded-full border border-ink/15 px-5 py-2 text-[11px] font-medium uppercase tracking-[.2em] text-ink-soft transition hover:border-gold hover:text-gold-deep">
-              Prefer a list? All thirteen tins and the gift trio <ChevronDown size={14} className="transition-transform group-open:rotate-180" />
+              Prefer a list? {tins.length === products.length ? `All ${countWord(tins.length)} flavours` : `All ${countWord(tins.length)} flavours and the gift trio`} <ChevronDown size={14} className="transition-transform group-open:rotate-180" />
             </summary>
             <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {products.map((p, i) => <ProductCard key={p.slug} p={p} index={i} />)}
@@ -295,7 +295,7 @@ function WheelTin({ p, i, pos, count, R, step, active, locked, coarse, short, re
     <motion.div className="absolute bottom-[14px] left-1/2 w-0 will-change-transform" style={{ x, y, rotate, scale, opacity, zIndex, transformOrigin: '50% 100%' }}>
       <motion.div style={{ x: '-50%' }} initial={seen ? false : { y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1, scale: active && locked ? 1.05 : 1 }} transition={{ type: 'spring', stiffness: 240, damping: 28, mass: 1 }} className="w-max">
         <div className={active && !reduce ? 'fs-floaty' : ''}>
-          <img src={coarse ? tin1x(p) : tin2x(p)} alt={`${p.name} tin`} draggable={false} decoding="async" onClick={onPick} className="block w-auto max-w-none cursor-pointer" style={{ height: coarse ? (short ? 'min(30svh, 260px)' : 'min(38dvh, 310px)') : 'min(46dvh, 400px)', filter: `drop-shadow(0 34px 40px ${t.shadow})` }} />
+          <img src={coarse ? tin1x(p) : tin2x(p)} alt={`${p.name} ${packNoun(p)}`} draggable={false} decoding="async" onClick={onPick} className="block w-auto max-w-none cursor-pointer" style={{ height: coarse ? (short ? 'min(30svh, 260px)' : 'min(38dvh, 310px)') : 'min(46dvh, 400px)', filter: `drop-shadow(0 34px 40px ${t.shadow})` }} />
         </div>
       </motion.div>
     </motion.div>

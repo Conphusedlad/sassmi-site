@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Flame } from 'lucide-react'
-import { productImage, type Product } from '../../shared/products'
+import { productImage, packNoun, type Product } from '../../shared/products'
 import { formatINR, STORE_OPEN } from '../../shared/config'
 import { Soon } from './ComingSoon'
 import { uiStore } from '../lib/cart'
@@ -37,7 +37,7 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
         {p.kind === 'bundle' ? (
           <img src={tinCut(p)} alt={p.name} loading="lazy" className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-xl object-cover shadow-card transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.03]" />
         ) : (
-          <img src={tinCut(p)} alt={`${p.name} tin`} loading="lazy" width={220} height={376}
+          <img src={tinCut(p)} alt={`${p.name} ${packNoun(p)}`} loading="lazy" width={220} height={376}
             className="absolute left-1/2 top-[7%] h-[86%] w-auto max-w-none -translate-x-1/2 drop-shadow-[0_28px_30px_rgba(15,26,48,.28)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2 group-hover:scale-[1.04]" />
         )}
         <span className="absolute left-4 top-4 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[.2em] text-ivory" style={{ background: p.hex }}>{p.kind === 'bundle' ? 'Gift box' : p.format === 'ready-to-serve' ? 'Ready to serve' : p.profile}</span>

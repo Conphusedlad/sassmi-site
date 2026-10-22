@@ -14,14 +14,14 @@ export function Soon({ tone = 'light', className = '' }: { tone?: 'light' | 'dar
 }
 
 /** Stand-in for every add-to-cart while the store is closed: opens WhatsApp with a ready message. */
-export function AskWhatsApp({ what, size = 'sm', tone = 'night', className = '' }: { what?: string; size?: 'sm' | 'lg'; tone?: 'night' | 'gold'; className?: string }) {
+export function AskWhatsApp({ what, size = 'sm', tone = 'night', className = '', label }: { what?: string; size?: 'sm' | 'lg'; tone?: 'night' | 'gold'; className?: string; label?: string }) {
   const h = size === 'lg' ? 'h-12 px-7 text-[12px]' : 'h-10 px-5 text-[11px]'
   const toneCls = tone === 'gold' ? 'bg-gold text-night hover:bg-gold-light' : 'bg-night text-ivory hover:bg-gold hover:text-night'
   return (
     <a href={soonWhatsApp(what)} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
       className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-medium uppercase tracking-[.2em] transition-colors ${h} ${toneCls} ${className}`}
       aria-label={what ? `Ask about ${what} on WhatsApp` : 'Ask on WhatsApp'}>
-      <MessageCircle size={size === 'lg' ? 15 : 14} /> {size === 'lg' ? 'Ask on WhatsApp' : 'WhatsApp'}
+      <MessageCircle size={size === 'lg' ? 15 : 14} /> {label ?? (size === 'lg' ? 'Ask on WhatsApp' : 'WhatsApp')}
     </a>
   )
 }

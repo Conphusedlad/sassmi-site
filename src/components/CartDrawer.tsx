@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react'
-import { cart, cartPending, cartSettled, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
+import { cart, cartPending, cartSettled, shopCartCount, MAX_QTY, uiStore, useCart, useUI } from '../lib/cart'
+import { toast } from '../lib/toast'
 import { IS_SHOPIFY } from '../lib/env'
 import { goToCheckout } from '../lib/shopify'
 import { tins } from '../../shared/products'
@@ -93,6 +94,7 @@ function Drawer() {
                     if (handing) return
                     setHanding(true)
                     try { while (cartPending() > 0) await cartSettled() } finally { /* hand off even if a sync failed: Shopify's cart is what it is */ }
+                    if (shopCartCount() === 0) { setHanding(false); toast('The store’s cart came back empty — please add your items again', 'err'); return }
                     goToCheckout()
                   }}>{handing ? 'Opening checkout…' : 'Checkout securely'}</button>
                   <a className="mt-3 block text-center text-xs text-ink-soft underline-offset-4 hover:text-gold-deep hover:underline" href={whatsappLink(waText)} target="_blank" rel="noreferrer">or order on WhatsApp</a>

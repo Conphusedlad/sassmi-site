@@ -44,6 +44,8 @@ const variants = new Map<string, Promise<Variant>>()
 export function variantFor(slug: string): Promise<Variant> {
   let p = variants.get(slug)
   if (!p) {
+    const known = bySlug(slug)
+    if (known?.shopifyVariantId) { p = Promise.resolve({ id: known.shopifyVariantId, available: known.available !== false, price: Math.round(known.price * 100) }); variants.set(slug, p); return p }
     p = fetch(`${root()}products/${encodeURIComponent(slug)}.js`, { headers: { Accept: 'application/json' } }).then(async (r) => {
       if (r.status === 404) throw new ShopifyError(`${bySlug(slug)?.name ?? slug} isn't in the Shopify catalogue yet`, 404)
       const data = await parse<{ variants?: Variant[] }>(r, 'Product lookup failed')

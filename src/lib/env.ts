@@ -1,3 +1,4 @@
+import type { ShopifyProductInfo } from '../../shared/shopify-catalogue'
 /** Build target (see vite.config.ts): undefined = own site (Vercel), 'artifact' = claude.ai / GitHub Pages, 'shopify' = theme build. */
 export const IS_ARTIFACT = import.meta.env.VITE_TARGET === 'artifact'
 export const IS_SHOPIFY = import.meta.env.VITE_TARGET === 'shopify'
@@ -5,7 +6,7 @@ export const IS_SHOPIFY = import.meta.env.VITE_TARGET === 'shopify'
 export const USE_HASH_ROUTER = IS_ARTIFACT || IS_SHOPIFY
 
 /** Injected by layout/theme.liquid on Shopify (scripts/shopify-theme.ts writes the map). */
-export type ShopInfo = { template: string; handle: string | null; root: string; cartUrl: string; currency: string | null; cartCount: number; moneyFormat: string | null; domain: string | null }
+export type ShopInfo = { template: string; handle: string | null; root: string; cartUrl: string; currency: string | null; cartCount: number; moneyFormat: string | null; domain: string | null; products?: ShopifyProductInfo[] }
 declare global {
   interface Window {
     /** public path ("img/tins/mint-royale.png") → Shopify CDN URL of the flattened theme asset */

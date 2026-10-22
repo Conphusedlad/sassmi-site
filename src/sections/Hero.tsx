@@ -7,6 +7,7 @@ import { Droplet, Leaf, Sparkles, WheatOff } from 'lucide-react'
 import { PondScene, WaveDivider } from '../components/MithilaArt'
 import { business, STORE_OPEN } from '../../shared/config'
 import { asset } from '../lib/env'
+import { bySlug, tins, productImage, countWord, type Product } from '../../shared/products'
 import { EASE } from '../lib/motion'
 
 const BADGES = [
@@ -15,12 +16,36 @@ const BADGES = [
   { icon: Leaf, label: 'No added preservatives' },
   { icon: Sparkles, label: 'Rich in protein' },
 ]
-// three tins from the 17-Sep lineup; heights are capped so the render never upscales past ~1.15×
-const TINS = [
+// three packs on stage; heights are capped so the render never upscales past ~1.15×. The 17-Sep picks are used
+// when they are on sale, otherwise the first flavours Shopify has published take their places.
+const STAGE = [
   { slug: 'mint-royale', cls: 'left-[3%] bottom-[7%] h-[58%] max-h-[330px] z-10', delay: 0.35, float: '8s' },
   { slug: 'divine-salt-pepper', cls: 'left-1/2 -translate-x-1/2 bottom-[11%] h-[70%] max-h-[400px] z-20', delay: 0.15, float: '9s' },
   { slug: 'jaggery-heritage', cls: 'right-[3%] bottom-[5%] h-[60%] max-h-[340px] z-10', delay: 0.5, float: '7.5s' },
 ]
+const onStage = (): { p: Product; cls: string; delay: number; float: string }[] => {
+  const used = new Set<string>()
+  let pack: Product['pack'] | undefined // keep the stage to one container type (jars with jars, tins with tins)
+  return STAGE.flatMap((slot) => {
+    const wanted = bySlug(slot.slug)
+    const fits = (t: Product) => !used.has(t.slug) && (pack === undefined || (t.pack ?? 'tin') === pack)
+    const p = wanted && fits(wanted) ? wanted : tins.find(fits)
+    if (!p) return []
+    pack = p.pack ?? 'tin'
+    used.add(p.slug)
+    return [{ p, cls: slot.cls, delay: slot.delay, float: slot.float }]
+  })
+}
+const TINS = onStage()
+// "Twelve tins … and one ready-to-serve kheer — all in midnight blue", kept true to what is on sale
+const heroLine = () => {
+  const roasted = tins.filter((t) => t.format !== 'ready-to-serve')
+  const kheer = tins.some((t) => t.format === 'ready-to-serve')
+  const jars = roasted.length > 0 && roasted.every((t) => t.pack === 'jar')
+  const noun = jars ? 'jars' : 'tins'
+  const n = roasted.length
+  return `A timeless superfood from the ponds of Mithila. ${n === 1 ? `One ${noun.slice(0, -1)}` : `${countWord(n).replace(/^./, (c) => c.toUpperCase())} ${noun}`} slow-roasted in olive oil and seasoned with honest ingredients${kheer ? ', and one ready-to-serve kheer' : ''}${jars ? '.' : ' — all in midnight blue.'}`
+}
 
 export function Hero() {
   const sec = useRef<HTMLElement>(null)
@@ -44,7 +69,7 @@ export function Hero() {
             Rooted in tradition.<br /><em className="gold-text font-normal italic">Crafted for today.</em>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.38 }} className="mt-7 max-w-lg text-[17px] leading-relaxed text-ivory/72 sm:text-lg">
-            A timeless superfood from the ponds of Mithila. Twelve tins slow-roasted in olive oil and seasoned with honest ingredients, and one ready-to-serve kheer — all in midnight blue.
+            {heroLine()}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: 0.52 }} className="mt-10 flex flex-wrap gap-3">
             <Link to="/#collection" className="btn btn-gold">{STORE_OPEN ? 'Shop the collection' : 'Explore the flavours'}</Link>
@@ -62,8 +87,8 @@ export function Hero() {
         <div className="relative h-[420px] sm:h-[500px] lg:col-span-6 lg:h-[600px]">
           <div className="absolute left-1/2 top-[72%] h-36 w-[80%] -translate-x-1/2 rounded-[100%] bg-gold/20 blur-3xl" />
           {TINS.map((t) => (
-            <motion.div key={t.slug} initial={{ opacity: 0, y: 70 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.3, ease: EASE, delay: t.delay }} className={`absolute ${t.cls}`}>
-              <img src={asset(`/img/tins/${t.slug}.png`)} alt="" width={220} height={376} className="animate-float h-full w-auto drop-shadow-[0_50px_60px_rgba(0,0,0,.55)]" style={{ animationDuration: t.float, animationDelay: `${t.delay}s` }} fetchPriority="high" />
+            <motion.div key={t.p.slug} initial={{ opacity: 0, y: 70 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.3, ease: EASE, delay: t.delay }} className={`absolute ${t.cls}`}>
+              <img src={asset(productImage(t.p))} alt="" width={220} height={376} className="animate-float h-full w-auto drop-shadow-[0_50px_60px_rgba(0,0,0,.55)]" style={{ animationDuration: t.float, animationDelay: `${t.delay}s` }} fetchPriority="high" />
             </motion.div>
           ))}
         </div>

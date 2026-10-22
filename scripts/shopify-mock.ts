@@ -10,7 +10,7 @@ import { Liquid, Tag, type TagToken, type TopLevelToken, type Context, type Emit
 import { join } from 'node:path'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { products, bySlug } from '../shared/products'
+import { catalogue as products, bySlug } from '../shared/products'
 
 const ROOT = join(import.meta.dir, '..')
 const THEME = join(ROOT, 'dist-shopify', 'theme')
@@ -45,6 +45,18 @@ engine.registerTag('form', class extends Tag {
     emitter.write('</form>')
   }
 })
+// {% paginate x by N %} … {% endpaginate %} — just renders its body here
+engine.registerTag('paginate', class extends Tag {
+  templates: unknown[]
+  constructor(token: TagToken, remain: TopLevelToken[], liquid: Liquid) {
+    super(token, remain, liquid)
+    this.templates = []
+    const stream = liquid.parser.parseStream(remain)
+    stream.on('tag:endpaginate', () => stream.stop()).on('template', (t: unknown) => this.templates.push(t)).on('end', () => { throw new Error('paginate tag not closed') })
+    stream.start()
+  }
+  *render(ctx: Context, emitter: Emitter) { yield this.liquid.renderer.renderTemplates(this.templates as never, ctx, emitter) }
+})
 // {% layout 'password' %} / {% layout none %} — Shopify picks the layout from the template's first line
 engine.registerTag('layout', class extends Tag { *render() { /* read by renderPage below */ } })
 
@@ -52,9 +64,17 @@ engine.registerTag('layout', class extends Tag { *render() { /* read by renderPa
 const variantId = (slug: string) => 1000 + products.findIndex((p) => p.slug === slug)
 const productJson = (slug: string) => {
   const p = bySlug(slug)!
-  return { id: 5000 + variantId(slug), title: p.name, handle: p.slug, available: true, price: p.price * 100,
-    variants: [{ id: variantId(slug), title: 'Default Title', price: p.price * 100 + priceDelta, available: true, requires_shipping: true }] }
+  const available = !soldOut.has(slug)
+  return { id: 5000 + variantId(slug), title: p.name, handle: p.slug, available, price: p.price * 100 + priceDelta,
+    variants: [{ id: variantId(slug), title: 'Default Title', price: p.price * 100 + priceDelta, available, requires_shipping: true }] }
 }
+/** Liquid's collections.all.products: everything not drafted */
+const liquidProducts = () => products.filter((p) => !drafts.has(p.slug)).map((p) => ({
+  handle: p.slug, title: p.name, available: !soldOut.has(p.slug), price: p.price * 100 + priceDelta, compare_at_price: p.compareAt ? p.compareAt * 100 : null,
+  first_available_variant: soldOut.has(p.slug) ? null : { id: variantId(p.slug) }, variants: [{ id: variantId(p.slug) }], featured_image: null, url: `/products/${p.slug}`,
+}))
+const drafts = new Set<string>() // handles taken off the Online Store (GET /__draft?handle=x&on=1)
+const soldOut = new Set<string>() // published but unavailable (GET /__soldout?handle=x&on=1)
 const cart = new Map<number, number>() // variantId → qty
 let priceDelta = 0 // paise added to every Shopify price (GET /__price_delta?paise=N) — proves the drawer prices from Shopify, not the catalogue
 const cartJson = () => {
@@ -85,6 +105,7 @@ async function renderPage(name: string, scope: Record<string, unknown>, status =
     routes: { root_url: '/', cart_url: '/cart', cart_add_url: '/cart/add', cart_change_url: '/cart/change', cart_update_url: '/cart/update' },
     cart: { item_count: cartJson().item_count, currency: { iso_code: 'INR' } },
     shop: { name: 'Sassmi', url: `http://localhost:${PORT}`, money_format: 'Rs. {{amount}}', password_message: '' },
+    collections: { all: { products: liquidProducts() } },
     canonical_url: `http://localhost:${PORT}/`, page_title: scope.page_title ?? '',
     ...scope,
   }
@@ -109,7 +130,13 @@ Bun.serve({
     if (p === '/cart.js') return json(cartJson())
     if (p === '/cart/update.js' && req.method === 'POST') {
       const { updates } = (await req.json()) as { updates: Record<string, number> }
-      for (const [id, qty] of Object.entries(updates)) { const v = Number(id); if (!products[v - 1000]) return json({ status: 404, message: 'Cart Error', description: `Cannot find variant` }, 404); if (qty > 12) return json({ status: 422, message: 'Cart Error', description: `You can only add 12 of this item to your cart.` }, 422); cart.set(v, qty) }
+      for (const [id, qty] of Object.entries(updates)) {
+        const v = Number(id); const prod = products[v - 1000]
+        if (!prod || drafts.has(prod.slug)) return json({ status: 404, message: 'Cart Error', description: `Cannot find variant` }, 404)
+        if (qty > 0 && soldOut.has(prod.slug)) return json({ status: 422, message: 'Cart Error', description: `The product '${prod.name}' is already sold out.` }, 422)
+        if (qty > 12) return json({ status: 422, message: 'Cart Error', description: `You can only add 12 of this item to your cart.` }, 422)
+        cart.set(v, qty)
+      }
       note(`POST /cart/update.js ${JSON.stringify(updates)} → ${cartJson().item_count} items`)
       return json(cartJson())
     }
@@ -121,7 +148,7 @@ Bun.serve({
     }
     if (p === '/cart/clear.js' && req.method === 'POST') { cart.clear(); note('POST /cart/clear.js'); return json(cartJson()) }
     const pj = p.match(/^\/products\/([a-z0-9-]+)\.js$/)
-    if (pj) return bySlug(pj[1]) ? json(productJson(pj[1])) : json({ status: 404, message: 'Not Found' }, 404)
+    if (pj) return bySlug(pj[1]) && !drafts.has(pj[1]) ? json(productJson(pj[1])) : json({ status: 404, message: 'Not Found' }, 404)
     // checkout hand-off (documented form POST with name=checkout)
     if (p === '/cart' && req.method === 'POST') {
       const form = await req.formData()
@@ -136,7 +163,7 @@ Bun.serve({
     if (p === '/' ) return renderPage('index', {})
     if (p === '/password') return renderPage('password', { page_title: 'Opening soon' })
     const pr = p.match(/^\/products\/([a-z0-9-]+)$/)
-    if (pr) { const prod = bySlug(pr[1]); return prod ? renderPage('product', { product: { handle: prod.slug, title: prod.name }, page_title: prod.name }) : renderPage('404', {}, 404) }
+    if (pr) { const prod = drafts.has(pr[1]) ? undefined : bySlug(pr[1]); return prod ? renderPage('product', { product: { handle: prod.slug, title: prod.name }, page_title: prod.name }) : renderPage('404', {}, 404) }
     if (p === '/collections' ) return renderPage('list-collections', { page_title: 'Collections' })
     if (p.startsWith('/collections/')) return renderPage('collection', { collection: { handle: p.split('/')[2], title: 'All' }, page_title: 'All products' })
     if (p === '/cart') return renderPage('cart', { page_title: 'Your cart' })
@@ -146,7 +173,12 @@ Bun.serve({
     if (p.startsWith('/account')) return renderPage('customers/login', { page_title: 'Account' })
     if (p === '/__log') return json(log)
     if (p === '/__price_delta') { priceDelta = Number(url.searchParams.get('paise') ?? 0); return json({ priceDelta }) }
-    if (p === '/__reset') { cart.clear(); priceDelta = 0; log.length = 0; return json({ ok: true }) }
+    if (p === '/__reset') { cart.clear(); priceDelta = 0; drafts.clear(); soldOut.clear(); log.length = 0; return json({ ok: true }) }
+    if (p === '/__draft' || p === '/__soldout') {
+      const set = p === '/__draft' ? drafts : soldOut; const h = url.searchParams.get('handle') ?? ''
+      if (h === '*') { for (const x of products) set.add(x.slug) } else if (url.searchParams.get('on') === '0') set.delete(h); else set.add(h)
+      return json({ drafts: [...drafts], soldOut: [...soldOut] })
+    }
     return renderPage('404', { page_title: 'Page not found' }, 404)
   },
 })

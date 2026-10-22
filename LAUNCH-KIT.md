@@ -156,3 +156,19 @@ bun scripts/shopify-mock.ts
 - **Customer accounts:** use Shopify's *new* customer accounts (Settings › Customer accounts). The theme redirects the classic `/account/*` templates to the home page.
 - **Social preview image** is the WebP lineup; WhatsApp previews are unreliable with WebP. A 1200×630 PNG/JPG card in `public/img/brand/` would fix it (not done).
 - **Prices now come from Shopify in the drawer**, but product cards, quick view and product pages still print the catalogue price (`shared/products.ts`). Keep both identical or the shopper sees ₹249 on the card and Shopify's number in the cart.
+
+### 8a. Catalogue follows the Shopify admin (22 Oct 2026)
+
+The developer (on the family's Shopify, `sassmimarketing@gmail.com` account) reported that drafting products in the admin did not remove them from the theme, because the theme carried the catalogue in its JavaScript. Fixed: `layout/theme.liquid` now writes Shopify's live list (`collections.all` — active products published to the Online Store) into the page before the app loads, and `shared/products.ts` keeps only the designed products that are on that list, with **price, compare-at and sold-out from Shopify**.
+
+- **Draft / archived / not on the Online Store channel → the product disappears** from the wheel, hero, footer, list and product pages (the old link lands on the app's 404).
+- **Published but sold out → stays visible, the Add button becomes "Sold out · ask on WhatsApp".**
+- **Nothing of ours published → the whole site falls back to "coming soon" mode** (full catalogue, WhatsApp buttons, no cart), the same as GitHub Pages today.
+- A product created in Shopify that we never designed is ignored (no renders for it).
+- The checkout button no longer posts when Shopify's cart is empty (the earlier "checkout sends me to the homepage" was Shopify bouncing an empty cart to `/cart`, which the layout maps to the home page).
+
+**Jars.** The first batch ships in clear jars, not the Nocturne tins: the developer sent renders for six flavours (Mint Royale, Garlic Fire, Jalapeno Zing, Cream Onion Bliss, Peri Peri Blaze, Divine Salt & Pepper). They are cut out at the tin sizes in `public/img/jars/` (1×) and `public/img/jars-2x/` and marked `pack: 'jar'` in `shared/products.ts`; the hero, wheel, cards, drawer and product pages use them. The hero line and the list toggle now count what is on sale ("Six jars slow-roasted…"). **Still says "tin" in places** (FAQ, Story, Process, "Your tin is empty", product-page ingredients for the trio) — a family decision whether the brand word becomes "jar" or the tins are still coming.
+
+**To ship it:** `bun run build:shopify` → upload the new zip (Online Store › Themes › Add theme › Upload zip file) → Publish it (each upload is a new unpublished theme). The products CSV points jar images at the GitHub repo, which has not been pushed since 20 Oct; push before re-importing, or upload product photos in the admin.
+
+**Not done:** I cannot sign into the family's Shopify with a shared password (Shivansh can sign in himself in the Claude browser pane and I can inspect from there). The password was shared over WhatsApp and sits in this transcript — change it.

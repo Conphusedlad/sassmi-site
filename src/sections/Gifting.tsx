@@ -6,7 +6,8 @@ import { Container } from '../components/ui/Section'
 import { asset } from '../lib/env'
 import { fadeUp } from '../lib/motion'
 import { AddControl } from '../components/AddControl'
-import { STORE_OPEN } from '../../shared/config'
+import { bySlug } from '../../shared/products'
+import { STORE_OPEN, formatINR } from '../../shared/config'
 
 export function Gifting() {
   return (
@@ -20,7 +21,7 @@ export function Gifting() {
             The Nocturne Trio: any three flavours in an indigo box with a gold ribbon and a hand-written card. For teams, clients and the relatives who already have enough dry fruit — we also build custom boxes from twenty pieces upward, with your logo on the card.
           </motion.p>
           <motion.div {...fadeUp(0.15)} className="mt-9 flex flex-wrap gap-3">
-            <span className="inline-flex items-center gap-3 rounded-full border border-gold/40 py-1 pl-4 pr-1 text-[12px] uppercase tracking-[.2em] text-gold"><Gift size={15} /> The Trio · {STORE_OPEN ? '₹699' : 'coming soon'} <AddControl slug="nocturne-trio" tone="gold" label="Add to cart" /></span>
+            <span className="inline-flex items-center gap-3 rounded-full border border-gold/40 py-1 pl-4 pr-1 text-[12px] uppercase tracking-[.2em] text-gold"><Gift size={15} /> The Trio · {STORE_OPEN && bySlug('nocturne-trio') ? formatINR(bySlug('nocturne-trio')!.price) : 'coming soon'} <AddControl slug="nocturne-trio" tone="gold" label="Add to cart" /></span>
             <Link to="/#contact" state={{ topic: 'Bulk & corporate gifting' }} className="btn btn-outline-gold"><Building2 size={15} /> Corporate enquiry</Link>
           </motion.div>
           <motion.ul {...fadeUp(0.2)} className="mt-10 grid gap-3 text-sm text-ivory/70 sm:grid-cols-3">

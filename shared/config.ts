@@ -1,3 +1,5 @@
+import { SHOPIFY_SELLABLE } from './products'
+
 /**
  * Business configuration — the ONE place to edit facts about the company.
  * Anything marked TODO is unconfirmed by the family and must be checked before launch.
@@ -100,8 +102,11 @@ export const whatsappLink = (text: string) =>
 
 /** Set by Vite's `define` (true for the Shopify theme build); absent in the server builds. */
 declare const __STORE_OPEN__: boolean | undefined
-/** true once the family opens online ordering (see `business.store`) — or in a build that forces it open. */
-export const STORE_OPEN: boolean = business.store.open || (typeof __STORE_OPEN__ !== 'undefined' && __STORE_OPEN__ === true)
+/**
+ * true once the family opens online ordering (see `business.store`) — or in the Shopify build, where the switch is
+ * the admin itself: the store is open while at least one of our products is published there (SHOPIFY_SELLABLE).
+ */
+export const STORE_OPEN: boolean = business.store.open || (typeof __STORE_OPEN__ !== 'undefined' && __STORE_OPEN__ === true && SHOPIFY_SELLABLE)
 
 /** WhatsApp link for "coming soon" moments: asks about one product, or about the launch in general. */
 export const soonWhatsApp = (what?: string) =>

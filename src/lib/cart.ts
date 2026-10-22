@@ -54,6 +54,8 @@ const sync = (job: () => Promise<shop.ShopifyCart>, opts: { silent?: boolean } =
 export const cartSettled = () => chain
 /** Number of Shopify cart changes still in flight. */
 export const cartPending = () => pending
+/** Items Shopify's cart holds after the last sync (null before the first read). */
+export const shopCartCount = () => shopCart?.item_count ?? null
 if (IS_SHOPIFY && typeof window !== 'undefined') {
   sync(() => shop.readCart(), { silent: true })
   // coming back via the bfcache (browser Back from checkout) must re-read the cart Shopify may have emptied

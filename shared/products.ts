@@ -24,7 +24,15 @@ export type Product = {
   featured?: boolean
   /** Extra photographs for the product page gallery (≥ 2000 px on the long side for zoom). */
   images?: string[]
+  /** The container the renders show: the Nocturne tins, or the clear jars the first batch ships in (Oct 2026). */
+  pack?: 'tin' | 'jar'
+  /** From Shopify only: false when the product is published but sold out. Undefined = not known / not on Shopify. */
+  available?: boolean
+  /** From Shopify only: the variant the cart adds. */
+  shopifyVariantId?: number
 }
+
+import { SHOPIFY_CATALOGUE } from './shopify-catalogue'
 
 export const PACK_SIZE = '100 g' // TODO confirm — earlier render said 65 g, 12-Sep label draft said 100 g (4 × 25 g)
 export const TIN_PRICE = 249 // TODO confirm — placeholder MRP per tin, incl. of all taxes
@@ -34,39 +42,40 @@ const tin = (p: Omit<Product, 'kind' | 'netWeight' | 'price' | 'badges'> & Parti
   kind: 'tin', netWeight: PACK_SIZE, price: TIN_PRICE, badges: BADGES, ...p,
 })
 
-export const products: Product[] = [
+/** Every product we have designed. What is actually on sale is `products` below. */
+export const catalogue: Product[] = [
   tin({
-    slug: 'mint-royale', name: 'Mint Royale', tagline: 'Cool. Refreshing. Real.', profile: 'savoury', spice: 1, featured: true,
+    slug: 'mint-royale', pack: 'jar', name: 'Mint Royale', tagline: 'Cool. Refreshing. Real.', profile: 'savoury', spice: 1, featured: true,
     description: 'Garden mint over warm, slow-roasted makhana. Bright, clean and a little peppery — the tin that tastes like a Delhi evening breeze.',
     pairing: 'Adrak chai at four. Crushed over dahi. The first tin to open for guests.',
     ingredientHint: 'Mint, rock salt', hex: '#3D663A', accent: '#6E9A67',
   }),
   tin({
-    slug: 'garlic-fire', name: 'Garlic Fire', tagline: 'Bold. Aromatic. Irresistible.', profile: 'spicy', spice: 2,
+    slug: 'garlic-fire', pack: 'jar', name: 'Garlic Fire', tagline: 'Bold. Aromatic. Irresistible.', profile: 'spicy', spice: 2,
     description: 'Slow-roasted garlic meets red chilli. Warm, savoury and unapologetically aromatic — it announces itself the moment the lid comes off.',
     pairing: 'Beer, biryani nights, anything with a lime wedge nearby.',
     ingredientHint: 'Garlic, red chilli, rock salt', hex: '#9C222B', accent: '#C94A52',
   }),
   tin({
-    slug: 'jalapeno-zing', name: 'Jalapeno Zing', tagline: 'Spicy. Tangy. Exciting.', profile: 'spicy', spice: 2,
+    slug: 'jalapeno-zing', pack: 'jar', name: 'Jalapeno Zing', tagline: 'Spicy. Tangy. Exciting.', profile: 'spicy', spice: 2,
     description: 'Green jalapeño heat with a squeeze of citrus tang. Sharp, lively and impossible to eat slowly.',
     pairing: 'Movie nights. The bowl that replaces nachos.',
     ingredientHint: 'Jalapeño seasoning, lime', hex: '#1E5657', accent: '#3F8587',
   }),
   tin({
-    slug: 'cream-onion-bliss', name: 'Cream Onion Bliss', tagline: 'Rich. Savoury. Satisfying.', profile: 'savoury', spice: 0, featured: true,
+    slug: 'cream-onion-bliss', pack: 'jar', name: 'Cream Onion Bliss', tagline: 'Rich. Savoury. Satisfying.', profile: 'savoury', spice: 0, featured: true,
     description: 'Slow-cooked onion sweetness folded into a soft, creamy seasoning. Familiar comfort, made lighter by the pop.',
     pairing: 'Long train journeys. Board games. Anything with a screen.',
     ingredientHint: 'Cream & onion seasoning, rock salt', allergens: 'Contains milk solids', hex: '#7F3C69', accent: '#A8659A',
   }),
   tin({
-    slug: 'peri-peri-blaze', name: 'Peri Peri Blaze', tagline: 'Fiery. Zesty. Addictive.', profile: 'spicy', spice: 3,
+    slug: 'peri-peri-blaze', pack: 'jar', name: 'Peri Peri Blaze', tagline: 'Fiery. Zesty. Addictive.', profile: 'spicy', spice: 3,
     description: 'Bird’s-eye chilli, lemon and herbs, roasted into every crevice of the pop. Heat that arrives fast and leaves you reaching back.',
     pairing: 'Cricket matches. Late nights. Anyone who asks “is it spicy?”',
     ingredientHint: 'Peri peri seasoning: chilli, lemon, herbs', hex: '#C04916', accent: '#E27A45',
   }),
   tin({
-    slug: 'divine-salt-pepper', name: 'Divine Salt & Pepper', tagline: 'Pure. Balanced. Timeless.', profile: 'savoury', spice: 1, featured: true,
+    slug: 'divine-salt-pepper', pack: 'jar', name: 'Divine Salt & Pepper', tagline: 'Pure. Balanced. Timeless.', profile: 'savoury', spice: 1, featured: true,
     description: 'Himalayan pink salt and cracked black pepper. Nothing to hide behind — just the makhana, seasoned the way it has always been.',
     pairing: 'Fasting days. Whisky. The tin for people who say they don’t like flavoured snacks.',
     ingredientHint: 'Himalayan pink salt, black pepper', hex: '#3A342C', accent: '#6E6455',
@@ -125,7 +134,31 @@ export const products: Product[] = [
   },
 ]
 
+/**
+ * On Shopify the admin decides what is on sale: a product that is draft, archived or not published to the Online
+ * Store is absent from the injected list and disappears from the site; price, compare-at and sold-out come from
+ * Shopify too. Products Shopify has that we never designed are ignored (no renders). If nothing matches, the full
+ * catalogue shows in "coming soon" mode (see STORE_OPEN in config.ts).
+ */
+const live = SHOPIFY_CATALOGUE
+const onSale: Product[] = live
+  ? catalogue.flatMap((p) => {
+      const s = live.find((x) => x.handle === p.slug)
+      if (!s) return []
+      return [{ ...p, price: Math.round(s.price) / 100, compareAt: s.compareAtPrice ? Math.round(s.compareAtPrice) / 100 : undefined, available: s.available, shopifyVariantId: s.variantId }]
+    })
+  : catalogue
+/** False on Shopify when none of our products is published there. */
+export const SHOPIFY_SELLABLE = SHOPIFY_CATALOGUE === null || onSale.length > 0
+export const products: Product[] = onSale.length > 0 ? onSale : catalogue
+
 export const bySlug = (slug: string) => products.find((p) => p.slug === slug)
 export const tins = products.filter((p) => p.kind === 'tin')
-/** Public image path for a product (tins are transparent PNG cut-outs; bundles use the lineup render). */
-export const productImage = (p: Product) => (p.kind === 'tin' ? `/img/tins/${p.slug}.png` : '/img/art/lineup-v2.webp')
+/** "tin" or "jar" — for alt text and copy. */
+export const packNoun = (p: Product) => p.pack ?? 'tin'
+/** Public image path for a product (tins and jars are transparent PNG cut-outs; bundles use the lineup render). */
+export const productImage = (p: Product) => (p.kind !== 'tin' ? '/img/art/lineup-v2.webp' : p.pack === 'jar' ? `/img/jars/${p.slug}.png` : `/img/tins/${p.slug}.png`)
+/** Retina cut-out (WebP, 2×) for the flavour wheel. */
+export const productImage2x = (p: Product) => (p.pack === 'jar' ? `/img/jars-2x/${p.slug}.webp` : `/img/tins-2x/${p.slug}.webp`)
+/** 1–13 as words for copy. */
+export const countWord = (n: number) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen'][n] ?? String(n)
