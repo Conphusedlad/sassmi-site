@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
 import { Wordmark } from './Wordmark'
 import { Ripples } from './MithilaArt'
-import { tins } from '../../shared/products'
+import { tins, bySlug, countWord } from '../../shared/products'
 import { business, whatsappLink, STORE_OPEN } from '../../shared/config'
 import { introStore } from '../lib/intro'
 import { asset } from '../lib/env'
@@ -18,6 +18,13 @@ const InstagramIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
 )
 
+/** "six roasted flavours and a ready-to-serve kheer" — counts what is on sale */
+const tagline = () => {
+  const roasted = tins.filter((t) => t.format !== 'ready-to-serve').length
+  const kheer = tins.some((t) => t.format === 'ready-to-serve')
+  return `${countWord(roasted)} roasted flavour${roasted === 1 ? '' : 's'}${kheer ? ' and a ready-to-serve kheer' : ''}`
+}
+
 export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-night text-ivory">
@@ -30,7 +37,7 @@ export function Footer() {
           <div className="md:col-span-5">
             <Wordmark className="h-14 w-auto" sizes="110px" />
             <p className="mt-5 max-w-sm font-display text-2xl italic text-ivory/80">{business.motto}</p>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory/55">Premium makhana from the ponds of Mithila — twelve roasted flavours and a ready-to-serve kheer, made in small batches in New Delhi.</p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory/55">Premium makhana from the ponds of Mithila — {tagline()}, made in small batches in New Delhi.</p>
             <div className="mt-6 flex gap-3">
               <a href={whatsappLink('Hi Sassmi!')} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold" aria-label="WhatsApp"><MessageCircle size={17} strokeWidth={1.6} /></a>
               {business.social.instagramSassmi && <a href={business.social.instagramSassmi} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold hover:text-gold" aria-label="Instagram"><InstagramIcon /></a>}
@@ -40,7 +47,7 @@ export function Footer() {
             <h4 className="kicker">{STORE_OPEN ? 'Shop' : 'The collection'}</h4>
             <ul className="mt-5 space-y-2.5 text-sm text-ivory/70">
               {tins.map((p) => <li key={p.slug}><Link className="hover:text-gold" to={`/product/${p.slug}`}>{p.name}</Link></li>)}
-              <li><Link className="hover:text-gold" to="/product/nocturne-trio">The Nocturne Trio</Link></li>
+              {bySlug('nocturne-trio') && <li><Link className="hover:text-gold" to="/product/nocturne-trio">The Nocturne Trio</Link></li>}
             </ul>
           </div>
           <div className="md:col-span-2">
