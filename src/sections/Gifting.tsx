@@ -33,11 +33,11 @@ export function Gifting() {
         </div>
         <motion.div {...fadeUp(0.1)} className="relative lg:col-span-6">
           <div className="overflow-hidden rounded-3xl border border-gold/20 shadow-tin">
-            <img src={asset('/img/art/lineup-v2.webp')} alt="The Sassmi collection" className="h-full w-full object-cover" loading="lazy" />
+            <img src={asset('/img/art/jar-lineup.webp')} alt="The six Sassmi jars in a row" className="h-full w-full object-cover" loading="lazy" />
           </div>
           <div className="absolute -bottom-6 left-6 rounded-2xl bg-ivory px-6 py-4 text-ink shadow-card">
             <p className="kicker !text-gold-deep">The Nocturne Trio</p>
-            <p className="font-display text-2xl">Three jars · {STORE_OPEN ? '₹699' : 'coming soon'}</p>
+            <p className="font-display text-2xl">Three jars · {STORE_OPEN && bySlug('nocturne-trio') ? formatINR(bySlug('nocturne-trio')!.price) : 'coming soon'}</p>
           </div>
         </motion.div>
       </Container>

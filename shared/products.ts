@@ -150,14 +150,20 @@ const onSale: Product[] = live
   : catalogue
 /** False on Shopify when none of our products is published there. */
 export const SHOPIFY_SELLABLE = SHOPIFY_CATALOGUE === null || onSale.length > 0
-export const products: Product[] = onSale.length > 0 ? onSale : catalogue
+/**
+ * Off Shopify (own site, GitHub Pages) and in the no-products fallback: the brand word is "jar" (22 Oct 2026), so
+ * flavours that still only have tin renders stay hidden until their jar renders arrive. Flip to false to show all thirteen.
+ */
+const ONLY_JAR_RENDERS = true
+const designed = ONLY_JAR_RENDERS ? catalogue.filter((p) => p.kind !== 'tin' || p.pack === 'jar') : catalogue
+export const products: Product[] = live ? (onSale.length > 0 ? onSale : designed) : designed
 
 export const bySlug = (slug: string) => products.find((p) => p.slug === slug)
 export const tins = products.filter((p) => p.kind === 'tin')
 /** The brand word for the container (the family chose "jar", 22 Oct 2026). `pack` only says which renders a product has. */
 export const packNoun = (_p: Product) => 'jar'
 /** Public image path for a product (tins and jars are transparent PNG cut-outs; bundles use the lineup render). */
-export const productImage = (p: Product) => (p.kind !== 'tin' ? '/img/art/lineup-v2.webp' : p.pack === 'jar' ? `/img/jars/${p.slug}.png` : `/img/tins/${p.slug}.png`)
+export const productImage = (p: Product) => (p.kind !== 'tin' ? '/img/art/jar-lineup.webp' : p.pack === 'jar' ? `/img/jars/${p.slug}.png` : `/img/tins/${p.slug}.png`)
 /** Retina cut-out (WebP, 2×) for the flavour wheel. */
 export const productImage2x = (p: Product) => (p.pack === 'jar' ? `/img/jars-2x/${p.slug}.webp` : `/img/tins-2x/${p.slug}.webp`)
 /** 1–13 as words for copy. */

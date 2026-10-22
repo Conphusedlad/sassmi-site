@@ -7,10 +7,10 @@
 {%- liquid
   assign sassmi_root = routes.root_url
   assign sassmi_title = 'Sassmi — Premium Makhana, Rooted in Mithila'
-  assign sassmi_description = 'Sassmi premium makhana — twelve roasted flavours and a ready-to-serve kheer. Sourced from the ponds of Mithila, made in small batches in New Delhi.'
+  assign sassmi_description = 'Sassmi premium makhana in jars — slow-roasted in olive oil, seasoned with honest ingredients. Sourced from the ponds of Mithila, made in small batches in New Delhi.'
   assign sassmi_og_title = 'Sassmi — Premium Makhana'
-  assign sassmi_og_description = 'Rooted in Mithila. Crafted for today. Thirteen flavours of premium makhana.'
-  assign sassmi_og_image = 'img-art-lineup-v2.webp' | asset_url
+  assign sassmi_og_description = 'Rooted in Mithila. Crafted for today. Premium makhana in jars.'
+  assign sassmi_og_image = 'img-art-jar-lineup.webp' | asset_url
   if template.name != 'index' and page_title != blank
     assign sassmi_title = page_title | append: ' — Sassmi'
   endif
